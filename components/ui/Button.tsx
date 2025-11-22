@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { LuLoader } from "react-icons/lu";
 import { twMerge } from "tailwind-merge";
 
 export type Variant = "default" | "secondary" | "ghost" | "link" | "outline" | "destructive";
@@ -32,6 +33,7 @@ type ButtonProps = PolymorphicProps & {
   variant?: Variant;
   size?: Size;
   asChild?: boolean;
+  pending?: boolean;
 };
 
 export default function Button({
@@ -40,12 +42,13 @@ export default function Button({
   size = "default",
   asChild = false,
   children,
+  pending,
   ...props
 }: ButtonProps) {
   const Component = asChild ? "div" : "button";
 
   const finalClass = twMerge(
-    "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
+    "w-full inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50",
     variantClasses[variant],
     sizeClasses[size],
     className
@@ -53,7 +56,7 @@ export default function Button({
 
   return (
     <Component className={finalClass} {...(props as React.HTMLAttributes<HTMLElement>)}>
-      {children}
+      {pending ? <LuLoader className="animate-spin mr-2" /> : null} {children}
     </Component>
   );
 }

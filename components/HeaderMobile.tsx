@@ -16,12 +16,16 @@ export default function HeaderMobile() {
   return (
     <Drawer trigger={TriggerBar} position="right" className="flex sm:hidden">
       <div className="p-4">
-        <Logo className="mb-4" />
+        <DrawerClose>
+          <Logo className="mb-4" />
+        </DrawerClose>
         <div className="flex flex-col gap-2">
           <DrawerClose asChild>
-            <Button asChild size="sm">
-              <Link href="/login">Masuk</Link>
-            </Button>
+            <Link href="/signin">
+              <Button size="sm" className="">
+                Masuk
+              </Button>
+            </Link>
           </DrawerClose>
           <Button variant="ghost" size="sm">
             <Link href="/cart">Setting</Link>

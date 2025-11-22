@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Logo from "./Logo";
 import { LuShoppingCart } from "react-icons/lu";
 import Button from "./ui/Button";
@@ -8,6 +7,8 @@ import Link from "next/link";
 import HeaderSearch from "./HeaderSearch";
 import HeaderFilter from "./HeaderFilter";
 import HeaderMobile from "./HeaderMobile";
+import DropdownMenu, { DropdownMenuClose } from "./ui/DropdownMenu";
+import HeaderUserOptions from "./HeaderUserOptions";
 
 export default function Header() {
   return (
@@ -25,9 +26,10 @@ export default function Header() {
                 <LuShoppingCart />
               </Link>
             </Button>
-            <Button size="sm" asChild aria-label="login" className="hidden sm:flex ml-2">
-              <Link href="/login">Masuk</Link>
-            </Button>
+            {/* <Button size="sm" asChild aria-label="login" className="hidden sm:flex ml-2">
+              <Link href="/signin">Masuk</Link>
+            </Button> */}
+            <HeaderUserOptions />
             <HeaderMobile />
           </div>
         </div>
