@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id                           String    @id @default(cuid())
+  name                         String?
+  email                        String    @unique
+  pendingEmail                 String?   @unique
+  emailVerified                DateTime?
+  image                        String?
+  password                     String?
+  role                         Role      @default(USER)
+  phone                        String?
+  emailChangeVerificationToken String?   @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  accounts           Account[]
+  PasswordResetToken PasswordResetToken?
+  // Blog               Blog[]
+  // Product            Product[]
+  // Cart               Cart?
+  // Order              Order[]
+  // Address            Address[]
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+}
+
+model PasswordResetToken {
+  id      String   @id @default(cuid())
+  userId  String   @unique // Kunci unik ke model User
+  token   String   @unique // Token unik yang dikirim via email
+  expires DateTime // Kapan token akan kedaluwarsa
+
+  User User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// model Address {
+//   id         String  @id @default(cuid())
+//   label      String? // Misal: "Rumah", "Kantor"
+//   recipient  String // Nama penerima
+//   phone      String
+//   street     String
+//   province   String // Province = Provinsi
+//   regency    String // City | Kota = Regency | Kabupaten
+//   district   String // District = Kecamatan
+//   village    String // Village | Kampung = Urbah Village = Kelurahan
+//   postalCode String
+//   isDefault  Boolean @default(false)
+
+//   userId String
+//   User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+//   Order Order[]
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@unique([userId, label])
+// }
+
+// model Product {
+//   id          String   @id @default(cuid())
+//   slug        String   @unique
+//   name        String   @db.VarChar(255)
+//   description String?  @db.Text
+//   price       Int      @default(0)
+//   stock       Int      @default(0)
+//   imageUrl    String?
+//   tags        String[]
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+
+//   userId          String
+//   User            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   categoryId      String
+//   ProductCategory ProductCategory @relation(fields: [categoryId], references: [id])
+
+//   CartItem  CartItem[]
+//   OrderItem OrderItem[]
+// }
+
+// model ProductCategory {
+//   id        String   @id @default(cuid())
+//   slug      String   @unique
+//   name      String   @db.VarChar(255)
+//   isDefault Boolean  @default(false)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   Products Product[]
+// }
+
+// model Cart {
+//   id        String   @id @default(cuid())
+//   userId    String   @unique
+//   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   CartItem CartItem[]
+// }
+
+// model CartItem {
+//   id        String  @id @default(cuid())
+//   quantity  Int     @default(1)
+//   isChecked Boolean @default(false)
+
+//   cartId    String
+//   Cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+//   productId String  @default("")
+//   Product   Product @relation(fields: [productId], references: [id])
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @updatedAt
+
+//   @@unique([cartId, productId])
+// }
+
+// model Order {
+//   id          String      @id @default(cuid())
+//   userId      String
+//   User        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   totalAmount Int
+//   status      OrderStatus @default(PENDING)
+//   OrderItem   OrderItem[]
+//   createdAt   DateTime    @default(now())
+//   updatedAt   DateTime    @updatedAt
+//   Address     Address?    @relation(fields: [addressId], references: [id])
+//   addressId   String?
+// }
+
+// model OrderItem {
+//   id      String @id @default(cuid())
+//   orderId String
+//   Order   Order  @relation(fields: [orderId], references: [id])
+
+//   productId String
+//   Product   Product @relation(fields: [productId], references: [id])
+
+//   quantity Int
+//   price    Int
+// }
+
+// enum OrderStatus {
+//   PENDING
+//   PROCESSING
+//   SHIPPED
+//   DELIVERED
+//   CANCELED
+// }
