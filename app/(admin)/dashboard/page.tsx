@@ -1,5 +1,11 @@
 import React from "react";
 
 export default function Dashboard() {
-  return <div>Dashboard</div>;
+  return (
+    <main className="flex-1">
+      <div className="container">
+        <h1>Dashboard</h1>
+      </div>
+    </main>
+  );
 }

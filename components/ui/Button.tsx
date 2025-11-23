@@ -12,7 +12,7 @@ const variantClasses: Record<Variant, string> = {
   destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
   outline: "border border-gray-400 bg-white shadow-sm hover:bg-accent hover:text-accent-foreground",
   secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-  ghost: "hover:bg-accent hover:text-accent-foreground",
+  ghost: "hover:bg-accent hover:text-accent-foreground hover:bg-gray-100",
   link: "text-primary underline-offset-4 hover:underline",
 };
 

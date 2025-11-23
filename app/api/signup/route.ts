@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     const existingUser = await prisma.user.findUnique({ where: { email } });
     console.log(existingUser);
     if (existingUser) {
-      return Response.json({ error: "Email sudah terdaftar." }, { status: 409 });
+      return Response.json({ error: `Email '${email}' sudah terdaftar.` }, { status: 409 });
     }
 
     const hashedPassword = hashSync(password, 10);

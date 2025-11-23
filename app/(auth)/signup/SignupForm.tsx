@@ -5,7 +5,7 @@ import Input from "@/components/ui/Input";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { LuLoader } from "react-icons/lu";
+import { toast } from "sonner";
 
 export default function SignupForm() {
   const [name, setName] = useState("");
@@ -13,7 +13,6 @@ export default function SignupForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errors, setErrors] = useState<Record<string, { errors: string[] }> | undefined>({});
-  const [error, setError] = useState("");
 
   const [pending, startTransition] = useTransition();
   const router = useRouter();
@@ -35,7 +34,16 @@ export default function SignupForm() {
         return;
       }
 
-      // await signIn("credentials", { email, password, redirect: false });
+      if (data?.error) {
+        toast.error(data?.error, { position: "top-center" });
+        setName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
+        return;
+      }
+
+      await signIn("credentials", { email, password, redirect: false });
 
       router.push("/dashboard");
     });

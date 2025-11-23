@@ -4,6 +4,8 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Toaster } from "sonner";
+import { NextAuthProviders } from "@/components/providers/NextAuthProvider";
+import ClientProvider from "@/components/providers/ClientProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,10 +33,14 @@ export default function RootLayout({
         <link rel="icon" href="/images/logo-warungota-favicon.png" />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} flex flex-col min-h-screen`}>
-        <Toaster richColors />
-        <Header />
-        {children}
-        <Footer />
+        <NextAuthProviders>
+          <ClientProvider>
+            <Toaster richColors />
+            <Header />
+            {children}
+            <Footer />
+          </ClientProvider>
+        </NextAuthProviders>
       </body>
     </html>
   );

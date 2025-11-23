@@ -11,3 +11,8 @@ export const SignupSchema = z
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
+
+export const SigninSchema = z.object({
+  email: z.email({ message: "Invalid email address" }),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
+});
