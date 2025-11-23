@@ -2,6 +2,8 @@ import Link from "next/link";
 import SignupForm from "./SignupForm";
 
 export default async function Signup() {
+  // const users = await prisma.user.findMany({});
+  // console.log(users);
   return (
     <main className="flex-1 flex items-center justify-center bg-gray-100">
       <div className="container max-w-sm! border border-gray-300 my-12 py-6! px-6! bg-white rounded-lg">
