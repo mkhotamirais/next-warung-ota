@@ -8,5 +8,6 @@ export default defineConfig({
   },
   datasource: {
     url: env("WO_DATABASE_URL"),
+    // url: env("WO_POSTGRES_URL_NON_POOLING"),
   },
 });

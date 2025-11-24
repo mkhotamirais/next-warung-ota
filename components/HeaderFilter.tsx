@@ -4,7 +4,7 @@ import { LuArrowUpDown, LuListFilter } from "react-icons/lu";
 import Button from "./ui/Button";
 
 const TriggerFilter = (
-  <Button aria-label="filter" variant="ghost">
+  <Button size="sm" aria-label="filter" variant="ghost">
     <LuListFilter />
   </Button>
 );

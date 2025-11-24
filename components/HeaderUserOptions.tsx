@@ -7,6 +7,12 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { LuLogIn, LuShoppingCart } from "react-icons/lu";
 
+const menu = [
+  { label: "Setting", url: "/setting" },
+  { label: "Product", url: "/products" },
+  { label: "Product Category", url: "/product-category" },
+];
+
 export default function HeaderUserOptions() {
   const { handleLogout } = useLogout();
   const { data: session } = useSession();
