@@ -4,6 +4,7 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { SigninSchema } from "@/lib/zod";
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState, useTransition } from "react";
 import { toast } from "sonner";
@@ -62,7 +63,17 @@ export default function SigninForm() {
         onChange={(e) => setPassword(e.target.value)}
         error={errors?.password?.errors}
       />
-      <Button type="submit" disabled={pending} pending={pending} className="w-full mt-2">
+      <div className="mb-2 flex justify-end">
+        <Link href="/forgot-password" tabIndex={-1} className="text-primary font-semibold hover:underline text-sm">
+          Lupa Password?
+        </Link>
+      </div>
+      <Button
+        type="submit"
+        disabled={pending}
+        pending={pending}
+        className="w-full mt-2 focus:border! focus:border-gray-700!"
+      >
         Sign In
       </Button>
     </form>

@@ -85,7 +85,12 @@ export default function SignupForm() {
         onChange={(e) => setConfirmPassword(e.target.value)}
         error={errors?.confirmPassword?.errors}
       />
-      <Button type="submit" disabled={pending} pending={pending} className="w-full mt-2">
+      <Button
+        type="submit"
+        disabled={pending}
+        pending={pending}
+        className="w-full mt-2 focus:border! focus:border-gray-700!"
+      >
         Sign Up
       </Button>
     </form>

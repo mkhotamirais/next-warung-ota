@@ -110,7 +110,7 @@ export default function Drawer({ trigger, className, position = "left", children
         <div
           onClick={() => setOpen(false)}
           className={twMerge(
-            "fixed inset-0 bg-black/50 transition-all",
+            "z-50 fixed inset-0 bg-black/50 transition-all",
             open ? "visible opacity-100" : "invisible opacity-0"
           )}
         >
