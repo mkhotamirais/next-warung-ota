@@ -9,7 +9,7 @@ export default function Footer() {
     <footer className="border-t border-gray-200 py-4">
       <div className="container flex flex-col items-center justify-center">
         <nav className="flex gap-4 flex-wrap mb-2">
-          {menu.map((item, i) => (
+          {menu.mainMenu.map((item, i) => (
             <Link key={i} href={item.url} className="link">
               {item.label}
             </Link>

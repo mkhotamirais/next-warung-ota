@@ -1,22 +1,24 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import React, { Suspense } from "react";
-import ProductList from "./ProductList";
+import ProductList from "../../ProductList";
 import Button from "@/components/ui/Button";
-// import SearchProductAdmin from "./SearchProductAdmin";
 import Link from "next/link";
+import SearchProductAdmin from "../../SearchProductAdmin";
 
 const limit = 8;
 
-export default async function Product({
+export default async function ProductPage({
+  params,
   searchParams,
 }: {
-  searchParams: Promise<{ page?: string; keyword?: string }>;
+  params: Promise<{ page?: string }>;
+  searchParams: Promise<{ keyword?: string }>;
 }) {
   const session = await auth();
-  if (!session || !session.user) redirect("/dashboard");
+  if (!session || !session.user) redirect("/profile");
 
-  const page = Number((await searchParams).page) || 1;
+  const page = Number((await params).page || 1);
   const keyword = (await searchParams).keyword || "";
 
   return (
@@ -27,7 +29,9 @@ export default async function Product({
           <Button>Create Product</Button>
         </Link>
       </div>
-      <div className="mb-4">{/* <SearchProductAdmin /> */}</div>
+      <div className="mb-4">
+        <SearchProductAdmin />
+      </div>
       <Suspense fallback={"loading"} key={keyword}>
         <ProductList page={page} limit={limit} keyword={keyword} />   {" "}
       </Suspense>

@@ -12,6 +12,14 @@ enum Role {
   ADMIN
 }
 
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELED
+}
+
 model User {
   id                           String    @id @default(cuid())
   name                         String?
@@ -29,11 +37,10 @@ model User {
 
   accounts           Account[]
   PasswordResetToken PasswordResetToken?
-  // Blog               Blog[]
-  // Product            Product[]
-  // Cart               Cart?
-  // Order              Order[]
-  // Address            Address[]
+  Product            Product[]
+  Cart               Cart?
+  Order              Order[]
+  Address            Address[]
 }
 
 model Account {
@@ -74,117 +81,109 @@ model PasswordResetToken {
   User User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-// model Address {
-//   id         String  @id @default(cuid())
-//   label      String? // Misal: "Rumah", "Kantor"
-//   recipient  String // Nama penerima
-//   phone      String
-//   street     String
-//   province   String // Province = Provinsi
-//   regency    String // City | Kota = Regency | Kabupaten
-//   district   String // District = Kecamatan
-//   village    String // Village | Kampung = Urbah Village = Kelurahan
-//   postalCode String
-//   isDefault  Boolean @default(false)
+model Address {
+  id         String  @id @default(cuid())
+  label      String? // Misal: "Rumah", "Kantor"
+  recipient  String // Nama penerima
+  phone      String
+  street     String
+  province   String // Province = Provinsi
+  regency    String // City | Kota = Regency | Kabupaten
+  district   String // District = Kecamatan
+  village    String // Village | Kampung = Urbah Village = Kelurahan
+  postalCode String
+  isDefault  Boolean @default(false)
 
-//   userId String
-//   User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String
+  User   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-//   Order Order[]
+  Order Order[]
 
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-//   @@unique([userId, label])
-// }
+  @@unique([userId, label])
+}
 
-// model Product {
-//   id          String   @id @default(cuid())
-//   slug        String   @unique
-//   name        String   @db.VarChar(255)
-//   description String?  @db.Text
-//   price       Int      @default(0)
-//   stock       Int      @default(0)
-//   imageUrl    String?
-//   tags        String[]
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
+model Product {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  name        String   @db.VarChar(255)
+  description String?  @db.Text
+  price       Int      @default(0)
+  stock       Int      @default(0)
+  imageUrl    String?
+  tags        String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
-//   userId          String
-//   User            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   categoryId      String
-//   ProductCategory ProductCategory @relation(fields: [categoryId], references: [id])
+  userId          String
+  User            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId      String
+  ProductCategory ProductCategory @relation(fields: [categoryId], references: [id])
 
-//   CartItem  CartItem[]
-//   OrderItem OrderItem[]
-// }
+  CartItem  CartItem[]
+  OrderItem OrderItem[]
+}
 
-// model ProductCategory {
-//   id        String   @id @default(cuid())
-//   slug      String   @unique
-//   name      String   @db.VarChar(255)
-//   isDefault Boolean  @default(false)
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
+model ProductCategory {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  name      String   @db.VarChar(255)
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-//   Products Product[]
-// }
+  Products Product[]
+}
 
-// model Cart {
-//   id        String   @id @default(cuid())
-//   userId    String   @unique
-//   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-//   CartItem CartItem[]
-// }
+  CartItem CartItem[]
+}
 
-// model CartItem {
-//   id        String  @id @default(cuid())
-//   quantity  Int     @default(1)
-//   isChecked Boolean @default(false)
+model CartItem {
+  id        String  @id @default(cuid())
+  quantity  Int     @default(1)
+  isChecked Boolean @default(false)
 
-//   cartId    String
-//   Cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
-//   productId String  @default("")
-//   Product   Product @relation(fields: [productId], references: [id])
+  cartId    String
+  Cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  productId String  @default("")
+  Product   Product @relation(fields: [productId], references: [id])
 
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-//   @@unique([cartId, productId])
-// }
+  @@unique([cartId, productId])
+}
 
-// model Order {
-//   id          String      @id @default(cuid())
-//   userId      String
-//   User        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   totalAmount Int
-//   status      OrderStatus @default(PENDING)
-//   OrderItem   OrderItem[]
-//   createdAt   DateTime    @default(now())
-//   updatedAt   DateTime    @updatedAt
-//   Address     Address?    @relation(fields: [addressId], references: [id])
-//   addressId   String?
-// }
+model Order {
+  id          String      @id @default(cuid())
+  userId      String
+  User        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  totalAmount Int
+  status      OrderStatus @default(PENDING)
+  OrderItem   OrderItem[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  Address     Address?    @relation(fields: [addressId], references: [id])
+  addressId   String?
+}
 
-// model OrderItem {
-//   id      String @id @default(cuid())
-//   orderId String
-//   Order   Order  @relation(fields: [orderId], references: [id])
+model OrderItem {
+  id      String @id @default(cuid())
+  orderId String
+  Order   Order  @relation(fields: [orderId], references: [id])
 
-//   productId String
-//   Product   Product @relation(fields: [productId], references: [id])
+  productId String
+  Product   Product @relation(fields: [productId], references: [id])
 
-//   quantity Int
-//   price    Int
-// }
-
-// enum OrderStatus {
-//   PENDING
-//   PROCESSING
-//   SHIPPED
-//   DELIVERED
-//   CANCELED
-// }
+  quantity Int
+  price    Int
+}

@@ -9,7 +9,7 @@ export type Size = "default" | "sm" | "lg" | "icon";
 
 const variantClasses: Record<Variant, string> = {
   default: "bg-primary text-white shadow hover:bg-primary/90",
-  destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+  destructive: "bg-danger text-white shadow-sm hover:bg-danger/70",
   outline: "border border-gray-400 bg-white shadow-sm hover:bg-accent hover:text-accent-foreground",
   secondary: "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
   ghost: "hover:bg-accent hover:text-accent-foreground hover:bg-gray-100",

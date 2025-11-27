@@ -15,7 +15,7 @@ const menu = [
 
 export default function HeaderUserOptions() {
   const { handleLogout } = useLogout();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   let initial: string = "U";
 
@@ -28,6 +28,8 @@ export default function HeaderUserOptions() {
       {initial}
     </Button>
   );
+
+  if (status === "loading") return null;
 
   if (!session) {
     return (
@@ -55,6 +57,13 @@ export default function HeaderUserOptions() {
             <Link href="/dashboard">
               <Button size="sm" variant="ghost" className="w-full mb-1 justify-start">
                 Dashboard
+              </Button>
+            </Link>
+          </DropdownMenuClose>
+          <DropdownMenuClose asChild>
+            <Link href="/admin/product-category">
+              <Button size="sm" variant="ghost" className="w-full mb-1 justify-start">
+                Product Category
               </Button>
             </Link>
           </DropdownMenuClose>

@@ -4,8 +4,6 @@ import React, { createContext, useCallback, useContext, useEffect, useRef, useSt
 import { LuX } from "react-icons/lu";
 import { twMerge } from "tailwind-merge";
 
-// Asumsi: Anda masih menggunakan Button di file lain, tapi di sini saya menggunakan elemen button standar.
-
 export interface ContextType {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -61,14 +59,41 @@ interface DropdownMenuProps {
   title?: string;
 }
 
-export default function DropdownMenu({ trigger, className, children, title = "dropdown menu" }: DropdownMenuProps) {
+export default function DropdownMenu({ trigger, className, children, title = "Options" }: DropdownMenuProps) {
   const [open, setOpen] = useState<boolean>(false);
+  const [positionUp, setPositionUp] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const toggleDropdownMenu = useCallback(() => setOpen((prev) => !prev), []);
   const closeDropdownMenu = useCallback(() => setOpen(false), []);
 
-  // Handler untuk menutup saat tombol Escape ditekan
+  const toggleDropdownMenu = useCallback(() => setOpen((prev) => !prev), []);
+
+  const checkDropdownPosition = useCallback(() => {
+    if (containerRef.current) {
+      const rect = containerRef.current.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+
+      const minSpaceNeeded = 250;
+
+      const shouldPositionUp = viewportHeight - rect.bottom < minSpaceNeeded;
+
+      setPositionUp(shouldPositionUp);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (open) {
+      checkDropdownPosition();
+
+      window.addEventListener("resize", checkDropdownPosition);
+    } else {
+      window.removeEventListener("resize", checkDropdownPosition);
+    }
+    return () => {
+      window.removeEventListener("resize", checkDropdownPosition);
+    };
+  }, [open, checkDropdownPosition]);
+
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape" && open) {
@@ -79,7 +104,6 @@ export default function DropdownMenu({ trigger, className, children, title = "dr
     return () => document.removeEventListener("keydown", handleEscape);
   }, [closeDropdownMenu, open]);
 
-  // Handler untuk menutup saat klik di luar area dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (open && containerRef.current && !containerRef.current.contains(event.target as Node)) {
@@ -116,19 +140,25 @@ export default function DropdownMenu({ trigger, className, children, title = "dr
     "aria-controls": "dropdownMenu-content",
   } as React.Attributes);
 
+  const dropdownPositionClasses = positionUp
+    ? "bottom-full mb-1 origin-bottom-right"
+    : "top-full mt-1 origin-top-right";
+
   return (
     <DropdownMenuContext.Provider value={{ open, setOpen }}>
-      <div className={twMerge(className, "sm:relative")} ref={containerRef}>
+      <div className={twMerge(className, "relative")} ref={containerRef}>
         {triggerWithHandler}
         <div
           id="dropdownMenu-content"
-          className={`${
+          className={twMerge(
+            "absolute transition-all right-0 w-[calc(100vw-2.5rem)] sm:w-64 p-1 border border-gray-300 rounded bg-white shadow-lg z-10",
+            dropdownPositionClasses,
             open ? "visible opacity-100 scale-100" : "invisible opacity-0 scale-95"
-          } origin-top-right absolute transition-all right-3 sm:right-0 left-3 sm:left-auto sm:w-64 top-full p-1 mt-1 border border-gray-300 rounded bg-white z-10`}
+          )}
           role="dialog"
         >
           <div className="flex justify-between gap-2 px-3 py-1">
-            <h3 className="flex-1 text-lg font-semibold capitalize">Hi, {title}</h3>
+            <h3 className="flex-1 text-lg font-semibold capitalize">{title}</h3>
             <button
               type="button"
               onClick={closeDropdownMenu}
