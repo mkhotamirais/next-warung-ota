@@ -1,6 +1,5 @@
 "use client";
 
-import { FaSpinner } from "react-icons/fa6";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
@@ -48,7 +47,7 @@ export default function ResetPasswordClientForm({ token, email }: { token: strin
   };
 
   return (
-    <div className="max-w-sm mx-auto p-4 border border-gray-300 rounded shadow">
+    <div className="space-y-4">
       <h1 className="h1 text-center mb-4">Reset Password</h1>
 
       {message && (

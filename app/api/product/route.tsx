@@ -21,11 +21,11 @@ export const POST = async (req: Request) => {
   const formData = await req.formData();
 
   const file = formData.get("image") as File | null;
-  const mainImageFile = file instanceof File && file.size > 0 ? file : null;
+  const imageFile = file instanceof File && file.size > 0 ? file : null;
   const tags = formData.getAll("tags");
 
   const rawData = Object.fromEntries(formData.entries());
-  const dataForValidation = { ...rawData, image: mainImageFile, tags };
+  const dataForValidation = { ...rawData, image: imageFile, tags };
 
   const validatedFields = ProductSchema.safeParse(dataForValidation);
   if (!validatedFields.success) {
@@ -51,8 +51,8 @@ export const POST = async (req: Request) => {
     }
 
     let imageUrl: string | null = null;
-    if (mainImageFile) {
-      const blob = await put(`product-main-${Date.now()}-${mainImageFile.name}`, mainImageFile, {
+    if (imageFile) {
+      const blob = await put(`products/${Date.now()}-${imageFile.name}`, imageFile, {
         access: "public",
         multipart: true,
       });

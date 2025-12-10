@@ -60,7 +60,7 @@ export default function InputMultiple({
   return (
     <div className="mb-4">
       <div className="flex justify-between items-center mb-1">
-        <label htmlFor={id} className="block text-sm text-gray-600">
+        <label htmlFor={id} className="block text-sm text-gray-600 font-semibold">
           {label}
         </label>
         {value.length > 0 && (

@@ -15,12 +15,8 @@ export default async function ResetPasswordPage({
   }
 
   return (
-    <main className="flex-1 flex items-center justify-center">
-      <div className="container">
-        <Suspense fallback={<div>Loading form...</div>}>
-          <ResetPasswordClientForm token={token} email={email} />
-        </Suspense>
-      </div>
-    </main>
+    <Suspense fallback={<div>Loading form...</div>}>
+      <ResetPasswordClientForm token={token} email={email} />
+    </Suspense>
   );
 }

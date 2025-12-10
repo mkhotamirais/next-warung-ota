@@ -42,7 +42,10 @@ export const POST = async (req: Request) => {
       }),
     ]);
 
-    return Response.json({ message: "Password berhasil direset! Silakan Login." }, { status: 200 });
+    return Response.json(
+      { message: "Password berhasil direset! Anda akan dialihkan ke halaman login." },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Reset password failed:", error);
     return Response.json({ message: "Terjadi kesalahan server saat mereset password." }, { status: 500 });

@@ -38,3 +38,7 @@ button {
 .h1 {
   @apply text-3xl font-bold capitalize;
 }
+
+.h2 {
+  @apply text-xl font-bold capitalize;
+}

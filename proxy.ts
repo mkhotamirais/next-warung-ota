@@ -2,12 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 
 // const publicRoutes = ["/", "/about", "/contact", "/blog", "/product"];
-const authRoutes = ["/signin", "/signup"];
+const authRoutes = ["/signin", "/signup", "/forgot-password", "/reset-password"];
 const adminRoutes = ["/dashboard/admin"];
-const userRoutes = ["/dashboard/user"];
-// const userRoutes = ["/cart", "/checkout", "/dashboard/user"];
-// const verifyRoutes = ["/verify"];
-// const verifyPendingRotes = ["/verification-pending"];
+// const userRoutes = ["/dashboard/user"];
+const userRoutes = ["/cart", "/checkout", "/dashboard/user"];
+const verifyRoutes = ["/verify"];
+const verifyPendingRotes = ["/verification-pending"];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -23,11 +23,10 @@ export async function proxy(request: NextRequest) {
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
   const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
   const isUserRoute = userRoutes.some((route) => pathname.startsWith(route));
-  // const isVerifyRoute = verifyRoutes.some((route) => pathname.startsWith(route));
-  // const isVerifyPendingRoute = verifyPendingRotes.some((route) => pathname.startsWith(route));
+  const isVerifyRoute = verifyRoutes.some((route) => pathname.startsWith(route));
+  const isVerifyPendingRoute = verifyPendingRotes.some((route) => pathname.startsWith(route));
 
-  // if (!isLoggedIn && (isUserRoute || isVerifyPendingRoute || isVerifyRoute || pathname.startsWith("/dashboard"))) {
-  if (!isLoggedIn && (isUserRoute || pathname.startsWith("/dashboard"))) {
+  if (!isLoggedIn && (isUserRoute || isVerifyPendingRoute || isVerifyRoute || pathname.startsWith("/dashboard"))) {
     return NextResponse.redirect(new URL("/signin", request.url));
   }
 
@@ -43,14 +42,13 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // if (isLoggedIn && isVerifiedEmail && (isVerifyRoute || isVerifyPendingRoute)) {
-  if (isLoggedIn && isVerifiedEmail) {
+  if (isLoggedIn && isVerifiedEmail && (isVerifyRoute || isVerifyPendingRoute)) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // if (isLoggedIn && !isVerifiedEmail && (isUserRoute || isAdminRoute)) {
-  //   return NextResponse.redirect(new URL("/verification-pending", request.url));
-  // }
+  if (isLoggedIn && !isVerifiedEmail && (isUserRoute || isAdminRoute)) {
+    return NextResponse.redirect(new URL("/verification-pending", request.url));
+  }
 
   return NextResponse.next();
 }

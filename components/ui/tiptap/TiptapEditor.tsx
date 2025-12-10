@@ -39,7 +39,7 @@ export default function TiptapEditor({ label = "label", value, onChange, error }
   return (
     <div className="mb-3">
       <label htmlFor="content">
-        <div className="text-sm text-gray-600 mb-1">{label}</div>
+        <div className="text-sm text-gray-600 mb-1 font-semibold">{label}</div>
         <Menubar editor={editor} />
         <EditorContent editor={editor} />
         <div aria-live="polite" aria-atomic="true">

@@ -5,6 +5,7 @@ import ProductList from "./ProductList";
 import Button from "@/components/ui/Button";
 // import SearchProductAdmin from "./SearchProductAdmin";
 import Link from "next/link";
+import LoadProductsAdmin from "@/components/fallbacks/LoadProductsAdmin";
 
 const limit = 8;
 
@@ -28,8 +29,8 @@ export default async function Product({
         </Link>
       </div>
       <div className="mb-4">{/* <SearchProductAdmin /> */}</div>
-      <Suspense fallback={"loading"} key={keyword}>
-        <ProductList page={page} limit={limit} keyword={keyword} />   {" "}
+      <Suspense fallback={<LoadProductsAdmin />} key={keyword}>
+        <ProductList page={page} limit={limit} keyword={keyword} />
       </Suspense>
     </>
   );

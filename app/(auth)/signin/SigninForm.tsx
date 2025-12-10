@@ -57,17 +57,24 @@ export default function SigninForm() {
       <Input
         type="password"
         id="password"
-        label="Password"
+        label={
+          <div className="flex justify-between mb-2">
+            <div>Password</div>
+            <Link href="/forgot-password" tabIndex={-1} className="text-primary font-semibold hover:underline text-sm">
+              Lupa Password?
+            </Link>
+          </div>
+        }
         placeholder="********"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         error={errors?.password?.errors}
       />
-      <div className="mb-2 flex justify-end">
+      {/* <div className="mb-2 flex justify-end">
         <Link href="/forgot-password" tabIndex={-1} className="text-primary font-semibold hover:underline text-sm">
           Lupa Password?
         </Link>
-      </div>
+      </div> */}
       <Button
         type="submit"
         disabled={pending}

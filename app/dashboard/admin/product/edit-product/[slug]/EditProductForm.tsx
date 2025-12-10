@@ -188,12 +188,8 @@ export default function EditProductForm({ productCategories, product }: EditProd
         />
         <InputMultiple label="Tags" id="tags" value={tags} onChange={setTags} />
 
-        <hr className="my-8" />
-
-        <h3 className="text-xl font-bold mb-4">Pengaturan Varian Produk</h3>
-
-        <Button type="submit" disabled={pending}>
-          {pending ? "Updating..." : "Update Product"}
+        <Button type="submit" disabled={pending} pending={pending}>
+          Update Product
         </Button>
       </form>
     </>

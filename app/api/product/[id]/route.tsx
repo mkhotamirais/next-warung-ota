@@ -12,8 +12,6 @@ const revalidateProduct = () => {
   revalidatePath("/dashboard/admin/product");
 };
 
-// --- Handler PUT (Update Produk) ---
-
 export const PUT = async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
   const productId = (await params).id;
 
@@ -23,20 +21,13 @@ export const PUT = async (req: Request, { params }: { params: Promise<{ id: stri
 
   const formData = await req.formData();
 
-  // 1. Ekstraksi Data dari FormData
   const file = formData.get("image") as File | null;
-  const mainImageFile = file instanceof File && file.size > 0 ? file : null;
+  const imageFile = file instanceof File && file.size > 0 ? file : null;
   const tags = formData.getAll("tags");
-  const removeMainImage = formData.get("removeMainImage") === "true";
+  const removeImage = formData.get("removeImage") === "true";
 
-  // Data mentah untuk validasi (termasuk price dan stock yang kini ada di root)
   const rawData = Object.fromEntries(formData.entries());
-  const dataForValidation = {
-    ...rawData,
-    image: mainImageFile,
-    tags,
-    // Hapus data varian
-  };
+  const dataForValidation = { ...rawData, image: imageFile, tags };
 
   const validatedFields = ProductSchema.safeParse(dataForValidation);
 
@@ -44,55 +35,46 @@ export const PUT = async (req: Request, { params }: { params: Promise<{ id: stri
     return Response.json({ errors: z.treeifyError(validatedFields.error) }, { status: 400 });
   }
 
-  // Ambil field yang sudah divalidasi, termasuk price dan stock
   const { name, price, stock, slug, description, tags: validatedTags, categoryId } = validatedFields.data;
 
   try {
     const oldProduct = await prisma.product.findUnique({
       where: { id: productId },
-      select: {
-        name: true,
-        imageUrl: true,
-        // Hapus ProductVariant
-      },
+      select: { name: true, imageUrl: true },
     });
 
     if (!oldProduct) {
       return Response.json({ error: "Produk tidak ditemukan." }, { status: 404 });
     }
 
-    // Cek duplikasi nama produk
     const existingProductByName = await prisma.product.findFirst({ where: { name, id: { not: productId } } });
     if (existingProductByName) {
       return Response.json({ error: "Nama produk sudah ada" }, { status: 409 });
     }
 
-    // 2. Penanganan Gambar Utama (Vercel Blob)
     let imageUrlUpdate = oldProduct.imageUrl;
-    if (removeMainImage) {
+    if (removeImage) {
       if (oldProduct.imageUrl) {
         await del(oldProduct.imageUrl); // Hapus gambar lama jika ada
       }
       imageUrlUpdate = null;
-    } else if (mainImageFile) {
-      // Jika ada file baru, hapus yang lama dan upload yang baru
+    } else if (imageFile) {
       if (oldProduct.imageUrl) {
         await del(oldProduct.imageUrl);
       }
-      const blob = await put(`product-main-${Date.now()}-${mainImageFile.name}`, mainImageFile, {
+      const blob = await put(`products/${Date.now()}-${imageFile.name}`, imageFile, {
         access: "public",
         multipart: true,
       });
       imageUrlUpdate = blob.url;
     }
 
-    // 3. Update Produk Utama (Tanpa Transaksi karena operasi DB tunggal)
     await prisma.product.update({
       where: { id: productId },
       data: {
         name,
-        price, // Langsung di update
-        stock, // Langsung di update
+        price,
+        stock,
         slug,
         description,
         imageUrl: imageUrlUpdate,
@@ -108,8 +90,6 @@ export const PUT = async (req: Request, { params }: { params: Promise<{ id: stri
     return Response.json({ error: "Gagal memperbarui produk karena kesalahan server." }, { status: 500 });
   }
 };
-
-// --- Handler DELETE (Hapus Produk) ---
 
 export const DELETE = async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
   const productId = (await params).id;
@@ -128,7 +108,6 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
       return Response.json({ error: "Produk tidak ditemukan." }, { status: 404 });
     }
 
-    // Hapus gambar utama (tidak ada gambar varian lagi)
     if (existingProduct.imageUrl) {
       try {
         await del(existingProduct.imageUrl);
@@ -137,8 +116,6 @@ export const DELETE = async (req: Request, { params }: { params: Promise<{ id: s
       }
     }
 
-    // Hapus Produk
-    // Tidak perlu transaksi karena tidak ada relasi varian yang kompleks
     await prisma.product.delete({ where: { id: productId } });
 
     revalidateProduct();

@@ -196,8 +196,8 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
         />
         <InputMultiple label="Tags" id="tags" value={tags} onChange={setTags} />
 
-        <Button type="submit" disabled={pending}>
-          {pending ? "Creating..." : "Create Product"}
+        <Button type="submit" disabled={pending} pending={pending}>
+          Create Product
         </Button>
       </form>
     </>
