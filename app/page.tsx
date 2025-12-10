@@ -16,7 +16,7 @@ export default async function Home({
   const keyword = (await searchParams).keyword || "";
 
   return (
-    <main className="flex-1">
+    <main className="flex-1 bg-gray-100">
       <div className="container py-4">
         <Suspense fallback={<FallbackSearchProducts />} key={`${keyword}`}>
           <ProductList keyword={keyword} />

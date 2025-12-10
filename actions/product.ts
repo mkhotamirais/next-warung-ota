@@ -10,6 +10,15 @@ export const getProductCategoryBySlug = async (slug: string) => {
   return category;
 };
 
+export const getProductNames = async () => {
+  const products = await prisma.product.findMany({
+    select: { name: true },
+    distinct: ["name"],
+    orderBy: { name: "asc" },
+  });
+  return products;
+};
+
 interface GetProductParams {
   limit?: number;
   page?: number;
@@ -29,10 +38,10 @@ export const getProducts = async ({
   categorySlug,
   userId,
   keyword = "",
-  sortPrice,
-  minPrice,
-  maxPrice,
-}: GetProductParams = {}) => {
+}: // sortPrice,
+// minPrice,
+// maxPrice,
+GetProductParams = {}) => {
   const whereClause: {
     slug?: { not: string };
     ProductCategory?: { slug: string };
