@@ -1,17 +1,25 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import { useState, useRef } from "react";
 import { LuSearch } from "react-icons/lu";
 
 export default function HeaderSearch() {
   const [keyword, setKeyword] = useState("");
   const [productNames, setProductNames] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
+    if (e.target.value === "") {
+      setProductNames([]);
+      setShowSuggestions(false);
+      return;
+    }
+
     setShowSuggestions(true);
 
     const fetchProductNames = async () => {
@@ -42,7 +50,11 @@ export default function HeaderSearch() {
     } else {
       router.push(`?keyword=${keyword}`);
     }
+
+    setShowSuggestions(false);
+    inputRef.current?.blur();
   };
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -53,6 +65,7 @@ export default function HeaderSearch() {
           Search
         </label>
         <input
+          ref={inputRef}
           id="search"
           type="search"
           autoComplete="off"
