@@ -189,7 +189,7 @@ export default function EditProductForm({ productCategories, product }: EditProd
         <InputMultiple label="Tags" id="tags" value={tags} onChange={setTags} />
 
         <Button type="submit" disabled={pending} pending={pending}>
-          Update Product
+          Update Productttt
         </Button>
       </form>
     </>
