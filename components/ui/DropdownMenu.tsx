@@ -151,7 +151,7 @@ export default function DropdownMenu({ trigger, className, children, title = "Op
         <div
           id="dropdownMenu-content"
           className={twMerge(
-            "absolute transition-all right-0 w-[calc(100vw-2.5rem)] sm:w-64 p-1 border border-gray-300 rounded bg-white shadow-lg z-10",
+            "absolute transition-all right-0 w-[calc(100vw-2rem)] sm:w-64 p-1 border border-gray-300 rounded bg-white shadow-lg z-10",
             dropdownPositionClasses,
             open ? "visible opacity-100 scale-100" : "invisible opacity-0 scale-95"
           )}

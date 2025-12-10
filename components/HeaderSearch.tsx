@@ -1,16 +1,31 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { LuSearch } from "react-icons/lu";
 
 export default function HeaderSearch() {
   const [keyword, setKeyword] = useState("");
+  const router = useRouter();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setKeyword(e.target.value);
   };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (!keyword || keyword === "") {
+      router.replace("/");
+    } else {
+      router.push(`?keyword=${keyword}`);
+    }
+  };
   return (
-    <form className="border border-gray-300 rounded-lg overflow-hidden flex items-center w-full lg:w-72 justify-between">
+    <form
+      onSubmit={handleSubmit}
+      className="border border-gray-300 rounded-lg overflow-hidden flex items-center w-full lg:w-72 justify-between"
+    >
       <div className="w-full flex-1">
         <label htmlFor="search" className="sr-only">
           Search

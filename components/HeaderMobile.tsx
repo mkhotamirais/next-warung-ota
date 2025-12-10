@@ -14,7 +14,7 @@ const TriggerBar = (
 
 export default function HeaderMobile() {
   return (
-    <Drawer trigger={TriggerBar} position="right" className="flex sm:hidden">
+    <Drawer trigger={TriggerBar} position="right" className="flex sm:hidden" classWidth="w-100">
       <div className="p-4">
         <DrawerClose>
           <Logo className="mb-4" />

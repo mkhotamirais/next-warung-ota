@@ -58,11 +58,22 @@ export const DrawerClose = ({ children, asChild = false, ...props }: DrawerClose
 interface DrawerProps {
   trigger: React.ReactElement | string;
   className?: string;
+  classWidth?: string;
+  classHeight?: string;
+  classNameDrawer?: string;
   position?: "left" | "right" | "bottom" | "top";
   children: React.ReactNode;
 }
 
-export default function Drawer({ trigger, className, position = "left", children }: DrawerProps) {
+export default function Drawer({
+  trigger,
+  className,
+  classNameDrawer,
+  classWidth = "w-64",
+  classHeight = "h-1/3",
+  position = "left",
+  children,
+}: DrawerProps) {
   const [open, setOpen] = useState<boolean>(false);
 
   const toggleDrawer = useCallback(() => setOpen((prev) => !prev), []);
@@ -111,17 +122,22 @@ export default function Drawer({ trigger, className, position = "left", children
           onClick={() => setOpen(false)}
           className={twMerge(
             "z-50 fixed inset-0 bg-black/50 transition-all",
-            open ? "visible opacity-100" : "invisible opacity-0"
+            open ? "visible opacity-100" : "invisible opacity-0",
+            classNameDrawer
           )}
         >
           <div
             onClick={(e) => e.stopPropagation()}
             className={clsx(
               "absolute transition-all bg-white",
-              position === "left" && `left-0 top-0 bottom-0 w-64 ${open ? "translate-x-0" : "-translate-x-full"}`,
-              position === "right" && `right-0 top-0 bottom-0 w-64 ${open ? "translate-x-0" : "translate-x-full"}`,
-              position === "bottom" && `bottom-0 left-0 right-0 h-1/3 ${open ? "translate-y-0" : "translate-y-full"}`,
-              position === "top" && `top-0 left-0 right-0 h-1/3 ${open ? "translate-y-0" : "-translate-y-full"}`
+              position === "left" &&
+                `left-0 top-0 bottom-0 ${classWidth} ${open ? "translate-x-0" : "-translate-x-full"}`,
+              position === "right" &&
+                `right-0 top-0 bottom-0 ${classWidth} ${open ? "translate-x-0" : "translate-x-full"}`,
+              position === "bottom" &&
+                `bottom-0 left-0 right-0 ${classHeight} ${open ? "translate-y-0" : "translate-y-full"}`,
+              position === "top" &&
+                `top-0 left-0 right-0 ${classHeight} ${open ? "translate-y-0" : "-translate-y-full"}`
             )}
           >
             {children}

@@ -32,15 +32,14 @@ export default function ProductCardAdmin({ product }: { product: ProductProps })
           </Link>
           <div className="flex flex-col gap-1">
             <Link href={`/product/detail/${product.slug}`} className="hover:underline">
-              <h3 className="font-semibold first-letter:capitalize">
-                {smartTrim(product.name, 40)} - Rp{formatRupiah(product.price)}
-              </h3>
+              <h3 className="first-letter:capitalize leading-none">{smartTrim(product.name, 45)}</h3>
             </Link>
-            <div className="text-sm text-gray-600 flex gap-2">
+            <p className="font-semibold">Rp{formatRupiah(product.price)}</p>
+            {/* <div className="text-sm text-gray-600 flex gap-2">
               <span>{product.ProductCategory?.name || "category"}</span>
               <span>•</span>
               <span>{product.User.name}</span>
-            </div>
+            </div> */}
           </div>
         </div>
         <DropdownMenu trigger={Trigger} className="mr-3">

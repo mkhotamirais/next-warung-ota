@@ -22,23 +22,29 @@
   --font-mono: var(--font-geist-mono);
 }
 
-a,
-button {
-  @apply cursor-pointer;
-}
+@layer components {
+  a,
+  button {
+    @apply cursor-pointer;
+  }
 
-.container {
-  @apply px-3 max-w-6xl mx-auto;
-}
+  .container {
+    @apply mx-auto px-3 lg:px-16 h-full;
+  }
 
-.link {
-  @apply text-gray-500 text-sm hover:underline;
-}
+  .link {
+    @apply text-gray-500 text-sm hover:underline;
+  }
 
-.h1 {
-  @apply text-3xl font-bold capitalize;
-}
+  .h1 {
+    @apply text-3xl font-bold capitalize;
+  }
 
-.h2 {
-  @apply text-xl font-bold capitalize;
+  .h2 {
+    @apply text-xl font-bold capitalize;
+  }
+
+  .grid-list {
+    @apply grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 sm:gap-2;
+  }
 }

@@ -63,8 +63,8 @@ export default function DashboardMobile() {
 
   return (
     <div className="flex items-center gap-2 mb-4">
-      <Drawer trigger={trigger} position="left" className="sm:hidden">
-        <div className="">
+      <Drawer trigger={trigger} position="left" className="sm:hidden" classNameDrawer="mt-16">
+        <div className="p-3">
           {myMenu.map((item, i) => (
             <DrawerClose key={i} asChild>
               <Link

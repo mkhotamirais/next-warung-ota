@@ -11,7 +11,7 @@ const TriggerFilter = (
 
 export default function HeaderFilter() {
   return (
-    <Drawer trigger={TriggerFilter} position="right">
+    <Drawer trigger={TriggerFilter} position="right" classWidth="w-80">
       <div className="p-4">
         <h3 className="font-bold text-lg mb-4">Filter and Order Products</h3>
         <div className="mb-4">
