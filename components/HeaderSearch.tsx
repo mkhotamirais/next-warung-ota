@@ -2,7 +2,7 @@
 
 import { getProductNames } from "@/actions/product";
 import { useRouter } from "next/navigation";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { LuSearch } from "react-icons/lu";
 
 export default function HeaderSearch() {
@@ -13,29 +13,39 @@ export default function HeaderSearch() {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setKeyword(e.target.value);
-    if (e.target.value === "") {
-      setProductNames([]);
-      setShowSuggestions(false);
-      return;
-    }
+  const DEBOUNCE_DELAY = 300;
 
-    setShowSuggestions(true);
+  useEffect(() => {
+    const fnSuggestion = () => {
+      if (keyword.length === 0) {
+        setProductNames([]);
+        setShowSuggestions(false);
+        return;
+      }
 
-    const fetchProductNames = async () => {
+      setShowSuggestions(true);
+    };
+
+    fnSuggestion();
+
+    const debounceTimer = setTimeout(async () => {
       try {
-        // const res = await fetch(`/api/product-names?keyword=${e.target.value}`);
-        // const data = await res.json();
-        const data = await getProductNames(e.target.value);
+        const data = await getProductNames(keyword);
         const names = data.map((item: { name: string }) => item.name);
         setProductNames(names);
       } catch (error) {
         console.error("Error fetching product names:", error);
+        setProductNames([]);
       }
-    };
+    }, DEBOUNCE_DELAY);
 
-    fetchProductNames();
+    return () => {
+      clearTimeout(debounceTimer);
+    };
+  }, [keyword]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setKeyword(e.target.value);
   };
 
   const handleSuggestionClick = (name: string) => {
