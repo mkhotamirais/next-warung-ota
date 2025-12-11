@@ -1,5 +1,6 @@
 "use client";
 
+import { getProductNames } from "@/actions/product";
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 import { LuSearch } from "react-icons/lu";
@@ -24,8 +25,9 @@ export default function HeaderSearch() {
 
     const fetchProductNames = async () => {
       try {
-        const res = await fetch(`/api/product-names?keyword=${e.target.value}`);
-        const data = await res.json();
+        // const res = await fetch(`/api/product-names?keyword=${e.target.value}`);
+        // const data = await res.json();
+        const data = await getProductNames(e.target.value);
         const names = data.map((item: { name: string }) => item.name);
         setProductNames(names);
       } catch (error) {

@@ -12,14 +12,29 @@ export const getProductCategoryBySlug = async (slug: string) => {
   return category;
 };
 
-export const getProductNames = async () => {
-  const products = await prisma.product.findMany({
-    select: { name: true },
-    distinct: ["name"],
-    orderBy: { name: "asc" },
-  });
-  return products;
-};
+export async function getProductNames(keywords: string) {
+  if (!keywords) return [];
+
+  const whereClause: {
+    name?: { contains: string; mode: "insensitive" };
+  } = {};
+
+  whereClause.name = { contains: keywords, mode: "insensitive" };
+
+  try {
+    const products = await prisma.product.findMany({
+      where: whereClause,
+      select: { name: true },
+      distinct: ["name"],
+      orderBy: { name: "asc" },
+    });
+
+    return products;
+  } catch (error) {
+    console.error("Error fetching product names:", error);
+    return [];
+  }
+}
 
 interface GetProductParams {
   limit?: number;
@@ -40,10 +55,7 @@ export const getProducts = async ({
   categorySlug,
   userId,
   keyword = "",
-}: // sortPrice,
-// minPrice,
-// maxPrice,
-GetProductParams = {}) => {
+}: GetProductParams = {}) => {
   const whereClause: {
     slug?: { not: string };
     ProductCategory?: { slug: string };
