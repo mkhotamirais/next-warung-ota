@@ -35,7 +35,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} flex flex-col min-h-screen`}>
         <NextAuthProviders>
           <ClientProvider>
-            <Toaster richColors position="top-center" />
+            <Toaster richColors position="top-center" swipeDirections={["bottom", "left", "right", "top"]} />
             <Header />
             {children}
             <Footer />

@@ -39,6 +39,7 @@ export const postProductCategory = async (data: { name: string }) => {
     return { message: `Product category "${name}" created successfully` };
   } catch (error) {
     console.log(error);
+    return { error: "Failed to create product category, please check your connection and try again" };
   }
 };
 
@@ -86,6 +87,7 @@ export const deleteProductCategory = async (id: string) => {
     }
   } catch (error) {
     console.log(error);
+    return { error: "Failed to delete product category, please check your connection and try again" };
   }
 };
 
@@ -121,5 +123,6 @@ export const patchProductCategory = async (id: string, data: { name: string }) =
     return { message: `Product category "${result.name}" updated successfully` };
   } catch (error) {
     console.log(error);
+    return { error: "Failed to update product category, please check your connection and try again" };
   }
 };
