@@ -24,11 +24,11 @@ export default function Delete({ category }: DeleteProps) {
       if (result?.error) {
         toast.error(result.error);
       }
+      closeModal();
       router.refresh();
       if (result?.message) {
         toast.success(result.message);
       }
-      closeModal();
     });
   };
 

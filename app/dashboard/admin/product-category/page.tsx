@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import List from "./List";
 import Create from "./Create";
 import { getProductCategories } from "@/actions/product-category";
