@@ -1,6 +1,4 @@
-import React, { Suspense } from "react";
-import ProductCategoryList from "./List";
-import Load from "@/components/fallbacks/Load";
+import List from "./List";
 import Create from "./Create";
 import { getProductCategories } from "@/actions/product";
 
@@ -10,9 +8,7 @@ export default async function ProductCategory() {
   return (
     <>
       <Create />
-      <Suspense fallback={<Load />}>
-        <ProductCategoryList productCategories={productCategories} />
-      </Suspense>
+      <List productCategories={productCategories} />
     </>
   );
 }

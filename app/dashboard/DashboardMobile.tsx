@@ -67,11 +67,8 @@ export default function DashboardMobile() {
         <div className="p-3">
           {myMenu.map((item, i) => (
             <DrawerClose key={i} asChild>
-              <Link
-                href={item.url}
-                className={`${pathname === item.url ? "bg-gray-200" : ""} justify-start w-full mb-1`}
-              >
-                <Button className={`${pathname === item.url ? "bg-gray-900" : ""} justify-start w-full mb-1`}>
+              <Link href={item.url}>
+                <Button variant={pathname === item.url ? "default" : "outline"} className={`justify-start w-full mb-1`}>
                   {item.label}
                 </Button>
               </Link>
