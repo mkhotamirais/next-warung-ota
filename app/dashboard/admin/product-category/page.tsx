@@ -1,6 +1,6 @@
 import List from "./List";
 import Create from "./Create";
-import { getProductCategories } from "@/actions/product";
+import { getProductCategories } from "@/actions/product-category";
 
 export default async function ProductCategory() {
   const productCategories = await getProductCategories();

@@ -1,3 +1,4 @@
+import { patchProductCategory } from "@/actions/product-category";
 import Input from "@/components/ui/Input";
 import { ProductCategory } from "@/lib/generated/prisma";
 import { useRouter } from "next/navigation";
@@ -25,11 +26,7 @@ export default function Edit({ category, setIsEdit }: EditProps) {
     e.preventDefault();
 
     startTransition(async () => {
-      const res = await fetch(`/api/product-category/${category.id}`, {
-        method: "PATCH",
-        body: JSON.stringify({ name }),
-      });
-      const result = await res.json();
+      const result = await patchProductCategory(category.id, { name });
 
       if (result?.errors) {
         setErrors(result.errors.properties);

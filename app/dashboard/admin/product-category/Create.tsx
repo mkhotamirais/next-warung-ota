@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import Button from "@/components/ui/Button";
 import { toast } from "sonner";
 import Input from "@/components/ui/Input";
+import { postProductCategory } from "@/actions/product-category";
 
 export default function Create() {
   const [pending, startTransition] = useTransition();
@@ -16,9 +17,7 @@ export default function Create() {
     e.preventDefault();
 
     startTransition(async () => {
-      const res = await fetch("/api/product-category", { method: "POST", body: JSON.stringify({ name }) });
-
-      const result = await res.json();
+      const result = await postProductCategory({ name });
 
       if (result?.errors) {
         setErrors(result.errors.properties);
@@ -32,6 +31,7 @@ export default function Create() {
       setName("");
 
       router.refresh();
+      toast.success(result?.message);
     });
   };
 

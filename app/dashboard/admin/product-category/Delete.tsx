@@ -7,6 +7,7 @@ import Button from "@/components/ui/Button";
 import { ProductCategory } from "@/lib/generated/prisma";
 import { toast } from "sonner";
 import DropdownMenu, { DropdownMenuClose } from "@/components/ui/DropdownMenu";
+import { deleteProductCategory } from "@/actions/product-category";
 
 export default function Delete({ category }: { category: ProductCategory }) {
   const [pending, startTransition] = useTransition();
@@ -15,15 +16,11 @@ export default function Delete({ category }: { category: ProductCategory }) {
 
   const handleDelete = () => {
     startTransition(async () => {
-      const res = await fetch(`/api/product-category/${category.id}`, { method: "DELETE" });
-
-      const result = await res.json();
+      const result = await deleteProductCategory(category.id);
 
       if (result?.error) {
         toast.error(result.error);
-        return;
       }
-
       router.refresh();
     });
   };
@@ -42,9 +39,11 @@ export default function Delete({ category }: { category: ProductCategory }) {
           Delete <b>{category.name}</b>, this action cannot be undone, are you sure?
         </p>
         <div className="flex gap-2 mt-4">
-          <Button variant="destructive" type="button" disabled={pending} pending={pending} onClick={handleDelete}>
-            Delete
-          </Button>
+          <DropdownMenuClose asChild>
+            <Button variant="destructive" type="button" disabled={pending} pending={pending} onClick={handleDelete}>
+              Delete
+            </Button>
+          </DropdownMenuClose>
           <DropdownMenuClose asChild>
             <Button type="button">Cancel</Button>
           </DropdownMenuClose>

@@ -34,3 +34,8 @@ export const POST = async (req: Request) => {
     console.log(error);
   }
 };
+
+export const GET = async () => {
+  const categories = await prisma.productCategory.findMany({ orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] });
+  return Response.json(categories);
+};
