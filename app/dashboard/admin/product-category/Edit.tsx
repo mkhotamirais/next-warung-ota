@@ -41,6 +41,7 @@ export default function Edit({ category, setIsEdit }: EditProps) {
       setIsEdit(null);
 
       router.refresh();
+      toast.success(result?.message);
     });
   };
 

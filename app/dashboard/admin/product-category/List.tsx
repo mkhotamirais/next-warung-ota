@@ -1,15 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { FaPenToSquare } from "react-icons/fa6";
+import { FaPenToSquare, FaTrash } from "react-icons/fa6";
 import Edit from "./Edit";
 import Delete from "./Delete";
 import { ProductCategory } from "@/lib/generated/prisma";
+import Modal from "@/components/ui/Modal";
 
 export default function List({ productCategories }: { productCategories: ProductCategory[] | undefined }) {
   const [isEdit, setIsEdit] = useState<string | null>(null);
-
   if (!productCategories?.length) return <h2 className="h2">No Product Category</h2>;
+
+  const trigger = (
+    <div aria-label="Delete" className="text-red-500 p-2 rounded border flex border-red-500">
+      <FaTrash />
+    </div>
+  );
 
   return (
     <div>
@@ -41,7 +47,9 @@ export default function List({ productCategories }: { productCategories: Product
               >
                 <FaPenToSquare />
               </button>
-              <Delete category={category} />
+              <Modal trigger={trigger}>
+                <Delete category={category} />
+              </Modal>
             </div>
           ) : null}
         </div>

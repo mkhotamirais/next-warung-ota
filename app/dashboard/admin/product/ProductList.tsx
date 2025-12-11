@@ -1,7 +1,6 @@
 import { getProducts } from "@/actions/product";
 import ProductCardAdmin from "@/app/dashboard/admin/product/ProductCardAdmin";
 import Pagination from "@/components/ui/Pagination";
-// import ProductCardAdmin from "./ProductCardAdmin";
 
 interface ProductListProps {
   page: number;

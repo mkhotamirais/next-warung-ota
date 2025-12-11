@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import Button from "@/components/ui/Button";
 import { toast } from "sonner";
 import Input from "@/components/ui/Input";
@@ -11,6 +11,8 @@ export default function Create() {
   const [pending, startTransition] = useTransition();
   const [name, setName] = useState("");
   const [errors, setErrors] = useState<Record<string, { errors: string[] }> | undefined>({});
+
+  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -32,6 +34,7 @@ export default function Create() {
 
       router.refresh();
       toast.success(result?.message);
+      inputRef.current?.blur();
     });
   };
 
@@ -39,6 +42,7 @@ export default function Create() {
     <>
       <form onSubmit={handleCreate} className="space-y-4 p-3 border border-gray-200 mb-4">
         <Input
+          ref={inputRef}
           id="name"
           label="Create Product Category"
           placeholder="Product Category Name"
