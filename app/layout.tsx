@@ -6,7 +6,6 @@ import Footer from "@/components/Footer";
 import { Toaster } from "sonner";
 import { NextAuthProviders } from "@/components/providers/NextAuthProvider";
 import ClientProvider from "@/components/providers/ClientProvider";
-import { ErrorBoundary } from "next/dist/client/components/error-boundary";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
