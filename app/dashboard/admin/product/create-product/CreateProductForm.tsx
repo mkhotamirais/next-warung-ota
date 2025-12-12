@@ -103,6 +103,8 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
       toast.success(result.message);
 
       setName("");
+      setPrice("");
+      setStock("");
       setDescription("");
       setTags([]);
       setCategoryId(defaultCategory.id);

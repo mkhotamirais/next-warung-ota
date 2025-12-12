@@ -7,6 +7,7 @@ import Modal, { ModalClose } from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import { toast } from "sonner";
 import { useCloseDropdownMenu } from "@/components/ui/DropdownMenu";
+import { deleteProduct } from "@/actions/product";
 
 interface DeleteProps {
   product: ProductProps;
@@ -33,11 +34,7 @@ export default function Delete({ product }: DeleteProps) {
 
   const handleDelete = () => {
     startTransition(async () => {
-      const res = await fetch(`/api/product/${product.id}`, {
-        method: "DELETE",
-        body: JSON.stringify({ imageUrl: product.imageUrl }),
-      });
-      const result = await res.json();
+      const result = await deleteProduct(product.id);
 
       if (result?.error) {
         toast.error(result.error);

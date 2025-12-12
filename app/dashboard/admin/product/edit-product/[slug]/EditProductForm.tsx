@@ -12,6 +12,7 @@ import InputMultiple from "@/components/ui/InputMultiple";
 import { ProductCategory } from "@/lib/generated/prisma";
 import { SingleProductProps } from "@/types/types";
 import { toast } from "sonner";
+import { updateProduct } from "@/actions/product";
 
 export interface EditProductFormProps {
   productCategories: ProductCategory[];
@@ -86,8 +87,7 @@ export default function EditProductForm({ productCategories, product }: EditProd
     });
 
     startTransition(async () => {
-      const res = await fetch(`/api/product/${product.id}`, { method: "PUT", body: formData });
-      const result = await res.json();
+      const result = await updateProduct(product.id, formData);
 
       if (result?.errors) {
         setErrors(result.errors.properties);
