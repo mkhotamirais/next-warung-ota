@@ -34,6 +34,7 @@ export async function getProductNames(keywords: string) {
       select: { name: true },
       distinct: ["name"],
       orderBy: { name: "asc" },
+      take: 10,
     });
 
     return products;
@@ -81,7 +82,7 @@ export const getProducts = async ({
 
   const products = await prisma.product.findMany({
     where: whereClause,
-    orderBy: { updatedAt: "desc" },
+    orderBy: { createdAt: "desc" },
     take: limit,
     skip: skip,
     include: {
@@ -91,8 +92,8 @@ export const getProducts = async ({
   });
 
   const totalPages = Math.ceil(totalProductsCount / limit);
-
-  return { products, totalProductsCount, totalPages };
+  const hasMore = totalProductsCount > page * limit;
+  return { products, totalProductsCount, totalPages, hasMore, nextPage: page + 1 };
 };
 
 export const getProductBySlug = async (slug: string) => {

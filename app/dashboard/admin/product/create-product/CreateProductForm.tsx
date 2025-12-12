@@ -33,7 +33,9 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const productCategoriesOptions = productCategories.map((category) => ({ label: category.name, value: category.id }));
+  const productCategoriesOptions = productCategories
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((category) => ({ label: category.name, value: category.id }));
   const defaultCategory = productCategories.find((category) => category.isDefault)!;
 
   useEffect(() => {
@@ -113,7 +115,8 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
 
       if (fileInputRef.current) fileInputRef.current.value = "";
 
-      router.replace("/dashboard/admin/product");
+      // router.replace("/dashboard/admin/product");
+      router.back();
       router.refresh();
     });
   };

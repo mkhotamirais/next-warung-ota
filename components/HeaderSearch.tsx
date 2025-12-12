@@ -51,16 +51,17 @@ export default function HeaderSearch() {
   const handleSuggestionClick = (name: string) => {
     setKeyword(name);
     setShowSuggestions(false);
-    router.push(`?keyword=${name}`);
+    router.push(`/keyword=${name}`);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const keywordUrl = encodeURIComponent(keyword.trim());
 
     if (!keyword || keyword === "") {
       router.replace("/");
     } else {
-      router.push(`?keyword=${keyword}`);
+      router.push(`/?keyword=${keywordUrl}`);
     }
 
     setShowSuggestions(false);

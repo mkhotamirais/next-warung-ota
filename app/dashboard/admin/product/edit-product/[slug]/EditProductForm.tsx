@@ -37,7 +37,9 @@ export default function EditProductForm({ productCategories, product }: EditProd
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const productCategoriesOptions = productCategories.map((category) => ({ label: category.name, value: category.id }));
+  const productCategoriesOptions = productCategories
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .map((category) => ({ label: category.name, value: category.id }));
 
   const isBlobUrl = (url: string | null) => url?.startsWith("blob:");
 
@@ -99,7 +101,8 @@ export default function EditProductForm({ productCategories, product }: EditProd
         return;
       }
 
-      router.push("/dashboard/admin/product");
+      // router.push("/dashboard/admin/product");
+      router.back();
       router.refresh();
     });
   };

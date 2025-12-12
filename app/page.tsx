@@ -1,26 +1,22 @@
-import React, { Suspense } from "react";
-import FallbackSearchProducts from "@/components/fallbacks/FallbackSearchProducts";
 import ProductList from "./ProductList";
+import { getProducts } from "@/actions/product";
 
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: Promise<{
-    keyword?: string;
-    // categorySlug?: string;
-    // sortPrice?: "asc" | "desc" | null;
-    // minPrice?: string;
-    // maxPrice?: string;
-  }>;
-}) {
-  const keyword = (await searchParams).keyword || "";
+export default async function Home() {
+  const limit = 16;
+  const initialData = await getProducts({ page: 1, limit });
+
+  const hasMore = initialData.totalProductsCount > limit;
+  const nextPage = 2; // Karena kita sudah memuat halaman 1
 
   return (
     <main className="flex-1 bg-gray-100">
       <div className="container py-4">
-        <Suspense fallback={<FallbackSearchProducts />} key={`${keyword}`}>
-          <ProductList keyword={keyword} />
-        </Suspense>
+        <ProductList
+          initialProducts={initialData.products}
+          initialTotalPages={initialData.totalPages}
+          initialHasMore={hasMore}
+          initialNextPage={nextPage}
+        />
       </div>
     </main>
   );

@@ -1,6 +1,6 @@
 import Load from "@/components/fallbacks/Load";
 import React from "react";
 
-export default function LoadingDashboard() {
+export default function LodingAdmin() {
   return <Load />;
 }
