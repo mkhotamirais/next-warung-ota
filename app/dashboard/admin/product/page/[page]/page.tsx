@@ -1,10 +1,6 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import React, { Suspense } from "react";
-import ProductList from "../../ProductList";
-import Button from "@/components/ui/Button";
-import Link from "next/link";
-import SearchProductAdmin from "../../SearchProductAdmin";
+import BasePage from "../../BasePage";
 
 const limit = 8;
 
@@ -19,22 +15,7 @@ export default async function ProductPage({
   if (!session || !session.user) redirect("/profile");
 
   const page = Number((await params).page || 1);
-  const keyword = (await searchParams).keyword || "";
+  const keyword = (await searchParams).keyword || undefined;
 
-  return (
-    <>
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="h2">Product List</h2>
-        <Link href="/dashboard/admin/product/create-product">
-          <Button>Create Product</Button>
-        </Link>
-      </div>
-      <div className="mb-4">
-        <SearchProductAdmin />
-      </div>
-      <Suspense fallback={"loading"} key={keyword}>
-        <ProductList page={page} limit={limit} keyword={keyword} />   {" "}
-      </Suspense>
-    </>
-  );
+  return <BasePage page={page} limit={limit} keyword={keyword} />;
 }

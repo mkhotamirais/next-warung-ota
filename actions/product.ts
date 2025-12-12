@@ -117,7 +117,7 @@ export async function createProduct(formData: FormData) {
 
   const file = formData.get("image") as File | null;
   const imageFile = file instanceof File && file.size > 0 ? file : null;
-  const tags = formData.getAll("tags"); // FormData.getAll() mengembalikan string[]
+  const tags = formData.getAll("tags");
 
   const rawData = Object.fromEntries(formData.entries());
   const dataForValidation = { ...rawData, image: imageFile, tags };

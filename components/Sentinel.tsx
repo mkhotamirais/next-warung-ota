@@ -1,9 +1,8 @@
-// components/Sentinel.tsx
-
 "use client";
 
 import { useInView } from "react-intersection-observer";
 import { useEffect, useState, useCallback } from "react";
+import { LuLoader } from "react-icons/lu";
 
 type FetcherFunction<T> = (page: number) => Promise<{
   products: T[];
@@ -55,8 +54,13 @@ export function Sentinel<T>({ initialNextPage, onLoadMore, fetcher }: SentinelPr
   }, [inView, isLoading, fetchNextPage]);
 
   return (
-    <div ref={ref} className="h-10 col-span-full flex justify-center items-center py-4">
-      {isLoading && <span className="text-blue-500">Memuat lebih banyak data...</span>}
+    <div ref={ref} className="h-10 col-span-full flex justify-center items-center my-8">
+      {isLoading && (
+        <div className="text-blue-500 flex flex-col items-center">
+          Memuat lebih banyak data...
+          <LuLoader />
+        </div>
+      )}
     </div>
   );
 }

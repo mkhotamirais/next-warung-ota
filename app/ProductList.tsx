@@ -6,9 +6,8 @@ import { Sentinel } from "@/components/Sentinel";
 import { getProducts } from "@/actions/product";
 import { ProductProps } from "@/types/types"; // Asumsikan tipe ini sudah benar
 
-// --- Wrapper Fungsi Fetcher ---
 const productFetcherWrapper = async (page: number) => {
-  const limit = 16;
+  const limit = 18;
 
   const data = await getProducts({ page, limit });
 
@@ -19,7 +18,6 @@ const productFetcherWrapper = async (page: number) => {
   };
 };
 
-// --- Props ProductList ---
 interface ProductListProps {
   initialProducts: ProductProps[] | undefined | null;
   initialTotalPages?: number;
@@ -29,8 +27,8 @@ interface ProductListProps {
 
 export default function ProductList({
   initialProducts,
-  initialHasMore = false, // Default ke false jika tidak disediakan
-  initialNextPage = 2, // Default ke 2
+  initialHasMore = false,
+  initialNextPage = 2,
 }: ProductListProps) {
   const [products, setProducts] = useState<ProductProps[]>(initialProducts || []);
   const [hasMore, setHasMore] = useState(initialHasMore);

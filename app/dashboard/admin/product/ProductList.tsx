@@ -5,7 +5,7 @@ import Pagination from "@/components/ui/Pagination";
 interface ProductListProps {
   page: number;
   limit: number;
-  keyword: string;
+  keyword?: string;
 }
 
 export default async function ProductList({ page, limit, keyword }: ProductListProps) {
@@ -23,7 +23,7 @@ export default async function ProductList({ page, limit, keyword }: ProductListP
         ) : (
           <h2>No Product Found</h2>
         )}
-      </div>{" "}
+      </div>
       {totalProductsCount > limit ? (
         <Pagination totalPages={totalPages} currentPage={page} path="/dashboard/admin/product/page" />
       ) : null}

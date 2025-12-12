@@ -7,11 +7,11 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { LuLogIn, LuShoppingCart } from "react-icons/lu";
 
-const menu = [
-  { label: "Setting", url: "/setting" },
-  { label: "Product", url: "/products" },
-  { label: "Product Category", url: "/product-category" },
-];
+// const menu = [
+//   { label: "Setting", url: "/setting" },
+//   { label: "Product", url: "/products" },
+//   { label: "Product Category", url: "/product-category" },
+// ];
 
 export default function HeaderUserOptions() {
   const { handleLogout } = useLogout();
@@ -57,13 +57,6 @@ export default function HeaderUserOptions() {
             <Link href="/dashboard">
               <Button size="sm" variant="ghost" className="w-full mb-1 justify-start">
                 Dashboard
-              </Button>
-            </Link>
-          </DropdownMenuClose>
-          <DropdownMenuClose asChild>
-            <Link href="/admin/product-category">
-              <Button size="sm" variant="ghost" className="w-full mb-1 justify-start">
-                Product Category
               </Button>
             </Link>
           </DropdownMenuClose>

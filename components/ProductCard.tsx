@@ -18,7 +18,7 @@ export default function ProductCard({ item }: { item: ProductProps }) {
       </Link>
       <div className="p-2 sm:px-3">
         <Link href={`/product/detail/${item.slug}`} className="hover:underline">
-          <h3 className="text-sm capitalize h-10 text-gray-700 leading-snug">{smartTrim(item.name, 30)}</h3>
+          <h3 className="text-sm capitalize h-10 text-gray-700 leading-snug">{smartTrim(item.name, 35)}</h3>
         </Link>
         <div className="my-1 leading-none text-xs py-0.5 px-1 border border-primary w-fit bg-primary/10 lowercase">
           {item.ProductCategory.name}

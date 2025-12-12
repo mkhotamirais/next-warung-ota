@@ -2,11 +2,11 @@ import ProductList from "./ProductList";
 import { getProducts } from "@/actions/product";
 
 export default async function Home() {
-  const limit = 16;
+  const limit = 18;
   const initialData = await getProducts({ page: 1, limit });
 
   const hasMore = initialData.totalProductsCount > limit;
-  const nextPage = 2; // Karena kita sudah memuat halaman 1
+  const nextPage = 2;
 
   return (
     <main className="flex-1 bg-gray-100">
