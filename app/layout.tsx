@@ -6,7 +6,6 @@ import Footer from "@/components/Footer";
 import { Toaster } from "sonner";
 import { NextAuthProviders } from "@/components/providers/NextAuthProvider";
 import ClientProvider from "@/components/providers/ClientProvider";
-import { getProducts } from "@/actions/product";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,7 +27,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { totalProductsCount } = await getProducts();
   return (
     <html lang="en">
       <head>
@@ -39,7 +37,6 @@ export default async function RootLayout({
           <ClientProvider>
             <Toaster richColors position="top-center" swipeDirections={["bottom", "left", "right", "top"]} />
             <Header />
-            <div>{totalProductsCount}</div>
             {children}
             <Footer />
           </ClientProvider>

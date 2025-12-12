@@ -19,7 +19,7 @@ export const getProductCategoryBySlug = async (slug: string) => {
   return category;
 };
 
-export async function getProductNames(keywords: string) {
+export async function getProductNames(keywords?: string) {
   if (!keywords) return [];
 
   const whereClause: {
@@ -42,6 +42,11 @@ export async function getProductNames(keywords: string) {
     console.error("Error fetching product names:", error);
     return [];
   }
+}
+
+export async function getTotalProductsCount() {
+  const count = await prisma.product.count();
+  return count;
 }
 
 interface GetProductParams {

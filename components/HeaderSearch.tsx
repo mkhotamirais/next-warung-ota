@@ -1,6 +1,6 @@
 "use client";
 
-import { getProductNames } from "@/actions/product";
+import { getProductNames, getTotalProductsCount } from "@/actions/product";
 import { useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { LuSearch } from "react-icons/lu";
@@ -9,11 +9,19 @@ export default function HeaderSearch() {
   const [keyword, setKeyword] = useState("");
   const [productNames, setProductNames] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-
+  const [totalProductsCount, setTotalProductsCount] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const DEBOUNCE_DELAY = 200;
+
+  useEffect(() => {
+    const fetchTotalProductsCount = async () => {
+      const count = await getTotalProductsCount();
+      setTotalProductsCount(count);
+    };
+    fetchTotalProductsCount();
+  }, []);
 
   useEffect(() => {
     const fnSuggestion = () => {
@@ -51,7 +59,7 @@ export default function HeaderSearch() {
   const handleSuggestionClick = (name: string) => {
     setKeyword(name);
     setShowSuggestions(false);
-    router.push(`/keyword=${name}`);
+    router.push(`/search?keyword=${name}`);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -61,7 +69,7 @@ export default function HeaderSearch() {
     if (!keyword || keyword === "") {
       router.replace("/");
     } else {
-      router.push(`/?keyword=${keywordUrl}`);
+      router.push(`/search?keyword=${keywordUrl}`);
     }
 
     setShowSuggestions(false);
@@ -84,7 +92,7 @@ export default function HeaderSearch() {
           autoComplete="off"
           value={keyword}
           onChange={handleChange}
-          placeholder="Search.."
+          placeholder={`Cari dari ${totalProductsCount ?? 0} produk..`}
           className="w-full py-2 px-3 text-sm text-gray-700 focus:outline-none focus:ring-0"
           onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
           onFocus={() => setShowSuggestions(true)}

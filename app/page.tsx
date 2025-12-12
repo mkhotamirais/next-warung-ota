@@ -9,8 +9,8 @@ export default async function Home() {
   const nextPage = 2;
 
   return (
-    <main className="flex-1 bg-gray-100">
-      <div className="container py-4">
+    <main className="flex-1 bg-gray-100 py-6">
+      <div className="container">
         <ProductList
           initialProducts={initialData.products}
           initialTotalPages={initialData.totalPages}

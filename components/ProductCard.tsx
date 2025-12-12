@@ -2,7 +2,6 @@ import { formatRupiah, smartTrim } from "@/lib/utils";
 import { ProductProps } from "@/types/types";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
 
 export default function ProductCard({ item }: { item: ProductProps }) {
   return (
@@ -17,8 +16,15 @@ export default function ProductCard({ item }: { item: ProductProps }) {
         />
       </Link>
       <div className="p-2 sm:px-3">
-        <Link href={`/product/detail/${item.slug}`} className="hover:underline">
-          <h3 className="text-sm capitalize h-10 text-gray-700 leading-snug">{smartTrim(item.name, 35)}</h3>
+        <Link href={`/product/detail/${item.slug}`} className="hover:underline hidden sm:block">
+          <h3 className="text-[13px] sm:text-sm capitalize h-10 text-gray-700 leading-snug">
+            {smartTrim(item.name, 40)}
+          </h3>
+        </Link>
+        <Link href={`/product/detail/${item.slug}`} className="hover:underline block sm:hidden">
+          <h3 className="text-[13px] sm:text-sm capitalize h-10 text-gray-700 leading-snug">
+            {smartTrim(item.name, 34)}
+          </h3>
         </Link>
         <div className="my-1 leading-none text-xs py-0.5 px-1 border border-primary w-fit bg-primary/10 lowercase">
           {item.ProductCategory.name}
