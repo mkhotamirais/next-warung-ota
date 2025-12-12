@@ -1,4 +1,4 @@
-import { patchProductCategory } from "@/actions/product-category";
+import { updateProductCategory } from "@/actions/product-category";
 import Input from "@/components/ui/Input";
 import { ProductCategory } from "@/lib/generated/prisma";
 import { useRouter } from "next/navigation";
@@ -26,7 +26,7 @@ export default function Edit({ category, setIsEdit }: EditProps) {
     e.preventDefault();
 
     startTransition(async () => {
-      const result = await patchProductCategory(category.id, { name });
+      const result = await updateProductCategory(category.id, { name });
 
       if (result?.errors) {
         setErrors(result.errors.properties);

@@ -5,7 +5,7 @@ import { useRef, useState, useTransition } from "react";
 import Button from "@/components/ui/Button";
 import { toast } from "sonner";
 import Input from "@/components/ui/Input";
-import { postProductCategory } from "@/actions/product-category";
+import { createProductCategory } from "@/actions/product-category";
 
 export default function Create() {
   const [pending, startTransition] = useTransition();
@@ -19,7 +19,7 @@ export default function Create() {
     e.preventDefault();
 
     startTransition(async () => {
-      const result = await postProductCategory({ name });
+      const result = await createProductCategory({ name });
 
       if (result?.errors) {
         setErrors(result.errors.properties);

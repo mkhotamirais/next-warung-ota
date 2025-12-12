@@ -29,9 +29,9 @@ export default async function Product({
         </Link>
       </div>
       <div className="mb-4">{/* <SearchProductAdmin /> */}</div>
-      <Suspense fallback={<LoadProductsAdmin />} key={keyword}>
-        <ProductList page={page} limit={limit} keyword={keyword} />
-      </Suspense>
+      {/* <Suspense fallback={<LoadProductsAdmin />} key={keyword}> */}
+      <ProductList page={page} limit={limit} keyword={keyword} />
+      {/* </Suspense> */}
     </>
   );
 }

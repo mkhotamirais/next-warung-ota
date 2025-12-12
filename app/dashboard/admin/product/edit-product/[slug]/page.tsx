@@ -2,7 +2,8 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import EditProductForm from "./EditProductForm";
 import Load from "@/components/fallbacks/Load";
-import { getProductBySlug, getProductCategories } from "@/actions/product";
+import { getProductBySlug } from "@/actions/product";
+import { getProductCategories } from "@/actions/product-category";
 
 export default async function EditProduct({ params }: { params: Promise<{ slug: string }> }) {
   const slug = (await params).slug;

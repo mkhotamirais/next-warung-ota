@@ -13,7 +13,7 @@ export default function HeaderSearch() {
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const DEBOUNCE_DELAY = 300;
+  const DEBOUNCE_DELAY = 200;
 
   useEffect(() => {
     const fnSuggestion = () => {

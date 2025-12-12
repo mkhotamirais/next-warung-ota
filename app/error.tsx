@@ -9,7 +9,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
   }, [error]);
 
   return (
-    <div>
+    <main className="container flex-1 flex items-center justify-center flex-col">
       <h2>Something went wrong!</h2>
       <button
         type="button"
@@ -20,6 +20,6 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
       >
         Try again
       </button>
-    </div>
+    </main>
   );
 }

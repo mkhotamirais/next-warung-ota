@@ -16,7 +16,7 @@ export const getProductCategories = async () => {
   return categories;
 };
 
-export const postProductCategory = async (data: { name: string }) => {
+export const createProductCategory = async (data: { name: string }) => {
   const session = await auth();
   if (!session) {
     return { error: "Unauthorized" };
@@ -91,7 +91,7 @@ export const deleteProductCategory = async (id: string) => {
   }
 };
 
-export const patchProductCategory = async (id: string, data: { name: string }) => {
+export const updateProductCategory = async (id: string, data: { name: string }) => {
   const session = await auth();
   if (!session) {
     return { error: "Unauthorized" };

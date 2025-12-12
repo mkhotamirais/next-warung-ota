@@ -11,6 +11,7 @@ import TiptapEditor from "@/components/ui/tiptap/TiptapEditor";
 import InputMultiple from "@/components/ui/InputMultiple";
 import { ProductCategory } from "@/lib/generated/prisma";
 import { toast } from "sonner";
+import { createProduct } from "@/actions/product";
 
 export interface CreateProductFormProps {
   productCategories: ProductCategory[];
@@ -84,8 +85,10 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
     });
 
     startTransition(async () => {
-      const res = await fetch("/api/product", { method: "POST", body: formData });
-      const result = await res.json();
+      // const res = await fetch("/api/product", { method: "POST", body: formData });
+      // const result = await res.json();
+
+      const result = await createProduct(formData);
 
       if (result?.errors) {
         setErrors(result.errors.properties);
@@ -108,7 +111,7 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
 
       if (fileInputRef.current) fileInputRef.current.value = "";
 
-      router.push("/dashboard/admin/product");
+      router.replace("/dashboard/admin/product");
       router.refresh();
     });
   };
