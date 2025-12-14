@@ -15,3 +15,7 @@ export type SingleProductProps = Prisma.ProductGetPayload<{
     User: { select: { name: true } };
   };
 }> & { quantity?: number };
+
+export type BlogProps = Prisma.BlogGetPayload<{
+  include: { BlogCategory: { select: { name: true; slug: true } }; User: { select: { name: true } } };
+}>;

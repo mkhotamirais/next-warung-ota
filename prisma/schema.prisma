@@ -41,6 +41,7 @@ model User {
   Cart               Cart?
   Order              Order[]
   Address            Address[]
+  Blog               Blog[]
 }
 
 model Account {
@@ -186,4 +187,28 @@ model OrderItem {
 
   quantity Int
   price    Int
+}
+
+model BlogCategory {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Blogs     Blog[]
+}
+
+model Blog {
+  id           String       @id @default(cuid())
+  title        String
+  slug         String       @unique
+  content      String
+  imageUrl     String // URL gambar blog
+  BlogCategory BlogCategory @relation(fields: [categoryId], references: [id])
+  categoryId   String
+  User         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 }

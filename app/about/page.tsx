@@ -1,4 +1,8 @@
-import React from "react";
+import { Metadata } from "next";
+import { content as c } from "@/lib/content";
+const { title, description } = c.about;
+
+export const metadata: Metadata = { title, description };
 
 export default function About() {
   return (

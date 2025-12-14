@@ -1,7 +1,5 @@
 import { redirect } from "next/navigation";
-import { Suspense } from "react";
 import EditProductForm from "./EditProductForm";
-import Load from "@/components/fallbacks/Load";
 import { getProductBySlug } from "@/actions/product";
 import { getProductCategories } from "@/actions/product-category";
 
@@ -12,9 +10,5 @@ export default async function EditProduct({ params }: { params: Promise<{ slug: 
 
   if (!productCategories?.length || !product) redirect("/dashboard/product-category");
 
-  return (
-    <Suspense fallback={<Load />}>
-      <EditProductForm productCategories={productCategories} product={product} />
-    </Suspense>
-  );
+  return <EditProductForm productCategories={productCategories} product={product} />;
 }
