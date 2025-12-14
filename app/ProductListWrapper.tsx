@@ -32,6 +32,7 @@ export default async function ProductListWrapper({
   const hasMore = initialData.totalProductsCount > limit;
   const nextPage = 2;
 
+  if (initialData.totalProductsCount === 0) return <p className="">Product not found</p>;
   return (
     <ProductList
       initialProducts={initialData.products}

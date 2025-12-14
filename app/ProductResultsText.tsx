@@ -10,7 +10,6 @@ interface ProductResultsTextProps {
   sortData?: SortType;
   minPrice?: number;
   maxPrice?: number;
-  isDataEmpty?: boolean;
 }
 
 const TextBtn = ({ label, handler, text }: { label: string; handler: () => void; text: string }) => {
@@ -35,7 +34,6 @@ export default function ProductResultsText({
   sortData,
   minPrice,
   maxPrice,
-  isDataEmpty,
 }: ProductResultsTextProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -83,7 +81,6 @@ export default function ProductResultsText({
           <TextBtn label="rentang harga" handler={resetPriceRange} text={`min ${minPrice} - max ${maxPrice}`} />
         ) : null}
       </div>
-      {isDataEmpty ? <p className="col-span-full text-gray-500 mt-4">Produk tidak ditemukan.</p> : null}
     </>
   ) : null;
 }
