@@ -1,9 +1,9 @@
 import { Suspense } from "react";
-import ProductList from "./ProductList";
 import { getProducts } from "@/actions/product";
 import FallbackSearchProducts from "@/components/fallbacks/FallbackSearchProducts";
 import ProductResultsText from "./ProductResultsText";
 import { SortType } from "@/types/types";
+import ProductListWrapper from "./ProductListWrapper";
 
 export default async function Home({
   searchParams,
@@ -32,19 +32,9 @@ export default async function Home({
     minPrice: Number(minPrice),
     maxPrice: Number(maxPrice),
   });
+
   const isDataEmpty = initialData.products.length === 0;
 
-  const hasMore = initialData.totalProductsCount > limit;
-  const nextPage = 2;
-
-  // const searchParamsKey = `${keyword}-${categorySlug}-${sortData}-${minPrice}-${maxPrice}`;
-  // const searchParamsKey = JSON.stringify({
-  //   keyword,
-  //   categorySlug,
-  //   sortData,
-  //   minPrice,
-  //   maxPrice,
-  // });
   const searchParamsKey = `${keyword}-${categorySlug || ""}-${sortData || ""}-${minPrice}-${maxPrice}`;
 
   return (
@@ -59,11 +49,12 @@ export default async function Home({
           isDataEmpty={isDataEmpty}
         />
         <Suspense fallback={<FallbackSearchProducts />} key={searchParamsKey}>
-          <ProductList
-            initialProducts={initialData.products}
-            initialTotalPages={initialData.totalPages}
-            initialHasMore={hasMore}
-            initialNextPage={nextPage}
+          <ProductListWrapper
+            keyword={keyword}
+            categorySlug={categorySlug}
+            sortData={sortData}
+            minPrice={Number(minPrice)}
+            maxPrice={Number(maxPrice)}
           />
         </Suspense>
       </div>
