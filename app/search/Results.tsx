@@ -7,7 +7,7 @@ export default async function Results({ keyword = "" }: { keyword?: string | und
   return (
     <div className="space-y-3">
       {products?.length === 0 ? (
-        <p>Hasil pencarian `{keyword}` tidak ditemukan</p>
+        <p className="">Hasil pencarian `{keyword}` tidak ditemukan</p>
       ) : (
         <div className="space-y-3">
           {products && products?.length > 0 && (

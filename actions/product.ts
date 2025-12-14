@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
 import { ProductSchema } from "@/lib/zod";
+import { SortType } from "@/types/types";
 import { del, put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
 import z from "zod";
@@ -56,7 +57,7 @@ interface GetProductParams {
   categorySlug?: string;
   userId?: string;
   keyword?: string;
-  sortPrice?: "asc" | "desc" | null;
+  sortData?: SortType;
   minPrice?: number;
   maxPrice?: number;
 }
@@ -68,18 +69,36 @@ export const getProducts = async ({
   categorySlug,
   userId,
   keyword = "",
+  sortData,
+  minPrice,
+  maxPrice,
 }: GetProductParams = {}) => {
   const whereClause: {
     slug?: { not: string };
     ProductCategory?: { slug: string };
     userId?: string;
     name?: { contains: string; mode: "insensitive" };
+    price?: { gte: number; lte: number };
   } = {};
 
   if (excludeSlug) whereClause.slug = { not: excludeSlug };
   if (categorySlug) whereClause.ProductCategory = { slug: categorySlug };
   if (userId) whereClause.userId = userId;
   if (keyword) whereClause.name = { contains: keyword, mode: "insensitive" };
+  if (minPrice !== undefined && minPrice > 0) {
+    whereClause.price = {
+      gte: minPrice !== undefined ? minPrice : 0,
+      lte: maxPrice !== undefined ? maxPrice : Number.MAX_SAFE_INTEGER,
+    };
+  }
+
+  const orderByClause: { price?: "asc" | "desc"; name?: "asc" | "desc"; createdAt?: "desc" }[] = [];
+  if (sortData) {
+    if (sortData === "price_asc") orderByClause.push({ price: "asc" });
+    else if (sortData === "price_desc") orderByClause.push({ price: "desc" });
+    else if (sortData === "name_asc") orderByClause.push({ name: "asc" });
+    else if (sortData === "name_desc") orderByClause.push({ name: "desc" });
+  }
 
   const totalProductsCount = await prisma.product.count({ where: whereClause });
 
@@ -87,7 +106,7 @@ export const getProducts = async ({
 
   const products = await prisma.product.findMany({
     where: whereClause,
-    orderBy: { createdAt: "desc" },
+    orderBy: orderByClause.length > 0 ? orderByClause : { createdAt: "desc" },
     take: limit,
     skip: skip,
     include: {

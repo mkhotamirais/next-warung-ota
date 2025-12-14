@@ -1,19 +1,28 @@
 "use client";
 
 import { getProductNames, getTotalProductsCount } from "@/actions/product";
-import { useRouter } from "next/navigation";
+import { useFilterSearch } from "@/hooks/useFilterSearch";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { LuSearch } from "react-icons/lu";
 
 export default function HeaderSearch() {
-  const [keyword, setKeyword] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const params = new URLSearchParams(searchParams.toString());
+
+  const { keyword, setKeyword } = useFilterSearch();
   const [productNames, setProductNames] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [totalProductsCount, setTotalProductsCount] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
 
   const DEBOUNCE_DELAY = 200;
+
+  useEffect(() => {
+    const initialKeyword = searchParams.get("keyword") || "";
+    setKeyword(initialKeyword);
+  }, [searchParams, setKeyword]);
 
   useEffect(() => {
     const fetchTotalProductsCount = async () => {
@@ -25,7 +34,7 @@ export default function HeaderSearch() {
 
   useEffect(() => {
     const fnSuggestion = () => {
-      if (keyword.length === 0) {
+      if (keyword?.length === 0) {
         setProductNames([]);
         setShowSuggestions(false);
         return;
@@ -59,18 +68,18 @@ export default function HeaderSearch() {
   const handleSuggestionClick = (name: string) => {
     setKeyword(name);
     setShowSuggestions(false);
-    router.push(`/search?keyword=${name}`);
+    router.push(`/?keyword=${name}`);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const keywordUrl = encodeURIComponent(keyword.trim());
 
-    if (!keyword || keyword === "") {
-      router.replace("/");
+    if (keyword || keyword !== "") {
+      params.set("keyword", keyword);
     } else {
-      router.push(`/search?keyword=${keywordUrl}`);
+      params.delete("keyword");
     }
+    router.push(`/?${params.toString()}`);
 
     setShowSuggestions(false);
     inputRef.current?.blur();
@@ -79,7 +88,7 @@ export default function HeaderSearch() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="relative border border-gray-300 rounded-lg flex items-center w-full lg:w-72 justify-between"
+      className="sm:relative border border-gray-300 rounded-lg flex items-center w-full lg:w-72 justify-between"
     >
       <div className="w-full flex-1">
         <label htmlFor="search" className="sr-only">

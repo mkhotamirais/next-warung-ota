@@ -58,7 +58,7 @@ export function Sentinel<T>({ initialNextPage, onLoadMore, fetcher }: SentinelPr
       {isLoading && (
         <div className="text-blue-500 flex flex-col items-center">
           Memuat lebih banyak data...
-          <LuLoader />
+          <LuLoader className="animate-spin text-xl" />
         </div>
       )}
     </div>
