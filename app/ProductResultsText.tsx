@@ -10,6 +10,7 @@ interface ProductResultsTextProps {
   sortData?: SortType;
   minPrice?: number;
   maxPrice?: number;
+  isDataEmpty?: boolean;
 }
 
 const TextBtn = ({ label, handler, text }: { label: string; handler: () => void; text: string }) => {
@@ -34,6 +35,7 @@ export default function ProductResultsText({
   sortData,
   minPrice,
   maxPrice,
+  isDataEmpty,
 }: ProductResultsTextProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -61,24 +63,27 @@ export default function ProductResultsText({
   };
 
   return keyword || categorySlug || sortData || minPrice || maxPrice ? (
-    <div className="mb-3">
-      <span>Hasil untuk</span>
-      {keyword ? <TextBtn label="kata kunci" handler={resetKeyword} text={keyword} /> : null}
-      {categorySlug ? <TextBtn label="kategori" handler={resetCategorySlug} text={categorySlug} /> : null}
-      {sortData ? (
-        sortData === "price_asc" ? (
-          <TextBtn label="diurutkan dari" handler={resetSort} text="harga terendah" />
-        ) : sortData === "price_desc" ? (
-          <TextBtn label="diurutkan dari" handler={resetSort} text="harga tertinggi" />
-        ) : sortData === "name_asc" ? (
-          <TextBtn label="diurutkan dari" handler={resetSort} text="A ke Z" />
-        ) : sortData === "name_desc" ? (
-          <TextBtn label="diurutkan dari" handler={resetSort} text="Z ke A" />
-        ) : null
-      ) : null}
-      {minPrice ? (
-        <TextBtn label="rentang harga" handler={resetPriceRange} text={`min ${minPrice} - max ${maxPrice}`} />
-      ) : null}
-    </div>
+    <>
+      <div className="mb-3 space-y-1">
+        <span>Hasil untuk</span>
+        {keyword ? <TextBtn label="kata kunci" handler={resetKeyword} text={keyword} /> : null}
+        {categorySlug ? <TextBtn label="kategori" handler={resetCategorySlug} text={categorySlug} /> : null}
+        {sortData ? (
+          sortData === "price_asc" ? (
+            <TextBtn label="diurutkan dari" handler={resetSort} text="harga terendah" />
+          ) : sortData === "price_desc" ? (
+            <TextBtn label="diurutkan dari" handler={resetSort} text="harga tertinggi" />
+          ) : sortData === "name_asc" ? (
+            <TextBtn label="diurutkan dari" handler={resetSort} text="A ke Z" />
+          ) : sortData === "name_desc" ? (
+            <TextBtn label="diurutkan dari" handler={resetSort} text="Z ke A" />
+          ) : null
+        ) : null}
+        {minPrice ? (
+          <TextBtn label="rentang harga" handler={resetPriceRange} text={`min ${minPrice} - max ${maxPrice}`} />
+        ) : null}
+      </div>
+      {isDataEmpty ? <p className="col-span-full text-gray-500 mt-4">Produk tidak ditemukan.</p> : null}
+    </>
   ) : null;
 }

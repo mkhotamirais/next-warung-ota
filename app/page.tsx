@@ -32,11 +32,20 @@ export default async function Home({
     minPrice: Number(minPrice),
     maxPrice: Number(maxPrice),
   });
+  const isDataEmpty = initialData.products.length === 0;
 
   const hasMore = initialData.totalProductsCount > limit;
   const nextPage = 2;
 
-  const searchParamsKey = `${keyword}-${categorySlug}-${sortData}-${minPrice}-${maxPrice}`;
+  // const searchParamsKey = `${keyword}-${categorySlug}-${sortData}-${minPrice}-${maxPrice}`;
+  // const searchParamsKey = JSON.stringify({
+  //   keyword,
+  //   categorySlug,
+  //   sortData,
+  //   minPrice,
+  //   maxPrice,
+  // });
+  const searchParamsKey = `${keyword}-${categorySlug || ""}-${sortData || ""}-${minPrice}-${maxPrice}`;
 
   return (
     <main className="flex-1 bg-gray-100 py-4">
@@ -47,6 +56,7 @@ export default async function Home({
           sortData={sortData}
           minPrice={Number(minPrice)}
           maxPrice={Number(maxPrice)}
+          isDataEmpty={isDataEmpty}
         />
         <Suspense fallback={<FallbackSearchProducts />} key={searchParamsKey}>
           <ProductList
