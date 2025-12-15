@@ -3,6 +3,8 @@ import FallbackSearchProducts from "@/components/fallbacks/FallbackSearchProduct
 import ProductResultsText from "./ProductResultsText";
 import { SortType } from "@/types/types";
 import ProductListWrapper from "./ProductListWrapper";
+import { content as c } from "@/lib/content";
+const { title, description } = c.product;
 
 export default async function Home({
   searchParams,
@@ -26,6 +28,10 @@ export default async function Home({
   return (
     <main className="flex-1 bg-gray-100 py-4">
       <div className="container">
+        <section className="sr-only">
+          <h1>{title}</h1>
+          <p>{description}</p>
+        </section>
         <ProductResultsText
           keyword={keyword}
           categorySlug={categorySlug}

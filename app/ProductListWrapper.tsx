@@ -17,7 +17,7 @@ export default async function ProductListWrapper({
   minPrice,
   maxPrice,
 }: ProductListWrapperProps) {
-  const limit = 18;
+  const limit = 24; // Definisi pusat limit
 
   const initialData = await getProducts({
     page: 1,
@@ -32,13 +32,15 @@ export default async function ProductListWrapper({
   const hasMore = initialData.totalProductsCount > limit;
   const nextPage = 2;
 
-  if (initialData.totalProductsCount === 0) return <p className="">Product not found</p>;
+  if (initialData.totalProductsCount === 0) return <p className="text-center py-10">Product not found</p>;
+
   return (
     <ProductList
       initialProducts={initialData.products}
-      initialTotalPages={initialData.totalPages}
       initialHasMore={hasMore}
       initialNextPage={nextPage}
+      limit={limit} // Teruskan limit ke client
+      filters={{ keyword, categorySlug, sortData, minPrice, maxPrice }} // Teruskan filter
     />
   );
 }

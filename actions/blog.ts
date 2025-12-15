@@ -70,8 +70,9 @@ export const getBlogs = async ({
   });
 
   const totalPages = Math.ceil(totalBlogsCount / limit);
+  const hasMore = totalBlogsCount > page * limit;
 
-  return { blogs, totalBlogsCount, totalPages };
+  return { blogs, totalBlogsCount, totalPages, hasMore, nextPage: page + 1 };
 };
 
 export const getBlogBySlug = async (slug: string) => {

@@ -4,31 +4,28 @@ import { useState, useCallback } from "react";
 import ProductCard from "@/components/ProductCard";
 import { Sentinel } from "@/components/Sentinel";
 import { getProducts } from "@/actions/product";
-import { ProductProps } from "@/types/types"; // Asumsikan tipe ini sudah benar
-
-const productFetcherWrapper = async (page: number) => {
-  const limit = 18;
-
-  const data = await getProducts({ page, limit });
-
-  return {
-    products: data.products as ProductProps[],
-    hasMore: data.hasMore,
-    nextPage: data.nextPage,
-  };
-};
+import { ProductProps, SortType } from "@/types/types";
 
 interface ProductListProps {
   initialProducts: ProductProps[] | undefined | null;
-  initialTotalPages?: number;
   initialHasMore?: boolean;
   initialNextPage?: number;
+  limit: number; // Terima limit dari server
+  filters: {
+    keyword: string;
+    categorySlug?: string;
+    sortData?: SortType;
+    minPrice: number;
+    maxPrice: number;
+  };
 }
 
 export default function ProductList({
   initialProducts,
   initialHasMore = false,
   initialNextPage = 2,
+  limit,
+  filters,
 }: ProductListProps) {
   const [products, setProducts] = useState<ProductProps[]>(initialProducts || []);
   const [hasMore, setHasMore] = useState(initialHasMore);
@@ -37,6 +34,19 @@ export default function ProductList({
     setProducts((prevProducts) => [...prevProducts, ...newProducts]);
     setHasMore(newHasMore);
   }, []);
+
+  const productFetcherWrapper = useCallback(
+    async (page: number) => {
+      const data = await getProducts({ page, limit, ...filters });
+
+      return {
+        items: data.products as ProductProps[],
+        hasMore: data.hasMore,
+        nextPage: data.nextPage,
+      };
+    },
+    [limit, filters]
+  );
 
   return (
     <div className="flex flex-col">
@@ -48,6 +58,7 @@ export default function ProductList({
 
       {hasMore && (
         <Sentinel<ProductProps>
+          key={JSON.stringify(filters)} // Reset sentinel jika filter berubah
           initialNextPage={initialNextPage}
           onLoadMore={handleLoadMore}
           fetcher={productFetcherWrapper}

@@ -127,7 +127,7 @@ export default function HeaderFilter() {
   };
 
   return (
-    <Drawer trigger={TriggerFilter} position="right" classWidth="w-4/5">
+    <Drawer trigger={TriggerFilter} position="right" classWidth="w-4/5 sm:w-80">
       <div className="p-4 h-full">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-bold text-lg">Filter and Order Products</h3>

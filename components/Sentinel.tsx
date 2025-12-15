@@ -5,7 +5,7 @@ import { useEffect, useState, useCallback } from "react";
 import { LuLoader } from "react-icons/lu";
 
 type FetcherFunction<T> = (page: number) => Promise<{
-  products: T[];
+  items: T[];
   hasMore: boolean;
   nextPage: number;
 }>;
@@ -33,8 +33,9 @@ export function Sentinel<T>({ initialNextPage, onLoadMore, fetcher }: SentinelPr
     try {
       const data = await fetcher(page);
 
-      if (data.products.length > 0) {
-        onLoadMore(data.products, data.hasMore);
+      // Menggunakan data.items
+      if (data.items.length > 0) {
+        onLoadMore(data.items, data.hasMore);
 
         setPage(data.nextPage);
       } else {
@@ -45,7 +46,7 @@ export function Sentinel<T>({ initialNextPage, onLoadMore, fetcher }: SentinelPr
     } finally {
       setIsLoading(false);
     }
-  }, [page, isLoading, onLoadMore, fetcher]); // <-- Dependency pada 'page'
+  }, [page, isLoading, onLoadMore, fetcher]);
 
   useEffect(() => {
     if (inView && !isLoading) {
