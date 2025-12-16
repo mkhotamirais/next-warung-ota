@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Drawer, { DrawerClose } from "./ui/Drawer";
+import Drawer, { DrawerClose } from "../ui/Drawer";
 import { LuArrowUpDown, LuListFilter, LuX } from "react-icons/lu";
-import Button from "./ui/Button";
+import Button from "../ui/Button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ProductCategory } from "@/lib/generated/prisma";
 import { getProductCategories } from "@/actions/product-category";

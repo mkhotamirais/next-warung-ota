@@ -58,7 +58,7 @@ export default function ProductList({
 
       {hasMore && (
         <Sentinel<ProductProps>
-          key={JSON.stringify(filters)} // Reset sentinel jika filter berubah
+          key={JSON.stringify(filters)}
           initialNextPage={initialNextPage}
           onLoadMore={handleLoadMore}
           fetcher={productFetcherWrapper}

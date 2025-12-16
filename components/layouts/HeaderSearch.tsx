@@ -88,7 +88,7 @@ export default function HeaderSearch() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="sm:relative border border-gray-300 rounded-lg flex items-center w-full lg:w-72 justify-between"
+      className="sm:relative border border-gray-300 rounded-lg flex items-center w-full lg:w-60 justify-between"
     >
       <div className="w-full flex-1">
         <label htmlFor="search" className="sr-only">

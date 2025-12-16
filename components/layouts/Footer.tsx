@@ -3,10 +3,11 @@
 import React from "react";
 import { menu } from "@/lib/content";
 import Link from "next/link";
+import { twMerge } from "tailwind-merge";
 
-export default function Footer() {
+export default function Footer({ className }: { className?: string }) {
   return (
-    <footer className="border-t border-gray-200 py-4">
+    <footer className={twMerge("border-t border-gray-200 py-4", className)}>
       <div className="container flex flex-col items-center justify-center">
         <nav className="flex gap-4 flex-wrap mb-2">
           {menu.mainMenu.map((item, i) => (

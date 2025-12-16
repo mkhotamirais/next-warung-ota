@@ -6,6 +6,7 @@ import { LuCheck, LuLoader, LuShoppingCart } from "react-icons/lu";
 import Button from "./ui/Button";
 import { toast } from "sonner";
 import { useCart } from "@/hooks/useCart";
+import clsx from "clsx";
 
 interface AddToCartFromProductListProps {
   productId: string;
@@ -39,11 +40,14 @@ export default function AddToCartFromProductList({ productId, productName }: Add
   };
 
   return (
-    <Button
+    <button
+      type="button"
       onClick={handleAddToCartFromProductList}
       disabled={isPending || added}
-      variant={added ? "secondary" : "ghost"}
-      // size="sm"
+      className={clsx(
+        "border-b text-lg p-2 rounded-lg border-gray-400 hover:bg-gray-100 active:bg-gray-200 active:scale-110 transition-all",
+        (isPending || added) && "pointer-events-none opacity-50"
+      )}
     >
       {isPending ? (
         <LuLoader className="animate-spin" />
@@ -56,6 +60,6 @@ export default function AddToCartFromProductList({ productId, productName }: Add
           <LuShoppingCart className="text-primary" />
         </>
       )}
-    </Button>
+    </button>
   );
 }

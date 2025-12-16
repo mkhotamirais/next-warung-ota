@@ -15,6 +15,12 @@ export default function FallbackSearchProducts() {
       <div className="w-full h-50 bg-black/10 animate-pulse rounded-md mb-2"></div>
       <div className="w-full h-50 bg-black/10 animate-pulse rounded-md mb-2"></div>
       <div className="w-full h-50 bg-black/10 animate-pulse rounded-md mb-2"></div>
+      <div className="w-full h-50 bg-black/10 animate-pulse rounded-md mb-2"></div>
+      <div className="w-full h-50 bg-black/10 animate-pulse rounded-md mb-2"></div>
+      <div className="w-full h-50 bg-black/10 animate-pulse rounded-md mb-2"></div>
+      <div className="w-full h-50 bg-black/10 animate-pulse rounded-md mb-2"></div>
+      <div className="w-full h-50 bg-black/10 animate-pulse rounded-md mb-2"></div>
+      <div className="w-full h-50 bg-black/10 animate-pulse rounded-md mb-2"></div>
     </div>
   );
 }

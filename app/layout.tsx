@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
+import Header from "@/components/layouts/Header";
+import Footer from "@/components/layouts/Footer";
 import { Toaster } from "sonner";
 import { NextAuthProviders } from "@/components/providers/NextAuthProvider";
 import ClientProvider from "@/components/providers/ClientProvider";
 import { content as c } from "@/lib/content";
+import FooterMenuSticky from "@/components/layouts/FooterMenuSticky";
 
 const { title, description } = c.home.hero;
 
@@ -38,7 +39,8 @@ export default async function RootLayout({
             <Toaster richColors position="top-center" swipeDirections={["bottom", "left", "right", "top"]} />
             <Header />
             {children}
-            <Footer />
+            <FooterMenuSticky />
+            <Footer className="hidden lg:block" />
           </ClientProvider>
         </NextAuthProviders>
       </body>
