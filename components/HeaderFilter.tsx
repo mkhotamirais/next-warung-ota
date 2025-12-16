@@ -128,8 +128,8 @@ export default function HeaderFilter() {
 
   return (
     <Drawer trigger={TriggerFilter} position="right" classWidth="w-4/5 sm:w-80">
-      <div className="p-4 h-full">
-        <div className="flex justify-between items-center mb-4">
+      <div className="h-full overflow-y-scroll">
+        <div className="px-4 pt-3 flex justify-between items-start mb-4 sticky top-0 bg-white">
           <h3 className="font-bold text-lg">Filter and Order Products</h3>
           <DrawerClose asChild>
             <Button size="sm" variant="ghost" className="w-fit">
@@ -137,112 +137,114 @@ export default function HeaderFilter() {
             </Button>
           </DrawerClose>
         </div>
-        <div className="mb-4">
-          <h4 className="font-semibold flex items-center gap-2 mb-3">
-            <LuListFilter />
-            <span>Filter By</span>
-          </h4>
-          <div className="space-y-2">
-            <div>
-              <h5 className={h5}>Category</h5>
-              <div className="flex gap-1 flex-wrap">
-                {productCategories?.map((c) => (
-                  <button
-                    type="button"
-                    key={c.slug}
-                    onClick={() => handleCategory(c.slug)}
-                    className={`${c.slug === category ? "bg-primary text-white" : ""} ${btnStyle}`}
-                  >
-                    {c.name}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h5 className={h5}>Rentang Harga</h5>
-              <div className="flex gap-1 items-center text-sm">
-                <div className="">
-                  <label htmlFor="min-price" className="text-xs text-light text-gray-500">
-                    Min Price
-                  </label>
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    pattern="[0-9]*"
-                    id="min-price"
-                    placeholder="Haga Minimal"
-                    className="w-full px-2 py-1 border border-gray-300 rounded"
-                    value={minPrice}
-                    onChange={(e) => handleChangeMinPrice(e.target.value)}
-                    onFocus={(e) => e.target.select()}
-                  />
+        <div className="px-4 pt-3">
+          <div className="">
+            <h4 className="font-semibold flex items-center gap-2 mb-3">
+              <LuListFilter />
+              <span>Filter By</span>
+            </h4>
+            <div className="space-y-2">
+              <div>
+                <h5 className={h5}>Category</h5>
+                <div className="flex gap-1 flex-wrap">
+                  {productCategories?.map((c) => (
+                    <button
+                      type="button"
+                      key={c.slug}
+                      onClick={() => handleCategory(c.slug)}
+                      className={`${c.slug === category ? "bg-primary text-white" : ""} ${btnStyle}`}
+                    >
+                      {c.name}
+                    </button>
+                  ))}
                 </div>
-                <div>
-                  <label htmlFor="max-price" className="text-xs text-light text-gray-500">
-                    Max Price
-                  </label>
-                  <input
-                    type="text"
-                    inputMode="decimal"
-                    pattern="[0-9]*"
-                    id="max-price"
-                    className="w-full px-2 py-1 border border-gray-300 rounded"
-                    value={maxPrice}
-                    placeholder={`${minPrice ? minPrice : "Harga Maksimal"}`}
-                    onChange={(e) => handleChangeMaxPrice(e.target.value)}
-                    onFocus={(e) => {
-                      if (Number(maxPrice) < Number(minPrice)) {
-                        setMaxPrice(minPrice);
-                      }
-                      setTimeout(() => {
-                        e.target.select();
-                      }, 100);
-                    }}
-                  />
+              </div>
+              <div>
+                <h5 className={h5}>Rentang Harga</h5>
+                <div className="flex gap-1 items-center text-sm">
+                  <div className="">
+                    <label htmlFor="min-price" className="text-xs text-light text-gray-500">
+                      Min Price
+                    </label>
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      pattern="[0-9]*"
+                      id="min-price"
+                      placeholder="Haga Minimal"
+                      className="w-full px-2 py-1 border border-gray-300 rounded"
+                      value={minPrice}
+                      onChange={(e) => handleChangeMinPrice(e.target.value)}
+                      onFocus={(e) => e.target.select()}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="max-price" className="text-xs text-light text-gray-500">
+                      Max Price
+                    </label>
+                    <input
+                      type="text"
+                      inputMode="decimal"
+                      pattern="[0-9]*"
+                      id="max-price"
+                      className="w-full px-2 py-1 border border-gray-300 rounded"
+                      value={maxPrice}
+                      placeholder={`${minPrice ? minPrice : "Harga Maksimal"}`}
+                      onChange={(e) => handleChangeMaxPrice(e.target.value)}
+                      onFocus={(e) => {
+                        if (Number(maxPrice) < Number(minPrice)) {
+                          setMaxPrice(minPrice);
+                        }
+                        setTimeout(() => {
+                          e.target.select();
+                        }, 100);
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div>
-          <h4 className="font-semibold flex items-center gap-2 mb-3">
-            <LuArrowUpDown />
-            <span>Order By</span>
-          </h4>
-          <div>
-            <h5 className="font-light text-sm text-gray-600">Harga</h5>
-            <div className="flex gap-1 flex-wrap mb-4">
-              <SortBtn
-                handle={() => handleSortData("price_asc")}
-                val="price_asc"
-                label="Harga Terendah"
-                sortData={sortData}
-              />
-              <SortBtn
-                handle={() => handleSortData("price_desc")}
-                val="price_desc"
-                label="Harga Tertinggi"
-                sortData={sortData}
-              />
-              <SortBtn handle={() => handleSortData("name_asc")} val="name_asc" label="A-Z" sortData={sortData} />
-              <SortBtn handle={() => handleSortData("name_desc")} val="name_desc" label="Z-A" sortData={sortData} />
+          <div className="">
+            <h4 className="font-semibold flex items-center gap-2 mb-3">
+              <LuArrowUpDown />
+              <span>Order By</span>
+            </h4>
+            <div>
+              <h5 className="font-light text-sm text-gray-600">Harga</h5>
+              <div className="flex gap-1 flex-wrap mb-4">
+                <SortBtn
+                  handle={() => handleSortData("price_asc")}
+                  val="price_asc"
+                  label="Harga Terendah"
+                  sortData={sortData}
+                />
+                <SortBtn
+                  handle={() => handleSortData("price_desc")}
+                  val="price_desc"
+                  label="Harga Tertinggi"
+                  sortData={sortData}
+                />
+                <SortBtn handle={() => handleSortData("name_asc")} val="name_asc" label="A-Z" sortData={sortData} />
+                <SortBtn handle={() => handleSortData("name_desc")} val="name_desc" label="Z-A" sortData={sortData} />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="sticky bottom-0 w-full bg-white py-2">
-          <DrawerClose asChild>
-            <Button
-              type="button"
-              onClick={handleFilter}
-              className="btn w-full bg-primary text-white"
-              disabled={minPrice !== "" && maxPrice !== "" && Number(maxPrice) < Number(minPrice)}
-            >
-              Apply Filter
+          <div className="sticky bottom-0 w-full bg-white py-2">
+            <DrawerClose asChild>
+              <Button
+                type="button"
+                onClick={handleFilter}
+                className="btn w-full bg-primary text-white"
+                disabled={minPrice !== "" && maxPrice !== "" && Number(maxPrice) < Number(minPrice)}
+              >
+                Apply Filter
+              </Button>
+            </DrawerClose>
+            <Button variant="ghost" onClick={resetAll}>
+              Reset All
             </Button>
-          </DrawerClose>
-          <Button variant="ghost" onClick={resetAll}>
-            Reset All
-          </Button>
+          </div>
         </div>
       </div>
     </Drawer>

@@ -3,11 +3,12 @@ import { Prisma } from "@/lib/generated/prisma";
 export type SortType = "price_asc" | "price_desc" | "name_asc" | "name_desc" | undefined;
 
 export type ProductProps = Prisma.ProductGetPayload<{
-  include: {
-    ProductCategory: { select: { name: true; slug: true } };
-    User: { select: { name: true } };
-  };
+  include: { ProductCategory: { select: { name: true; slug: true } }; User: { select: { name: true } } };
 }>;
+
+export type CartItemProps = Prisma.CartItemGetPayload<{
+  include: { Product: true };
+}> & { quantity: number };
 
 export type SingleProductProps = Prisma.ProductGetPayload<{
   include: {

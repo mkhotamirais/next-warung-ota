@@ -5,7 +5,8 @@ import Button from "./ui/Button";
 import useLogout from "@/hooks/useLogout";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { LuLogIn, LuShoppingCart } from "react-icons/lu";
+import { LuLogIn } from "react-icons/lu";
+import CartBtn from "./CartBtn";
 
 // const menu = [
 //   { label: "Setting", url: "/setting" },
@@ -43,14 +44,8 @@ export default function HeaderUserOptions() {
   }
 
   return (
-    <>
-      {session.user.role === "USER" ? (
-        <Button asChild variant="ghost" aria-label="cart" size="sm">
-          <Link href="/cart">
-            <LuShoppingCart />
-          </Link>
-        </Button>
-      ) : null}
+    <div className="flex items-center gap-1">
+      {session.user.role === "USER" ? <CartBtn /> : null}
       <DropdownMenu trigger={trigger} title={session.user.name || "User"}>
         <div className="mt-2">
           <DropdownMenuClose asChild>
@@ -76,6 +71,6 @@ export default function HeaderUserOptions() {
           </DropdownMenuClose>
         </div>
       </DropdownMenu>
-    </>
+    </div>
   );
 }

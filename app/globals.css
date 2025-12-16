@@ -7,7 +7,7 @@
   --secondary: lightgray;
   --success: lightgreen;
   --danger: red;
-  --warning: yellow;
+  --warning: orange;
 }
 
 @theme inline {
@@ -46,5 +46,9 @@
 
   .grid-list {
     @apply grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-6 gap-1 sm:gap-1.5;
+  }
+
+  .alert {
+    @apply border border-warning bg-warning/10 text-sm text-gray-600 py-2 px-3 rounded-md;
   }
 }

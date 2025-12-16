@@ -4,13 +4,13 @@ import Image from "next/image";
 import { formatRupiah } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import { SingleProductProps } from "@/types/types";
-import AddToCart from "@/components/AddToCart";
+import AddToCartFromProductDetail from "@/components/AddToCartFromProductDetail";
 
 export default function DetailProduct({ product }: { product: SingleProductProps }) {
   const { data: session } = useSession();
 
   return (
-    <div className="flex flex-col sm:flex-row gap-8">
+    <div className="container flex flex-col sm:flex-row gap-8 py-6">
       <div className="w-full sm:w-1/2">
         <div className="rounded border border-gray-300 mb-2">
           <Image
@@ -32,7 +32,8 @@ export default function DetailProduct({ product }: { product: SingleProductProps
 
         {session?.user.role === "USER" ? (
           <div>
-            <AddToCart product={product} />
+            {/* <AddToCart product={product} /> */}
+            <AddToCartFromProductDetail product={product} />
           </div>
         ) : null}
         <article dangerouslySetInnerHTML={{ __html: product.description || "" }}></article>

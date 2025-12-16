@@ -2,6 +2,7 @@ import { formatRupiah, smartTrim } from "@/lib/utils";
 import { ProductProps } from "@/types/types";
 import Image from "next/image";
 import Link from "next/link";
+import AddToCartFromProductList from "./AddToCartFromProductList";
 
 export default function ProductCard({ item }: { item: ProductProps }) {
   return (
@@ -24,12 +25,17 @@ export default function ProductCard({ item }: { item: ProductProps }) {
         <div className="my-1 leading-none text-xs py-0.5 px-1 border border-primary w-fit bg-primary/10 lowercase">
           {item.ProductCategory.name}
         </div>
-        <p className="font-semibold mt-auto">
-          <span>Rp</span>
-          {item.price > 0 ? `${formatRupiah(item.price)}` : "Diskon"}
-          {/* {formatRupiah(minPrice)}{" "} */}
-          {/* {maxPrice > minPrice && maxPrice > 0 ? <span>- {formatRupiah(maxPrice)}</span> : null} */}
-        </p>
+        <div className="flex justify-between items-center mt-2">
+          <p className="font-semibold">
+            <span className="text-sm">Rp</span>
+            {item.price > 0 ? `${formatRupiah(item.price)}` : "Diskon"}
+            {/* {formatRupiah(minPrice)}{" "} */}
+            {/* {maxPrice > minPrice && maxPrice > 0 ? <span>- {formatRupiah(maxPrice)}</span> : null} */}
+          </p>
+          <div>
+            <AddToCartFromProductList productId={item.id} productName={item.name} />
+          </div>
+        </div>
       </div>
     </div>
   );

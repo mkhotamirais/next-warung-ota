@@ -29,11 +29,9 @@ export default async function ProductSlug({ params }: { params: Promise<{ slug: 
   if (!slug || !product) return notFound();
 
   return (
-    <section className="flex-1 py-8">
-      <div className="container">
-        <DetailProduct product={product} />
-        <OtherProducts otherProducts={otherProducts} />
-      </div>
-    </section>
+    <main className="flex-1">
+      <DetailProduct product={product} />
+      <OtherProducts otherProducts={otherProducts} />
+    </main>
   );
 }
