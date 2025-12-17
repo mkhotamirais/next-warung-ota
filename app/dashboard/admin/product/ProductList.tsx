@@ -1,16 +1,25 @@
 import { getProducts } from "@/actions/product";
 import ProductCardAdmin from "@/app/dashboard/admin/product/ProductCardAdmin";
 import Pagination from "@/components/ui/Pagination";
+import { ProductProps } from "@/types/types";
 
 interface ProductListProps {
+  products: ProductProps[];
   page: number;
   limit: number;
   keyword?: string;
+  totalPages: number;
+  totalProductsCount: number;
 }
 
-export default async function ProductList({ page, limit, keyword }: ProductListProps) {
-  const { products, totalPages, totalProductsCount } = await getProducts({ page, limit, keyword });
-
+export default async function ProductList({
+  products,
+  page,
+  limit,
+  keyword,
+  totalPages,
+  totalProductsCount,
+}: ProductListProps) {
   return (
     <>
       <div>

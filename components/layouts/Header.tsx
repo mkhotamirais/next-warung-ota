@@ -21,9 +21,9 @@ export default function Header() {
           <HeaderSearch />
           <HeaderFilter />
           <CartBtn />
-          {/* <div className="hidden lg:block"> */}
-          <HeaderUser />
-          {/* </div> */}
+          <div className="hidden lg:block">
+            <HeaderUser />
+          </div>
           <NavMobile />
         </div>
       </div>

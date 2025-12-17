@@ -17,7 +17,7 @@ export default async function ProductListWrapper({
   minPrice,
   maxPrice,
 }: ProductListWrapperProps) {
-  const limit = 24; // Definisi pusat limit
+  const limit = 24;
 
   const initialData = await getProducts({
     page: 1,
@@ -39,8 +39,8 @@ export default async function ProductListWrapper({
       initialProducts={initialData.products}
       initialHasMore={hasMore}
       initialNextPage={nextPage}
-      limit={limit} // Teruskan limit ke client
-      filters={{ keyword, categorySlug, sortData, minPrice, maxPrice }} // Teruskan filter
+      limit={limit}
+      filters={{ keyword, categorySlug, sortData, minPrice, maxPrice }}
     />
   );
 }

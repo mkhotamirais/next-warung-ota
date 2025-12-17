@@ -2,18 +2,18 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
-import { ProductProps } from "@/types/types";
 import Modal, { ModalClose } from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import { toast } from "sonner";
 import { useCloseDropdownMenu } from "@/components/ui/DropdownMenu";
-import { deleteProduct } from "@/actions/product";
+import { deleteAddress } from "@/actions/address";
+import { Address } from "@/lib/generated/prisma";
 
 interface DeleteProps {
-  product: ProductProps;
+  address: Address;
 }
 
-export default function Delete({ product }: DeleteProps) {
+export default function Delete({ address }: DeleteProps) {
   const [pending, startTransition] = useTransition();
   const router = useRouter();
   const closeDropdownMenu = useCloseDropdownMenu();
@@ -34,21 +34,20 @@ export default function Delete({ product }: DeleteProps) {
 
   const handleDelete = () => {
     startTransition(async () => {
-      const result = await deleteProduct(product.id);
+      const result = await deleteAddress(address.id);
 
       if (result?.error) {
         toast.error(result.error);
         return;
       }
       toast.success(result.message);
-
       router.refresh();
     });
   };
   return (
     <Modal trigger={trigger} className="flex-1">
       <p>
-        Delete <b>{product.name}</b>, this action cannot be undone, are you sure?
+        Delete <b>{address.label}</b>, this action cannot be undone, are you sure?
       </p>
       <div className="flex gap-2 mt-4">
         <Button

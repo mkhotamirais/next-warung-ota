@@ -10,7 +10,7 @@ interface ProductListProps {
   initialProducts: ProductProps[] | undefined | null;
   initialHasMore?: boolean;
   initialNextPage?: number;
-  limit: number; // Terima limit dari server
+  limit: number;
   filters: {
     keyword: string;
     categorySlug?: string;

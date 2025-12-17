@@ -18,41 +18,39 @@ const Trigger = (
 
 export default function ProductCardAdmin({ product }: { product: ProductProps }) {
   return (
-    <div key={product.id} className="mb-2">
-      <div className="flex justify-between items-center w-full border border-gray-300 bg-white rounded">
-        <div className="flex gap-2 w-full p-1">
-          <Link href={`/product/detail/${product.slug}`} className="">
-            <Image
-              src={product?.imageUrl || "/images/logo-warungota.png"}
-              alt={product.name}
-              width={50}
-              height={50}
-              className="size-14 min-w-14"
-            />
+    <div className="flex justify-between mb-2 items-center w-full border border-gray-300 bg-white rounded">
+      <div className="flex gap-2 w-full p-1">
+        <Link href={`/product/detail/${product.slug}`} className="">
+          <Image
+            src={product?.imageUrl || "/images/logo-warungota.png"}
+            alt={product.name}
+            width={50}
+            height={50}
+            className="size-14 min-w-14"
+          />
+        </Link>
+        <div className="flex flex-col gap-1">
+          <Link href={`/product/detail/${product.slug}`} className="hover:underline">
+            <h3 className="first-letter:capitalize leading-none">{smartTrim(product.name, 45)}</h3>
           </Link>
-          <div className="flex flex-col gap-1">
-            <Link href={`/product/detail/${product.slug}`} className="hover:underline">
-              <h3 className="first-letter:capitalize leading-none">{smartTrim(product.name, 45)}</h3>
-            </Link>
-            <p className="font-semibold">Rp{formatRupiah(product.price)}</p>
-            {/* <div className="text-sm text-gray-600 flex gap-2">
+          <p className="font-semibold">Rp{formatRupiah(product.price)}</p>
+          {/* <div className="text-sm text-gray-600 flex gap-2">
               <span>{product.ProductCategory?.name || "category"}</span>
               <span>•</span>
               <span>{product.User.name}</span>
             </div> */}
-          </div>
         </div>
-        <DropdownMenu trigger={Trigger} className="mr-3">
-          <div className="p-2 flex gap-2">
-            <DropdownMenuClose asChild>
-              <Link href={`/dashboard/admin/product/edit-product/${product.slug}`} className="flex-1">
-                <Button>Edit</Button>
-              </Link>
-            </DropdownMenuClose>
-            <Delete product={product} />
-          </div>
-        </DropdownMenu>
       </div>
+      <DropdownMenu trigger={Trigger} className="mr-3">
+        <div className="p-2 flex gap-2">
+          <DropdownMenuClose asChild>
+            <Link href={`/dashboard/admin/product/edit-product/${product.slug}`}>
+              <Button className="w-fit">Edit</Button>
+            </Link>
+          </DropdownMenuClose>
+          <Delete product={product} />
+        </div>
+      </DropdownMenu>
     </div>
   );
 }

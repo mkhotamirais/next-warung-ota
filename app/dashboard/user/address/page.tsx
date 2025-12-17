@@ -1,5 +1,8 @@
-import React from "react";
+import BasePage from "./BasePage";
 
-export default function UserAddress() {
-  return <div>UserAddress</div>;
+export default async function UserAddress({ params }: { params: Promise<{ page?: string }> }) {
+  const page = Number((await params).page) || 1;
+  const limit = 8;
+
+  return <BasePage page={page} limit={limit} />;
 }
