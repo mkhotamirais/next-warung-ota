@@ -11,5 +11,4 @@ export default async function EditBlog({ params }: { params: Promise<{ slug: str
   if (!blogCategories?.length || !blog) redirect("/dashboard/blog-category");
 
   return <EditBlogForm blogCategories={blogCategories} blog={blog} />;
-  // return <EditBlogForm />;
 }

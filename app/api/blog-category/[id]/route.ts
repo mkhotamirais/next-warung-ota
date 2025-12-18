@@ -31,6 +31,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
     revalidatePath("/dashboard/admin/blog/create-blog");
     return Response.json({ message: `Blog category "${result.name}" updated successfully` });
   } catch (error) {
+    console.log(error);
     return Response.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
@@ -69,6 +70,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
       return Response.json({ message: `Blog category "${categoryToDelete.name}" deleted successfully` });
     }
   } catch (error) {
+    console.log(error);
     return Response.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

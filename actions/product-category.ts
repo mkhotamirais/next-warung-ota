@@ -11,11 +11,13 @@ const revalidateProductCategory = () => {
   revalidatePath("/dashboard/admin/product/create-product");
 };
 
+// GET /api/product-categry
 export const getProductCategories = async () => {
   const categories = await prisma.productCategory.findMany({ orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] });
   return categories;
 };
 
+// POST /api/product-categry
 export const createProductCategory = async (data: { name: string }) => {
   const session = await auth();
   if (!session) {
@@ -43,6 +45,7 @@ export const createProductCategory = async (data: { name: string }) => {
   }
 };
 
+// DELETE /api/product-categry/:id
 export const deleteProductCategory = async (id: string) => {
   const session = await auth();
   if (!session) {
@@ -91,6 +94,7 @@ export const deleteProductCategory = async (id: string) => {
   }
 };
 
+// PUT /api/product-categry/:id
 export const updateProductCategory = async (id: string, data: { name: string }) => {
   const session = await auth();
   if (!session) {

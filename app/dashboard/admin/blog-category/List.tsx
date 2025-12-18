@@ -19,7 +19,7 @@ export default function List({ blogCategories }: { blogCategories: BlogCategory[
   //     setBlogCategories(result);
   //   };
   //   getBlogCategories();
-  // }, []);
+  // }, [blogCategories]);
 
   if (!blogCategories?.length) return <h2 className="h2">No Blog Category</h2>;
 

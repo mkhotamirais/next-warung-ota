@@ -19,6 +19,8 @@ export default function Create() {
     e.preventDefault();
 
     startTransition(async () => {
+      // const res = await fetch("/api/product-category", { method: "POST", body: JSON.stringify({ name }) });
+      // const result = await res.json();
       const result = await createProductCategory({ name });
 
       if (result?.errors) {

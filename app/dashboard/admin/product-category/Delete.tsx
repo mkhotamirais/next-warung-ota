@@ -19,6 +19,8 @@ export default function Delete({ category }: DeleteProps) {
 
   const handleDelete = () => {
     startTransition(async () => {
+      // const res = await fetch(`/api/product-category/${category.id}`, { method: "DELETE" });
+      // const result = await res.json();
       const result = await deleteProductCategory(category.id);
 
       if (result?.error) {

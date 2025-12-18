@@ -89,6 +89,8 @@ export default function EditProductForm({ productCategories, product }: EditProd
     });
 
     startTransition(async () => {
+      // const res = await fetch(`/api/product/${product.slug}`, { method: "PUT", body: formData });
+      // const result = await res.json();
       const result = await updateProduct(product.id, formData);
 
       if (result?.errors) {
@@ -101,7 +103,6 @@ export default function EditProductForm({ productCategories, product }: EditProd
         return;
       }
 
-      // router.push("/dashboard/admin/product");
       router.back();
       router.refresh();
     });

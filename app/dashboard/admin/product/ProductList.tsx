@@ -1,7 +1,10 @@
-import { getProducts } from "@/actions/product";
+// "use client";
+
 import ProductCardAdmin from "@/app/dashboard/admin/product/ProductCardAdmin";
 import Pagination from "@/components/ui/Pagination";
 import { ProductProps } from "@/types/types";
+// import { useParams, useSearchParams } from "next/navigation";
+// import { useEffect, useState } from "react";
 
 interface ProductListProps {
   products: ProductProps[];
@@ -12,14 +15,30 @@ interface ProductListProps {
   totalProductsCount: number;
 }
 
-export default async function ProductList({
-  products,
-  page,
-  limit,
-  keyword,
-  totalPages,
-  totalProductsCount,
-}: ProductListProps) {
+export default async function ProductList({ products, page, limit, totalPages, totalProductsCount }: ProductListProps) {
+  // export default function ProductList() {
+  // const [products, setProducts] = useState<ProductProps[]>([]);
+  // const [totalProductsCount, setTotalProductsCount] = useState(0);
+  // const [totalPages, setTotalPages] = useState(0);
+
+  // const searchParams = useSearchParams();
+  // const params = useParams();
+  // const page = Number(params.page || 1);
+  // const limit = Number(searchParams.get("limit") || 8);
+  // const keyword = searchParams.get("keyword");
+
+  // useEffect(() => {
+  //   const getProducts = async () => {
+  //     const res = await fetch(`/api/product?page=${page}&limit=${limit}&keyword=${keyword || ""}`);
+  //     const data = await res.json();
+
+  //     setProducts(data.products);
+  //     setTotalProductsCount(data.totalProductsCount);
+  //     setTotalPages(data.totalPages);
+  //   };
+  //   getProducts();
+  // }, [products, page, limit, keyword]);
+
   return (
     <>
       <div>

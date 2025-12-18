@@ -9,9 +9,5 @@ export default async function CreateProduct() {
 
   if (!productCategories?.length) redirect("/dashboard/admin/product-category");
 
-  return (
-    <Suspense fallback={<Load />}>
-      <CreateProductForm productCategories={productCategories} />
-    </Suspense>
-  );
+  return <CreateProductForm productCategories={productCategories} />;
 }

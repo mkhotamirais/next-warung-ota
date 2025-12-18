@@ -89,7 +89,6 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
     startTransition(async () => {
       // const res = await fetch("/api/product", { method: "POST", body: formData });
       // const result = await res.json();
-
       const result = await createProduct(formData);
 
       if (result?.errors) {

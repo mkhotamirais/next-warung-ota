@@ -37,7 +37,7 @@ export default function List({ blogs, page, limit, totalPages, totalBlogsCount }
   //     setTotalPages(data.totalPages);
   //   };
   //   getBlogs();
-  // }, [page, limit, keyword]);
+  // }, [blogs, page, limit, keyword]);
 
   return (
     <>

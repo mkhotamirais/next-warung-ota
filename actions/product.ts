@@ -15,11 +15,7 @@ const revalidateProduct = () => {
   revalidatePath("/dashboard/admin/product");
 };
 
-export const getProductCategoryBySlug = async (slug: string) => {
-  const category = await prisma.productCategory.findUnique({ where: { slug } });
-  return category;
-};
-
+// GET /api/product-names
 export async function getProductNames(keywords?: string) {
   if (!keywords) return [];
 
@@ -50,6 +46,7 @@ export async function getTotalProductsCount() {
   return count;
 }
 
+// GET /api/products
 interface GetProductParams {
   limit?: number;
   page?: number;
@@ -120,6 +117,7 @@ export const getProducts = async ({
   return { products, totalProductsCount, totalPages, hasMore, nextPage: page + 1 };
 };
 
+// GET /api/product/:slug
 export const getProductBySlug = async (slug: string) => {
   const product = await prisma.product.findUnique({
     where: { slug },
@@ -131,6 +129,7 @@ export const getProductBySlug = async (slug: string) => {
   return product;
 };
 
+// POST /api/product
 export async function createProduct(formData: FormData) {
   const session = await auth();
   if (!session || !session.user || session.user.role !== "ADMIN") {
@@ -192,6 +191,7 @@ export async function createProduct(formData: FormData) {
   }
 }
 
+// PUT /api/product/:id
 export async function updateProduct(productId: string, formData: FormData) {
   const session = await auth();
   if (!session || !session.user || session.user.role !== "ADMIN") {
@@ -270,6 +270,7 @@ export async function updateProduct(productId: string, formData: FormData) {
   }
 }
 
+// DELETE /api/product/:id
 export async function deleteProduct(productId: string) {
   const session = await auth();
   if (!session || !session.user || session.user.role !== "ADMIN") {

@@ -26,6 +26,11 @@ export default function Edit({ category, setIsEdit }: EditProps) {
     e.preventDefault();
 
     startTransition(async () => {
+      // const res = await fetch(`/api/product-category/${category.id}`, {
+      //   method: "PUT",
+      //   body: JSON.stringify({ name }),
+      // });
+      // const result = await res.json();
       const result = await updateProductCategory(category.id, { name });
 
       if (result?.errors) {

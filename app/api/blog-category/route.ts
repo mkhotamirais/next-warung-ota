@@ -11,6 +11,7 @@ export async function GET() {
     });
     return Response.json(categories);
   } catch (error) {
+    console.log(error);
     return Response.json({ error: "Failed to fetch categories" }, { status: 500 });
   }
 }
@@ -40,6 +41,7 @@ export async function POST(req: Request) {
     revalidatePath("/dashboard/admin/blog/create-blog");
     return Response.json({ message: `Blog category "${name}" created successfully` }, { status: 201 });
   } catch (error) {
+    console.log(error);
     return Response.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
