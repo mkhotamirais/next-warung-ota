@@ -19,6 +19,9 @@ export default function Create() {
     e.preventDefault();
 
     startTransition(async () => {
+      // const res = await fetch("/api/blog-category", { method: "POST", body: JSON.stringify({ name }) });
+      // const result = await res.json();
+
       const result = await createBlogCategory({ name });
 
       if (result?.errors) {

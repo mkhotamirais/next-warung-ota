@@ -8,7 +8,19 @@ import { BlogCategory } from "@/lib/generated/prisma";
 import Modal from "@/components/ui/Modal";
 
 export default function List({ blogCategories }: { blogCategories: BlogCategory[] | undefined }) {
+  // export default function List() {
   const [isEdit, setIsEdit] = useState<string | null>(null);
+
+  // const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
+  // useEffect(() => {
+  //   const getBlogCategories = async () => {
+  //     const res = await fetch("/api/blog-category");
+  //     const result = await res.json();
+  //     setBlogCategories(result);
+  //   };
+  //   getBlogCategories();
+  // }, []);
+
   if (!blogCategories?.length) return <h2 className="h2">No Blog Category</h2>;
 
   const trigger = (

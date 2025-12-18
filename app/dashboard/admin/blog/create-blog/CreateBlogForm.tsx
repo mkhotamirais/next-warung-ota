@@ -72,8 +72,8 @@ export default function CreateBlogForm({ blogCategories }: { blogCategories: Blo
     }
 
     startTransition(async () => {
-      //   const res = await fetch("/api/blog", { method: "POST", body: formData });
-      //   const result = await res.json();
+      // const res = await fetch("/api/blog", { method: "POST", body: formData });
+      // const result = await res.json();
       const result = await createBlog(formData);
 
       if (result?.errors) {
@@ -132,7 +132,7 @@ export default function CreateBlogForm({ blogCategories }: { blogCategories: Blo
         error={errors?.categoryId?.errors}
       />
 
-      <Button type="submit" disabled={pending} pending={pending}>
+      <Button type="submit" disabled={pending} pending={pending} className="w-fit">
         Submit
       </Button>
     </form>

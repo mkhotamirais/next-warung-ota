@@ -11,7 +11,7 @@ export default async function BasePage({ page, limit, keyword }: { page: number;
         title="Product List"
         totalCount={totalProductsCount}
         url="/dashboard/admin/product/create-product"
-        label="Add Product"
+        label="Create Product"
       />
       <div className="mb-4">
         <SearchProductAdmin />

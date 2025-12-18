@@ -3,7 +3,7 @@
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Image from "next/image";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useRef, useState, useTransition } from "react";
 import { FaTrash } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import { BlogCategory } from "@/lib/generated/prisma";
@@ -17,10 +17,21 @@ interface UpdateBlogFormProps {
   blogCategories: BlogCategory[];
   blog: BlogProps;
 }
+
 export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormProps) {
-  const [title, setTitle] = useState(blog.title);
-  const [content, setContent] = useState(blog.content);
-  const [categoryId, setCategoryId] = useState("");
+  // export default function EditBlogForm() {
+  // const params = useParams();
+  // const slug = params.slug;
+
+  // const [blog, setBlog] = useState<BlogProps | null>(null);
+  // const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
+  const [title, setTitle] = useState(blog?.title);
+  const [content, setContent] = useState(blog?.content);
+
+  // const [title, setTitle] = useState("");
+  // const [content, setContent] = useState("");
+  // const [categoryId, setCategoryId] = useState("");
+  const [categoryId, setCategoryId] = useState(blog?.categoryId);
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
@@ -29,18 +40,29 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
   const router = useRouter();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
   const blogCategoriesOptions = blogCategories.map((category) => ({ label: category.name, value: category.id }));
 
-  useEffect(() => {
-    const settingIitialBlog = () => {
-      if (blog) {
-        setCategoryId(blog.categoryId!);
-        setImagePreview(blog.imageUrl!);
-      }
-    };
+  // useEffect(() => {
+  //   const getBlogCategories = async () => {
+  //     const res = await fetch("/api/blog-category");
+  //     const data = await res.json();
+  //     setBlogCategories(data);
+  //   };
+  //   getBlogCategories();
+  // }, []);
 
-    settingIitialBlog();
-  }, [blog]);
+  // useEffect(() => {
+  //   const getBlog = async () => {
+  //     const res = await fetch(`/api/blog/${slug}`);
+  //     const blog = await res.json();
+  //     setTitle(blog.title);
+  //     setContent(blog.content);
+  //     setCategoryId(blog.categoryId!);
+  //     setImagePreview(blog.imageUrl!);
+  //   };
+  //   getBlog();
+  // }, [slug]);
 
   const defaultCategory = blogCategories.find((category) => category.isDefault)!;
 
@@ -80,9 +102,9 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
     }
 
     startTransition(async () => {
-      //   const res = await fetch(`/api/blog/${blog.id}`, { method: "PATCH", body: formData });
-      //   const result = await res.json();
-      const result = await updateBlog(blog.id, formData);
+      // const res = await fetch(`/api/blog/${slug}`, { method: "PUT", body: formData });
+      // const result = await res.json();
+      const result = await updateBlog(blog.slug, formData);
       if (result?.errors) {
         setErrors(result.errors.properties);
         return;
@@ -154,12 +176,12 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
         id="blogCategory"
         label="Category"
         options={blogCategoriesOptions}
-        value={categoryId || defaultCategory.id}
+        value={categoryId || defaultCategory?.id}
         onChange={(e) => setCategoryId(e.target.value)}
         error={errors?.categoryId?.errors}
       />
-      <Button type="submit" disabled={pending}>
-        {pending ? "Updating..." : "Update"}
+      <Button type="submit" disabled={pending} pending={pending} className="w-fit">
+        Save
       </Button>
     </form>
   );

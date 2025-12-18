@@ -11,11 +11,13 @@ const revalidateBlogCategory = () => {
   revalidatePath("/dashboard/admin/blog/create-blog");
 };
 
+// GET /api/blog-categry
 export const getBlogCategories = async () => {
   const categories = await prisma.blogCategory.findMany({ orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] });
   return categories;
 };
 
+// POST /api/blog-category
 export const createBlogCategory = async (data: { name: string }) => {
   const session = await auth();
   if (!session) {
@@ -43,6 +45,7 @@ export const createBlogCategory = async (data: { name: string }) => {
   }
 };
 
+// DELETE /api/blog-category/:id
 export const deleteBlogCategory = async (id: string) => {
   const session = await auth();
   if (!session) {
@@ -91,6 +94,7 @@ export const deleteBlogCategory = async (id: string) => {
   }
 };
 
+// PUT /api/blog-category/:id
 export const updateBlogCategory = async (id: string, data: { name: string }) => {
   const session = await auth();
   if (!session) {

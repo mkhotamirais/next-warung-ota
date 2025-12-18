@@ -13,16 +13,7 @@ const revalidateBlog = () => {
   revalidatePath("/blog/page/[page]", "page");
 };
 
-export const getBlogCategories = async () => {
-  const categories = await prisma.blogCategory.findMany({ orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] });
-  return categories;
-};
-
-export const getBlogCategoryBySlug = async (slug: string) => {
-  const category = await prisma.blogCategory.findUnique({ where: { slug } });
-  return category;
-};
-
+// GET /api/blog
 interface GetBlogParams {
   limit?: number;
   page?: number;
@@ -75,6 +66,7 @@ export const getBlogs = async ({
   return { blogs, totalBlogsCount, totalPages, hasMore, nextPage: page + 1 };
 };
 
+// GET /api/blog/:slug
 export const getBlogBySlug = async (slug: string) => {
   const blog = await prisma.blog.findUnique({
     where: { slug },
@@ -83,6 +75,7 @@ export const getBlogBySlug = async (slug: string) => {
   return blog;
 };
 
+// POST /api/blog
 export async function createBlog(formData: FormData) {
   const session = await auth();
 
@@ -146,14 +139,15 @@ export async function createBlog(formData: FormData) {
   }
 }
 
-export async function updateBlog(id: string, formData: FormData) {
+// PUT /api/blog/:id
+export async function updateBlog(slug: string, formData: FormData) {
   const session = await auth();
 
   if (!session || !session.user || session.user.role !== "ADMIN") {
     return { error: "Unauthorized", status: 401 };
   }
 
-  const currentBlog = await prisma.blog.findUnique({ where: { id }, select: { userId: true, imageUrl: true } });
+  const currentBlog = await prisma.blog.findFirst({ where: { slug }, select: { userId: true, imageUrl: true } });
 
   if (!currentBlog) {
     return { error: "Blog not found", status: 404 };
@@ -173,7 +167,7 @@ export async function updateBlog(id: string, formData: FormData) {
     };
   }
 
-  const { title, slug, content } = validatedFields.data;
+  const { title, content } = validatedFields.data;
   let categoryId = validatedFields.data.categoryId;
 
   try {
@@ -189,7 +183,7 @@ export async function updateBlog(id: string, formData: FormData) {
 
     const existingBlog = await prisma.blog.findFirst({ where: { title } });
 
-    if (existingBlog && existingBlog.id !== id) {
+    if (existingBlog && existingBlog.slug !== slug) {
       return { error: "Blog title already exists", status: 409 };
     }
 
@@ -202,10 +196,7 @@ export async function updateBlog(id: string, formData: FormData) {
       newImageUrl = blob.url;
     }
 
-    await prisma.blog.update({
-      data: { title, slug, content, imageUrl: newImageUrl, categoryId },
-      where: { id },
-    });
+    await prisma.blog.update({ data: { title, slug, content, imageUrl: newImageUrl, categoryId }, where: { slug } });
 
     revalidateBlog();
     return { message: "Blog updated successfully" };
@@ -215,7 +206,8 @@ export async function updateBlog(id: string, formData: FormData) {
   }
 }
 
-export async function deleteBlog(id: string, imageUrl?: string) {
+// DELETE /api/blog/:id
+export async function deleteBlog(slug: string, imageUrl?: string) {
   const session = await auth();
   if (!session || !session.user || session.user.role !== "ADMIN") {
     return { error: "Unauthorized" };
@@ -225,7 +217,7 @@ export async function deleteBlog(id: string, imageUrl?: string) {
     if (imageUrl) {
       await del(imageUrl);
     }
-    const result = await prisma.blog.delete({ where: { id } });
+    const result = await prisma.blog.delete({ where: { slug } });
 
     revalidateBlog();
     return { message: `Blog "${result.title}" deleted successfully` };

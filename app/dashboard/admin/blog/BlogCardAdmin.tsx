@@ -18,7 +18,7 @@ const Trigger = (
 
 export default function BlogCardAdmin({ blog }: { blog: BlogProps }) {
   return (
-    <div key={blog.id} className="mb-2">
+    <div className="mb-2">
       <div className="flex justify-between items-center w-full border border-gray-300 bg-gray-100 rounded">
         <div className="flex gap-2 w-full p-1">
           <Link href={`/blog/detail/${blog.slug}`} className="">
