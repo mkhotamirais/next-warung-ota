@@ -58,7 +58,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ slug: st
     if (!existingCategory) {
       const defaultCategory = await prisma.blogCategory.findFirst({ where: { isDefault: true } });
       if (!defaultCategory) {
-        return { error: "Selected category was deleted and no default category found", status: 404 };
+        return Response.json({ error: "Selected category was deleted and no default category found", status: 404 });
       }
       categoryId = defaultCategory.id;
     }
