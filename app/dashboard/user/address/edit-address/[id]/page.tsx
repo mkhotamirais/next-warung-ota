@@ -1,6 +1,6 @@
-import { getAddressById } from "@/actions/address";
 import { redirect } from "next/navigation";
 import EditAddressForm from "./EditAddressForm";
+import { getAddressById } from "@/actions/account";
 
 export default async function EditAddress({ params }: { params: Promise<{ id: string }> }) {
   const id = (await params).id;

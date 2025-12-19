@@ -20,9 +20,7 @@ export default function CreateAddressForm() {
   const [postalCode, setPostalCode] = useState("");
   const [isDefault, setIsDefault] = useState(false);
 
-  const [error, setError] = useState("");
   const [errors, setErrors] = useState<Record<string, { errors: string[] }> | undefined>({});
-  const [success, setSuccess] = useState("");
 
   const [pending, startTransation] = useTransition();
   const router = useRouter();
