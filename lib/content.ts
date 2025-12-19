@@ -12,7 +12,7 @@ export const menu = {
   ],
   allRoleMenu: [
     { label: "Dashboard", url: "/dashboard" },
-    { label: "Profile", url: "/dashboard/user/profile" },
+    { label: "Profile", url: "/dashboard/profile" },
   ],
   userMenu: [
     { label: "Address", url: "/dashboard/user/address" },

@@ -6,9 +6,7 @@ export async function POST(req: Request) {
 
   try {
     const bodyText = await req.text();
-    if (!bodyText) {
-      return Response.json({ message: "Missing token and email in request body." }, { status: 400 });
-    }
+    if (!bodyText) return Response.json({ message: "Missing token and email in request body." }, { status: 400 });
 
     const body = JSON.parse(bodyText);
     token = body.token;
@@ -23,27 +21,18 @@ export async function POST(req: Request) {
 
     if (!verificationToken) {
       const user = await prisma.user.findUnique({ where: { email } });
-      if (user && user.emailVerified) {
-        return Response.json({ message: "Email already verified" }, { status: 200 });
-      }
+      if (user && user.emailVerified) return Response.json({ message: "Email already verified" }, { status: 200 });
       return Response.json({ message: "Token not found or invalid" }, { status: 404 });
     }
 
     if (verificationToken.expires < new Date()) {
-      await prisma.verificationToken.deleteMany({
-        where: { identifier: email, token: token },
-      });
+      await prisma.verificationToken.deleteMany({ where: { identifier: email, token: token } });
       return Response.json({ message: "Token has expired" }, { status: 400 });
     }
 
     const [updatedUser] = await prisma.$transaction([
-      prisma.user.update({
-        where: { email: email },
-        data: { emailVerified: new Date() },
-      }),
-      prisma.verificationToken.deleteMany({
-        where: { identifier: email, token: token },
-      }),
+      prisma.user.update({ where: { email: email }, data: { emailVerified: new Date() } }),
+      prisma.verificationToken.deleteMany({ where: { identifier: email, token: token } }),
     ]);
 
     return Response.json(

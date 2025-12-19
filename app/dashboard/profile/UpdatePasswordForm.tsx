@@ -1,6 +1,6 @@
 "use client";
 
-import { profileChangePassword } from "@/actions/profile";
+import { profileChangePassword } from "@/actions/account";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import React, { useState, useTransition } from "react";
@@ -18,7 +18,7 @@ export default function UpdatePasswordForm() {
     e.preventDefault();
 
     startTransition(async () => {
-      // const res = await fetch("/api/account/change-password", {
+      // const res = await fetch("/api/account/profile", {
       //   method: "PATCH",
       //   headers: { "Content-Type": "application/json" },
       //   body: JSON.stringify({ currentPassword, newPassword, confirmNewPassword }),

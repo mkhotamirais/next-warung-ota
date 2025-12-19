@@ -60,7 +60,11 @@ export default function SigninForm() {
         label={
           <div className="flex justify-between mb-2">
             <div>Password</div>
-            <Link href="/forgot-password" tabIndex={-1} className="text-primary font-semibold hover:underline text-sm">
+            <Link
+              href="/reset-password-request"
+              tabIndex={-1}
+              className="text-primary font-semibold hover:underline text-sm"
+            >
               Lupa Password?
             </Link>
           </div>

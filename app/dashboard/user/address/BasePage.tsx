@@ -1,7 +1,6 @@
-import React from "react";
 import List from "./List";
 import AuthTitleHeader from "@/components/AuthTitleHeader";
-import { getAddresses } from "@/actions/address";
+import { getAddresses } from "@/actions/account";
 
 export default async function BasePage({ page, limit }: { page: number; limit: number }) {
   const { addresses, totalPages, totalAddressCount } = await getAddresses({ page, limit });

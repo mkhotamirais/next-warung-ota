@@ -1,5 +1,6 @@
 "use client";
 
+import { signup } from "@/actions/account";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { signIn } from "next-auth/react";
@@ -21,11 +22,12 @@ export default function SignupForm() {
     e.preventDefault();
 
     startTransition(async () => {
-      const res = await fetch("/api/signup", {
-        method: "POST",
-        body: JSON.stringify({ name, email, password, confirmPassword }),
-      });
-      const data = await res.json();
+      // const res = await fetch("/api/account/signup", {
+      //   method: "POST",
+      //   body: JSON.stringify({ name, email, password, confirmPassword }),
+      // });
+      // const data = await res.json();
+      const data = await signup({ name, email, password, confirmPassword });
 
       if (data?.errors) {
         setErrors(data?.errors);

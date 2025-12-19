@@ -1,12 +1,13 @@
 "use client";
 
-import { updateProfileData } from "@/actions/profile";
+import { updateProfileData } from "@/actions/account";
+import Load from "@/components/fallbacks/Load";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState, useTransition } from "react";
-import { FaCheck } from "react-icons/fa6";
+import { FaCheck, FaSpinner, FaX } from "react-icons/fa6";
 import { toast } from "sonner";
 
 const normalizeValue = (value: string | undefined | null) => {
@@ -17,7 +18,7 @@ const normalizeValue = (value: string | undefined | null) => {
 };
 
 export default function UpdateDataForm() {
-  const { data: session, update } = useSession();
+  const { data: session, update, status } = useSession();
   const user = session?.user;
 
   const [name, setName] = useState("");
@@ -25,8 +26,34 @@ export default function UpdateDataForm() {
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState<Record<string, { errors: string[] }> | undefined>({});
   const [pending, startTransition] = useTransition();
+  const [pendingResend, startResend] = useTransition();
+  const [isResend, setIsResend] = useState(false);
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirected = searchParams.get("redirected");
+
+  useEffect(() => {
+    const refreshData = async () => {
+      if (redirected && redirected === "update-email") {
+        await update({});
+        toast.success("Email updated!");
+        router.replace("/dashboard/profile");
+        return;
+      }
+    };
+    const timeout = setTimeout(() => {
+      refreshData();
+    }, 1000);
+
+    return () => clearTimeout(timeout);
+  }, [redirected, update, router]);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.replace("/login");
+    }
+  }, [status, router]);
 
   useEffect(() => {
     const setInitialData = () => {
@@ -39,10 +66,26 @@ export default function UpdateDataForm() {
     setInitialData();
   }, [user]);
 
+  const handleResend = () => {
+    startResend(async () => {
+      const res = await fetch("/api/account/verify-email-request", { method: "POST" });
+      const data = await res.json();
+
+      if (data?.error) {
+        toast.error(data?.error);
+      }
+      toast.success(data?.message);
+      setIsResend(true);
+      setTimeout(() => {
+        setIsResend(false);
+      }, 3000);
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     startTransition(async () => {
-      // const res = await fetch("/api/account", {
+      // const res = await fetch("/api/account/profile", {
       //   method: "PUT",
       //   headers: { "Content-Type": "application/json" },
       //   body: JSON.stringify({ name, email, phone }),
@@ -76,6 +119,10 @@ export default function UpdateDataForm() {
 
   const isDataUnchanged = isNameUnchanged && isPhoneUnchanged && isEmailUnchanged;
 
+  if (status === "loading") {
+    return <Load />;
+  }
+
   return (
     <div className="mb-4">
       <h2 className="h2 mb-2">Your Data</h2>
@@ -108,9 +155,22 @@ export default function UpdateDataForm() {
                 verified
               </div>
             ) : (
-              <div className="inline-flex items-center gap-1 text-sm text-red-600">
-                <FaCheck />
-                <p>{user?.pendingEmail || "Email"} is unverified</p>
+              <div className="inline-flex items-center gap-1 text-sm">
+                <span className="flex items-center gap-1 text-red-500">
+                  <FaX />
+                  {user?.pendingEmail || "Email"} is unverified
+                </span>
+                (<span>Check your email or </span>
+                <button
+                  disabled={pendingResend}
+                  type="button"
+                  onClick={handleResend}
+                  className="underline text-primary flex items-center gap-1 disabled:opacity-50"
+                >
+                  Request Verification {pendingResend && <FaSpinner className="animate-spin" />}{" "}
+                  {isResend && <FaCheck className="text-green-500" />}
+                </button>
+                )
               </div>
             )}
           </div>

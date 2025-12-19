@@ -2,35 +2,31 @@
 
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
-import { useState } from "react";
+import React, { useState, useTransition } from "react";
+import { toast } from "sonner";
 
-export default function ForgotPasswordPage() {
+export default function ResetPasswordRequestForm() {
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [isPending, setIsPending] = useState(false);
+  const [pending, startTransition] = useTransition();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsPending(true);
-    setMessage("");
-
-    try {
-      const res = await fetch("/api/account/reset-password", {
+    startTransition(async () => {
+      const res = await fetch("/api/account/reset-password-request", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
-
       const data = await res.json();
-      setMessage(data.message);
-    } catch (error) {
-      console.log(error);
-      setMessage("Terjadi kesalahan jaringan.");
-    } finally {
-      setIsPending(false);
-    }
-  };
 
+      if (data.error) {
+        toast.error(data.error);
+        return;
+      }
+
+      toast.success(data.message);
+    });
+  };
   return (
     <form onSubmit={handleSubmit} className="space-y-3">
       <h1 className="h1 text-center">Lupa Password</h1>
@@ -38,18 +34,16 @@ export default function ForgotPasswordPage() {
 
       <Input
         id="email"
-        type="email"
+        // type="email"
         placeholder="Email Anda"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        required
+        // required
       />
 
-      <Button type="submit" pending={isPending} disabled={isPending} className="focus:border! focus:border-gray-500!">
+      <Button type="submit" pending={pending} disabled={pending} className="focus:border! focus:border-gray-500!">
         Kirim Tautan Reset
       </Button>
-
-      {message && <p className="text-sm text-center text-gray-600">{message}</p>}
     </form>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { createAddress } from "@/actions/address";
+import { createAddress } from "@/actions/account";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";

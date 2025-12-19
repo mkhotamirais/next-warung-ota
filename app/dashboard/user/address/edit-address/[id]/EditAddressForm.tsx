@@ -1,6 +1,6 @@
 "use client";
 
-import { updateAddress } from "@/actions/address";
+import { updateAddress } from "@/actions/account";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
@@ -28,18 +28,21 @@ export default function EditAddressForm({ address }: { address: Address }) {
   const router = useRouter();
 
   useEffect(() => {
-    if (address) {
-      setLabel(address?.label || "");
-      setRecipient(address.recipient);
-      setPhone(address.phone);
-      setStreet(address.street);
-      setProvince(address.province);
-      setRegency(address.regency);
-      setDistrict(address.district);
-      setVillage(address.village);
-      setPostalCode(address.postalCode);
-      setIsDefault(address.isDefault);
-    }
+    const settingInitialValues = () => {
+      if (address) {
+        setLabel(address?.label || "");
+        setRecipient(address.recipient);
+        setPhone(address.phone);
+        setStreet(address.street);
+        setProvince(address.province);
+        setRegency(address.regency);
+        setDistrict(address.district);
+        setVillage(address.village);
+        setPostalCode(address.postalCode);
+        setIsDefault(address.isDefault);
+      }
+    };
+    settingInitialValues();
   }, [address, setDistrict, setProvince, setRegency, setStreet, setVillage]);
 
   const handleSubmit = (e: React.FormEvent) => {

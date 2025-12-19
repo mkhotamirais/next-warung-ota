@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+export const ResetPasswordSchema = z
+  .object({
+    newPassword: z.string().min(8, "Password baru harus memiliki minimal 8 karakter"),
+    confirmNewPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "Konfirmasi password baru tidak cocok",
+    path: ["confirmNewPassword"],
+  });
+
 export const AddressSchema = z.object({
   label: z.string().min(1, "Label alamat wajib diisi."),
   recipient: z.string().min(3, "Nama penerima wajib diisi."),

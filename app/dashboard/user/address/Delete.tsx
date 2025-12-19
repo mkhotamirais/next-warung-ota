@@ -6,7 +6,7 @@ import Modal, { ModalClose } from "@/components/ui/Modal";
 import Button from "@/components/ui/Button";
 import { toast } from "sonner";
 import { useCloseDropdownMenu } from "@/components/ui/DropdownMenu";
-import { deleteAddress } from "@/actions/address";
+import { deleteAddress } from "@/actions/account";
 import { Address } from "@/lib/generated/prisma";
 
 interface DeleteProps {

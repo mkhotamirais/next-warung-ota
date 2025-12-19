@@ -3,13 +3,15 @@
 import { useSession } from "next-auth/react";
 import { useEffect, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import Button from "@/components/ui/Button";
+import { toast } from "sonner";
 
 export default function VerificationPending() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
   const [message, setMessage] = useState("");
-  const [isSending, startSending] = useTransition();
+  const [pending, startTransition] = useTransition();
 
   useEffect(() => {
     if (status === "authenticated" && session?.user?.emailVerified) {
@@ -22,15 +24,18 @@ export default function VerificationPending() {
   }
 
   const handleResend = () => {
-    startSending(async () => {
-      const res = await fetch("/api/account/send-verification", { method: "POST" });
+    startTransition(async () => {
+      const res = await fetch("/api/account/verify-email-request", { method: "POST" });
       const data = await res.json();
 
-      if (res.ok) {
-        setMessage("Tautan verifikasi baru telah dikirim! Cek inbox Anda.");
-      } else {
-        setMessage(`Gagal mengirim: ${data.message || "Terjadi kesalahan."}`);
+      if (data?.error) {
+        toast.error(data?.error);
+        setMessage(data?.error);
+        return;
       }
+
+      toast.success(data?.message);
+      setMessage(data?.message);
     });
   };
 
@@ -51,14 +56,9 @@ export default function VerificationPending() {
           {message}
         </div>
       )}
-      <button
-        type="button"
-        onClick={handleResend}
-        disabled={isSending}
-        className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50"
-      >
-        {isSending ? "Mengirim Ulang..." : "Kirim Ulang Email Verifikasi"}
-      </button>
+      <Button type="button" onClick={handleResend} disabled={pending} pending={pending}>
+        Kirim Ulang Email Verifikasi
+      </Button>
     </>
   );
 }

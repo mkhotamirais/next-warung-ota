@@ -4,7 +4,7 @@ import Button from "@/components/ui/Button";
 import React, { useState, useTransition } from "react";
 import { signOut } from "next-auth/react";
 import Input from "@/components/ui/Input";
-import { profileDeleteAccount } from "@/actions/profile";
+import { profileDeleteAccount } from "@/actions/account";
 import { toast } from "sonner";
 
 export default function DeleteAccount() {
@@ -16,7 +16,7 @@ export default function DeleteAccount() {
     e.preventDefault();
 
     startTransition(async () => {
-      // const res = await fetch("/api/account/delete-account", {
+      // const res = await fetch("/api/account/profile", {
       //   method: "DELETE",
       //   headers: { "Content-Type": "application/json" },
       //   body: JSON.stringify({ text }),

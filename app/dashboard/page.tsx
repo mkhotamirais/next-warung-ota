@@ -1,25 +1,19 @@
 import { auth } from "@/auth";
 import DashboardTitle from "./DashboardTitle";
-import Link from "next/link";
+import EmailVerificationBanner from "./EmailVerificationBanner";
+import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
   const session = await auth();
   const user = session?.user;
-  const isVerified = user?.emailVerified;
+  const isVerified = !!user?.emailVerified;
+
+  if (!user) return redirect("/login");
 
   return (
     <section>
-      {!isVerified && (
-        <div className="alert">
-          Akun anda belum ter-verifikasi, silahkan verifikasi terlebih dahulu dengan cek email anda, jika belum muncul
-          pesan verifikasi, silahkan{" "}
-          <Link href="/verification-pending" className="underline">
-            Kirim Ulang Email Verifikasi
-          </Link>
-        </div>
-      )}
-      <DashboardTitle />
-      <div>{session?.user.email}</div>
+      <EmailVerificationBanner isVerified={isVerified} />
+      <DashboardTitle user={user} />
     </section>
   );
 }

@@ -1,49 +1,50 @@
 import prisma from "@/lib/prisma";
-import { Resend } from "resend";
-import crypto from "crypto";
+import { ResetPasswordSchema } from "@/lib/zod";
+import { hash } from "bcrypt-ts";
+import z from "zod";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-const generateToken = () => {
-  return {
-    token: crypto.randomBytes(32).toString("hex"),
-    expires: new Date(Date.now() + 3600 * 1000),
-  };
-};
+const SALT_ROUNDS = 10;
 
 export const POST = async (req: Request) => {
-  const { email } = await req.json();
-
-  if (!email) {
-    return Response.json({ message: "Email required" }, { status: 400 });
-  }
-
   try {
-    const user = await prisma.user.findUnique({ where: { email } });
+    const { token, email, newPassword, confirmNewPassword } = await req.json();
 
-    if (!user) {
-      return Response.json({ message: "Jika email terdaftar, tautan reset telah dikirim." }, { status: 200 });
+    if (!token || !email) {
+      return Response.json({ error: "Token, email harus ada." }, { status: 400 });
     }
 
-    const { token, expires } = generateToken();
-    const resetLink = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}&email=${email}`;
+    // 1. Cari token di database (mencocokkan token DAN email pengguna)
+    const resetToken = await prisma.passwordResetToken.findFirst({ where: { token: token, User: { email: email } } });
+    if (!resetToken) {
+      return Response.json({ error: "Tautan reset tidak valid atau sudah digunakan." }, { status: 400 });
+    }
 
-    await prisma.passwordResetToken.upsert({
-      where: { userId: user.id },
-      update: { token, expires },
-      create: { userId: user.id, token, expires },
-    });
+    // 2. Cek masa kedaluwarsa
+    if (resetToken.expires < new Date())
+      return Response.json({ error: "Tautan reset sudah kedaluwarsa." }, { status: 400 });
 
-    await resend.emails.send({
-      from: process.env.EMAIL_FROM!,
-      to: email,
-      subject: "Reset Password Warungota",
-      html: `<p>Anda meminta reset password. Klik tautan berikut dalam 1 jam:</p><p><a href="${resetLink}">Reset Password</a></p>`,
-    });
+    // 3. Validasi Zod
+    const validatedFields = ResetPasswordSchema.safeParse({ newPassword, confirmNewPassword });
 
-    return Response.json({ message: "Jika email terdaftar, tautan reset telah dikirim." }, { status: 200 });
+    if (!validatedFields.success) {
+      return Response.json({ errors: z.treeifyError(validatedFields.error).properties }, { status: 400 });
+    }
+
+    // 4. Hash Password Baru
+    const hashedPassword = await hash(newPassword, SALT_ROUNDS);
+
+    // 5. Update User dan Hapus Token dalam satu transaksi
+    await prisma.$transaction([
+      prisma.user.update({ where: { id: resetToken.userId }, data: { password: hashedPassword } }),
+      prisma.passwordResetToken.delete({ where: { id: resetToken.id } }),
+    ]);
+
+    return Response.json(
+      { message: "Password berhasil direset! Anda akan dialihkan ke halaman login." },
+      { status: 200 }
+    );
   } catch (error) {
-    console.error("Password reset error:", error);
-    return Response.json({ message: "Internal server error." }, { status: 500 });
+    console.error("Reset password failed:", error);
+    return Response.json({ message: "Terjadi kesalahan server saat mereset password." }, { status: 500 });
   }
 };

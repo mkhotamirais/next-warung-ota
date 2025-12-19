@@ -1,4 +1,3 @@
-import Logo from "@/components/Logo";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
 import React from "react";

@@ -2,12 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 
 // const publicRoutes = ["/", "/about", "/contact", "/blog", "/product"];
-const authRoutes = ["/signin", "/signup", "/forgot-password", "/reset-password"];
+const authRoutes = ["/signin", "/signup", "/reset-password-request", "/reset-password"];
 const adminRoutes = ["/dashboard/admin"];
 // const userRoutes = ["/dashboard/user"];
 const userRoutes = ["/cart", "/checkout", "/dashboard/user"];
-const verifyRoutes = ["/verify"];
-const verifyPendingRotes = ["/verification-pending"];
+const verifyRoutes = ["/verify-email"];
+const verifyPendingRotes = ["/verify-email-request"];
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -47,7 +47,7 @@ export async function proxy(request: NextRequest) {
   }
 
   if (isLoggedIn && !isVerifiedEmail && (isUserRoute || isAdminRoute)) {
-    return NextResponse.redirect(new URL("/verification-pending", request.url));
+    return NextResponse.redirect(new URL("/verify-email-request", request.url));
   }
 
   return NextResponse.next();

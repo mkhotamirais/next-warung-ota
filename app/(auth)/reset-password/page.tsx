@@ -1,6 +1,5 @@
-import { Suspense } from "react";
 import { notFound } from "next/navigation";
-import ResetPasswordClientForm from "./ResetPasswordClientForm";
+import ResetPasswordForm from "./ResetPasswordForm";
 
 export default async function ResetPasswordPage({
   searchParams,
@@ -14,9 +13,5 @@ export default async function ResetPasswordPage({
     notFound();
   }
 
-  return (
-    <Suspense fallback={<div>Loading form...</div>}>
-      <ResetPasswordClientForm token={token} email={email} />
-    </Suspense>
-  );
+  return <ResetPasswordForm token={token} email={email} />;
 }

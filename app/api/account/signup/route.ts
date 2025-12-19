@@ -1,4 +1,3 @@
-// import { sendVerificationEmail } from "@/actions/send-verification";
 import { sendVerificationEmail } from "@/actions/send-verification";
 import prisma from "@/lib/prisma";
 import { SignupSchema } from "@/lib/zod";

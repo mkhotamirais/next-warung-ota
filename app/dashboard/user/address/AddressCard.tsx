@@ -3,7 +3,6 @@
 import Button from "@/components/ui/Button";
 import { Address } from "@/lib/generated/prisma";
 import { capitalize } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 import { HiDotsVertical } from "react-icons/hi";
 import Delete from "./Delete";
 import DropdownMenu, { DropdownMenuClose } from "@/components/ui/DropdownMenu";
