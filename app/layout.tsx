@@ -36,11 +36,16 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} flex flex-col min-h-screen`}>
         <NextAuthProviders>
           <ClientProvider>
-            <Toaster richColors position="top-center" swipeDirections={["bottom", "left", "right", "top"]} />
+            <Toaster
+              richColors
+              position="top-center"
+              swipeDirections={["bottom", "left", "right", "top"]}
+              duration={2000}
+            />
             <Header />
             {children}
-            <FooterMenuSticky />
-            <Footer className="hidden lg:block" />
+            {/* <FooterMenuSticky /> */}
+            <Footer />
           </ClientProvider>
         </NextAuthProviders>
       </body>

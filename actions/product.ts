@@ -52,6 +52,7 @@ interface GetProductParams {
   categorySlug?: string;
   userId?: string;
   keyword?: string;
+  keywordAdmin?: string;
   sortData?: SortType;
   minPrice?: number;
   maxPrice?: number;
@@ -64,6 +65,7 @@ export const getProducts = async ({
   categorySlug,
   userId,
   keyword = "",
+  keywordAdmin = "",
   sortData,
   minPrice,
   maxPrice,
@@ -80,6 +82,7 @@ export const getProducts = async ({
   if (categorySlug) whereClause.ProductCategory = { slug: categorySlug };
   if (userId) whereClause.userId = userId;
   if (keyword) whereClause.name = { contains: keyword, mode: "insensitive" };
+  if (keywordAdmin) whereClause.name = { contains: keywordAdmin, mode: "insensitive" };
   if (minPrice !== undefined && minPrice > 0) {
     whereClause.price = {
       gte: minPrice !== undefined ? minPrice : 0,

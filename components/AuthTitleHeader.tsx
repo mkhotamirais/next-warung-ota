@@ -11,12 +11,14 @@ interface AuthTitleHeaderProps {
 
 export default function AuthTitleHeader({ title, totalCount, url, label }: AuthTitleHeaderProps) {
   return (
-    <div className="mb-4 flex items-center justify-between">
+    <div className="flex items-center justify-between">
       <h2 className="h2">
         {title} ({totalCount})
       </h2>
       <Link href={url}>
-        <Button className="w-fit">{label}</Button>
+        <Button className="w-fit" variant="link">
+          {label}
+        </Button>
       </Link>
     </div>
   );

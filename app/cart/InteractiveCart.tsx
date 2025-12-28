@@ -130,7 +130,7 @@ export default function InteractiveCart({ cartItems, cartQty, totalPrice }: Inte
         )}
       </div>
       {cartItems?.length > 0 && (
-        <div className="sticky bottom-0 py-4 border-t border-gray-300 flex items-center justify-between bg-white">
+        <div className="sticky bottom-0 py-3 border-t border-gray-300 flex items-center justify-between bg-white">
           <div className="flex flex-col">
             <p>Total Price</p>
             <p className="font-semibold">

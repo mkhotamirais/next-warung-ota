@@ -6,8 +6,11 @@ import Logo from "../Logo";
 import Footer from "./Footer";
 import Link from "next/link";
 import { menu as m } from "@/lib/content";
+import { useSession } from "next-auth/react";
 
 export default function NavMobile() {
+  const { data: session } = useSession();
+
   const trigger = (
     <Button variant="ghost" size="sm">
       <LuMenu />
@@ -35,6 +38,17 @@ export default function NavMobile() {
             </DrawerClose>
           ))}
         </nav>
+        <hr className="py-2" />
+        <div>
+          <h2 className="mb-2">
+            Hi, <span className="font-semibold">{session?.user?.name}</span>
+          </h2>
+          <Link href={"/dashboard"}>
+            <Button variant="ghost" className="w-full justify-start">
+              Settings
+            </Button>
+          </Link>
+        </div>
         <Footer className="absolute bottom-0" />
       </div>
     </Drawer>

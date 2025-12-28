@@ -62,15 +62,11 @@ export default function AddToCartFromProductDetail({ product }: { product: Singl
     }
 
     startTransition(async () => {
-      const res = await upsertCartItem({
-        productId,
-        quantity: quantityToAdd,
-        actionType: "INCREMENT",
-      });
+      const res = await upsertCartItem({ productId, quantity: quantityToAdd, actionType: "INCREMENT" });
 
       if (res.error) {
         if (res.error === "Unauthorized") {
-          router.push("/signin");
+          router.replace("/signin");
           return;
         }
         toast.error(res.error);
