@@ -7,7 +7,7 @@ import { toast } from "sonner";
 
 export default function EmailVerificationBanner() {
   const [pending, startTransition] = useTransition();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const isVerified = !!session?.user?.emailVerified;
 
   const handleResend = () => {
@@ -21,6 +21,10 @@ export default function EmailVerificationBanner() {
       toast.success(data?.message);
     });
   };
+
+  if (status === "loading") {
+    return null;
+  }
 
   if (!isVerified) {
     return (

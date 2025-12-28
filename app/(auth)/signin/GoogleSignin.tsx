@@ -1,15 +1,22 @@
 "use client";
 
 import { FaGoogle } from "react-icons/fa";
-import { signInGoogle } from "@/actions/auth";
 import Button from "@/components/ui/Button";
+import { signIn } from "next-auth/react";
+import { useTransition } from "react";
 
 export function GoogleSignin() {
+  const [pending, startTransition] = useTransition();
+
+  const handleSignInGoogle = async () => {
+    startTransition(async () => {
+      await signIn("google", { redirectTo: "/dashboard" });
+    });
+  };
+
   return (
-    <form action={signInGoogle}>
-      <Button>
-        <FaGoogle className="mr-2" /> Signin with Google
-      </Button>
-    </form>
+    <Button disabled={pending} pending={pending} onClick={handleSignInGoogle}>
+      <FaGoogle className="mr-2" /> Signin with Google
+    </Button>
   );
 }
