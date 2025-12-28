@@ -6,23 +6,17 @@ import Edit from "./Edit";
 import Delete from "./Delete";
 import { BlogCategory } from "@/lib/generated/prisma";
 import Modal from "@/components/ui/Modal";
+// import { useBlogCategory } from "@/hooks/tanstack-hooks/useBlogCategory";
 
 export default function List({ blogCategories }: { blogCategories: BlogCategory[] | undefined }) {
   // export default function List() {
   const [isEdit, setIsEdit] = useState<string | null>(null);
+  // const { data: blogCategories, isLoading } = useBlogCategory();
+  // if (isLoading) return <div className="p-4 text-center">Loading categories...</div>;
 
-  // const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
-  // useEffect(() => {
-  //   const getBlogCategories = async () => {
-  //     const res = await fetch("/api/blog-category");
-  //     const result = await res.json();
-  //     setBlogCategories(result);
-  //   };
-  //   getBlogCategories();
-  // }, [blogCategories]);
-
-  if (!blogCategories?.length) return <h2 className="h2">No Blog Category</h2>;
-
+  if (!blogCategories || blogCategories.length === 0) {
+    return <h2 className="h2 text-center py-10">No Blog Category Found</h2>;
+  }
   const trigger = (
     <div aria-label="Delete" className="text-red-500 p-2 rounded border flex border-red-500">
       <FaTrash />
@@ -32,7 +26,7 @@ export default function List({ blogCategories }: { blogCategories: BlogCategory[
   return (
     <div>
       <h2 className="h2 mb-4">Blog Category List</h2>
-      {blogCategories?.map((category) => (
+      {blogCategories?.map((category: BlogCategory) => (
         <div key={category.id} className="flex items-center gap-2 mb-1">
           <div className="w-full">
             {isEdit === category.id ? (

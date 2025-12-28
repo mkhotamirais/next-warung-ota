@@ -6,21 +6,17 @@ import Edit from "./Edit";
 import Delete from "./Delete";
 import { ProductCategory } from "@/lib/generated/prisma";
 import Modal from "@/components/ui/Modal";
+// import { useProductCategory } from "@/hooks/tanstack-hooks/useProductCategory";
 
 export default function List({ productCategories }: { productCategories: ProductCategory[] | undefined }) {
   // export default function List() {
   const [isEdit, setIsEdit] = useState<string | null>(null);
-  // const [productCategories, setProductCategories] = useState<ProductCategory[]>([]);
-  // useEffect(() => {
-  //   const getProductCategories = async () => {
-  //     const res = await fetch("/api/product-category");
-  //     const result = await res.json();
-  //     setProductCategories(result);
-  //   };
-  //   getProductCategories();
-  // }, [productCategories]);
+  // const { data: productCategories, isLoading: pending } = useProductCategory();
+  // if (pending) return <div className="p-4 text-center">Loading categories...</div>;
 
-  if (!productCategories?.length) return <h2 className="h2">No Product Category</h2>;
+  if (!productCategories || productCategories.length === 0) {
+    return <h2 className="h2 text-center py-10">No Blog Category Found</h2>;
+  }
 
   const trigger = (
     <div aria-label="Delete" className="text-red-500 p-2 rounded border flex border-red-500">
@@ -33,7 +29,7 @@ export default function List({ productCategories }: { productCategories: Product
       <h2 className="h2 mb-4">Product Category List</h2>
       {productCategories
         // ?.sort((a, b) => a.name.localeCompare(b.name))
-        ?.map((category) => (
+        ?.map((category: ProductCategory) => (
           <div key={category.id} className="flex items-center gap-2 mb-1">
             <div className="w-full">
               {isEdit === category.id ? (

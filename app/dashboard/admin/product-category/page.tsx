@@ -11,6 +11,7 @@ export default async function ProductCategory() {
     <>
       <Create />
       <List productCategories={productCategories} />
+      {/* <List /> */}
     </>
   );
 }

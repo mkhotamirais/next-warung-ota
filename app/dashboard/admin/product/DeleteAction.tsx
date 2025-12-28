@@ -1,29 +1,34 @@
 "use client";
 
-import { deleteProduct } from "@/actions/product";
 import Button from "@/components/ui/Button";
+import { useCloseModal } from "@/components/ui/Modal";
+import { deleteProduct } from "@/actions/product";
+// import { useProduct } from "@/hooks/tanstack-hooks/useProduct";
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export default function DeleteAction({ slug }: { slug: string }) {
   const router = useRouter();
-  const [pending, startTransition] = useTransition();
+  const [pending, setPending] = useState(false);
+  // const { deleteProduct, isDeleting: pending } = useProduct();
+  const closeModal = useCloseModal();
 
-  const handleDelete = () => {
-    startTransition(async () => {
-      //   const res = await fetch(`/api/product/${slug}`, { method: "DELETE" });
-      //   const result = await res.json();
-      const result = await deleteProduct(slug);
+  const handleDelete = async () => {
+    setPending(true);
+    //   const res = await fetch(`/api/product/${slug}`, { method: "DELETE" });
+    //   const result = await res.json();
+    const result = await deleteProduct(slug);
 
-      if (result?.error) {
-        toast.error(result.error);
-        return;
-      }
-      toast.success(result.message);
-
-      router.refresh();
-    });
+    if (result?.error) {
+      toast.error(result.error);
+      setPending(false);
+      return;
+    }
+    setPending(false);
+    toast.success(result.message);
+    closeModal();
+    router.refresh();
   };
   return (
     <Button

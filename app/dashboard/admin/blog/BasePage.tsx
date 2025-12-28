@@ -1,6 +1,6 @@
 import { getBlogs } from "@/actions/blog";
 import List from "./List";
-import SearchBlogAdmin from "./SearchBlogAdmin";
+// import SearchBlogAdmin from "./SearchBlogAdmin";
 import AuthTitleHeader from "@/components/AuthTitleHeader";
 
 export default async function BasePage({ page, limit, keyword }: { page: number; limit: number; keyword?: string }) {
@@ -14,9 +14,9 @@ export default async function BasePage({ page, limit, keyword }: { page: number;
         url="/dashboard/admin/blog/create-blog"
         label="Create Blog"
       />
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <SearchBlogAdmin />
-      </div>
+      </div> */}
       <List
         blogs={blogs}
         page={page}

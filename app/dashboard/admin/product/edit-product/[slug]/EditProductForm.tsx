@@ -3,7 +3,7 @@
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Image from "next/image";
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState } from "react";
 import { FaTrash } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
@@ -12,6 +12,7 @@ import InputMultiple from "@/components/ui/InputMultiple";
 import { ProductCategory } from "@/lib/generated/prisma";
 import { SingleProductProps } from "@/types/types";
 import { toast } from "sonner";
+// import { useProduct } from "@/hooks/tanstack-hooks/useProduct";
 import { updateProduct } from "@/actions/product";
 
 export interface EditProductFormProps {
@@ -30,10 +31,10 @@ export default function EditProductForm({ productCategories, product }: EditProd
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(product.imageUrl);
   const [removeMainImage, setRemoveMainImage] = useState<boolean>(false);
-
   const [errors, setErrors] = useState<Record<string, { errors: string[] }>>();
+  const [pending, setPending] = useState(false);
+  // const { updateProduct, isUpdating: pending } = useProduct();
 
-  const [pending, startTransition] = useTransition();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -72,6 +73,7 @@ export default function EditProductForm({ productCategories, product }: EditProd
 
   const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setPending(true);
 
     const formData = new FormData();
     formData.append("name", name);
@@ -88,24 +90,27 @@ export default function EditProductForm({ productCategories, product }: EditProd
       formData.append("tags", tag);
     });
 
-    startTransition(async () => {
-      // const res = await fetch(`/api/product/${product.slug}`, { method: "PUT", body: formData });
-      // const result = await res.json();
-      const result = await updateProduct(product.id, formData);
+    // const res = await fetch(`/api/product/${product.slug}`, { method: "PUT", body: formData });
+    // const result = await res.json();
+    // const result = await updateProduct({ slug: product.slug, formData });
+    const result = await updateProduct(product.slug, formData);
 
-      if (result?.errors) {
-        setErrors(result.errors.properties);
-        return;
-      }
+    if (result?.errors) {
+      setErrors(result.errors.properties);
+      setPending(false);
+      return;
+    }
 
-      if (result?.error) {
-        toast.error(result.error);
-        return;
-      }
+    if (result?.error) {
+      toast.error(result.error);
+      setPending(false);
+      return;
+    }
 
-      router.back();
-      router.refresh();
-    });
+    setPending(false);
+    toast.success(result?.message);
+    router.refresh();
+    router.back();
   };
 
   return (

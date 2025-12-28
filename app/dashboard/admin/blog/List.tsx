@@ -1,10 +1,11 @@
-// "use client";
+"use client";
 
 import Pagination from "@/components/ui/Pagination";
 import BlogCardAdmin from "./BlogCardAdmin";
 import { BlogProps } from "@/types/types";
-// import { useEffect, useState } from "react";
+// import { useBlog } from "@/hooks/tanstack-hooks/useBlog";
 // import { useParams, useSearchParams } from "next/navigation";
+// import { useEffect, useState } from "react";
 
 interface BlogListProps {
   blogs: BlogProps[];
@@ -17,27 +18,18 @@ interface BlogListProps {
 
 export default function List({ blogs, page, limit, totalPages, totalBlogsCount }: BlogListProps) {
   // export default function List() {
-  // const [blogs, setBlogs] = useState<BlogProps[]>([]);
-  // const [totalBlogsCount, setTotalBlogsCount] = useState(0);
-  // const [totalPages, setTotalPages] = useState(0);
-
   // const searchParams = useSearchParams();
   // const params = useParams();
   // const page = Number(params.page || 1);
   // const limit = Number(searchParams.get("limit") || 8);
   // const keyword = searchParams.get("keyword");
 
-  // useEffect(() => {
-  //   const getBlogs = async () => {
-  //     const res = await fetch(`/api/blog?page=${page}&limit=${limit}&keyword=${keyword || ""}`);
-  //     const data = await res.json();
+  // const { data, isLoading } = useBlog(page, limit, keyword || "");
+  // const blogs = data?.blogs as BlogProps[];
+  // const totalPages = data?.totalPages as number;
+  // const totalBlogsCount = data?.totalBlogsCount as number;
 
-  //     setBlogs(data.blogs);
-  //     setTotalBlogsCount(data.totalBlogsCount);
-  //     setTotalPages(data.totalPages);
-  //   };
-  //   getBlogs();
-  // }, [blogs, page, limit, keyword]);
+  // if (isLoading) return <h2>Loading...</h2>;
 
   return (
     <>

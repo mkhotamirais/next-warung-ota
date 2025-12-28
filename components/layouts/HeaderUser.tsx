@@ -14,7 +14,7 @@ export default function HeaderUser() {
     initial = session.user.name?.charAt(0).toUpperCase() || "U";
   }
 
-  if (status === "loading") return null;
+  if (status === "loading") return <div className="bg-gray-300 rounded-full size-8"></div>;
 
   if (!session) {
     return (

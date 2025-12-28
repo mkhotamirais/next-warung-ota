@@ -1,37 +1,40 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
 import Button from "@/components/ui/Button";
 import { BlogCategory } from "@/lib/generated/prisma";
 import { toast } from "sonner";
 import { deleteBlogCategory } from "@/actions/blog-category";
 import { ModalClose, useCloseModal } from "@/components/ui/Modal";
+import { useState } from "react";
+// import { useBlogCategory } from "@/hooks/tanstack-hooks/useBlogCategory";
 
 interface DeleteProps {
   category: BlogCategory;
 }
 
 export default function Delete({ category }: DeleteProps) {
-  const [pending, startTransition] = useTransition();
   const router = useRouter();
+  const [pending, setPending] = useState(false);
   const closeModal = useCloseModal();
+  // const { deleteCategory, isDeleting: pending } = useBlogCategory();
 
-  const handleDelete = () => {
-    startTransition(async () => {
-      // const res = await fetch(`/api/blog-category/${category.id}`, { method: "DELETE" });
-      // const result = await res.json();
-      const result = await deleteBlogCategory(category.id);
+  const handleDelete = async () => {
+    setPending(true);
+    // const res = await fetch(`/api/blog-category/${category.id}`, { method: "DELETE" });
+    // const result = await res.json();
+    // const result = await deleteCategory(category.id);
+    const result = await deleteBlogCategory(category.id);
 
-      if (result?.error) {
-        toast.error(result.error);
-      }
-      closeModal();
-      router.refresh();
-      if (result?.message) {
-        toast.success(result.message);
-      }
-    });
+    if (result?.error) {
+      toast.error(result.error);
+      setPending(false);
+      return;
+    }
+    setPending(false);
+    toast.success(result.message);
+    closeModal();
+    router.refresh();
   };
 
   return (

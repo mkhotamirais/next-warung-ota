@@ -7,6 +7,7 @@ import CartBtn from "../CartBtn";
 import HeaderUser from "./HeaderUser";
 import NavDesktop from "./NavDesktop";
 import NavMobile from "./NavMobile";
+import { Suspense } from "react";
 
 export default function Header() {
   return (
@@ -18,8 +19,10 @@ export default function Header() {
         </div>
 
         <div className="flex items-center justify-between w-full sm:w-auto gap-1">
-          <HeaderSearch />
-          <HeaderFilter />
+          <Suspense fallback={"loading.."}>
+            <HeaderSearch />
+            <HeaderFilter />
+          </Suspense>
           <CartBtn />
           <div className="hidden lg:block">
             <HeaderUser />

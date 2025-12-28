@@ -1,8 +1,11 @@
+"use client";
+
 import { updateProductCategory } from "@/actions/product-category";
 import Input from "@/components/ui/Input";
+// import { useProductCategory } from "@/hooks/tanstack-hooks/useProductCategory";
 import { ProductCategory } from "@/lib/generated/prisma";
 import { useRouter } from "next/navigation";
-import { Dispatch, SetStateAction, useState, useTransition } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { FaCheck, FaSpinner, FaXmark } from "react-icons/fa6";
 import { toast } from "sonner";
 
@@ -13,9 +16,11 @@ interface EditProps {
 
 export default function Edit({ category, setIsEdit }: EditProps) {
   const [name, setName] = useState(category.name);
+  const [pending, setPending] = useState(false);
   const [errors, setErrors] = useState<Record<string, { errors: string[] }> | undefined>({});
-  const [pending, startTransition] = useTransition();
+  // const [pending, setPending] = useState(false)
   const router = useRouter();
+  // const { updateCategory, isUpdating: pending } = useProductCategory();
 
   const cancelEdit = () => {
     setIsEdit(null);
@@ -24,30 +29,35 @@ export default function Edit({ category, setIsEdit }: EditProps) {
 
   const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setPending(true);
 
-    startTransition(async () => {
-      // const res = await fetch(`/api/product-category/${category.id}`, {
-      //   method: "PUT",
-      //   body: JSON.stringify({ name }),
-      // });
-      // const result = await res.json();
-      const result = await updateProductCategory(category.id, { name });
+    // const res = await fetch(`/api/product-category/${category.id}`, {
+    //   method: "PUT",
+    //   body: JSON.stringify({ name }),
+    // });
+    // const result = await res.json();
+    // const result = await updateCategory({ id: category.id, name });
+    const result = await updateProductCategory(category.id, { name });
 
-      if (result?.errors) {
-        setErrors(result.errors.properties);
-        return;
-      }
+    if (result?.errors) {
+      setErrors(result.errors.properties);
+      setPending(false);
+      setTimeout(() => setErrors(undefined), 3000);
+      return;
+    }
 
-      if (result?.error) {
-        toast.error(result.error);
-        return;
-      }
-      setName(name);
-      setIsEdit(null);
+    if (result?.error) {
+      toast.error(result.error);
+      setPending(false);
+      return;
+    }
 
-      router.refresh();
-      toast.success(result?.message);
-    });
+    setPending(false);
+    setName(name);
+    setIsEdit(null);
+
+    router.refresh();
+    toast.success(result?.message);
   };
 
   return (

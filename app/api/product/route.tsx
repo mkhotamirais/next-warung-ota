@@ -5,7 +5,6 @@ import { ProductSchema } from "@/lib/zod";
 import { SortType } from "@/types/types";
 import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
-import { NextRequest } from "next/server";
 import z from "zod";
 
 const revalidateProduct = () => {
@@ -15,7 +14,7 @@ const revalidateProduct = () => {
   revalidatePath("/dashboard/admin/product");
 };
 
-export async function GET(req: NextRequest) {
+export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const limit = parseInt(searchParams.get("limit") || "8");
   const page = parseInt(searchParams.get("page") || "1");
@@ -100,7 +99,10 @@ export async function POST(req: Request) {
 
     const validatedFields = ProductSchema.safeParse(dataForValidation);
     if (!validatedFields.success) {
-      return Response.json({ errors: z.treeifyError(validatedFields.error).properties }, { status: 400 });
+      return Response.json(
+        { error: "Validation failed", errors: z.treeifyError(validatedFields.error) },
+        { status: 400 }
+      );
     }
 
     const { name, price, stock, slug, description, tags: validatedTags } = validatedFields.data;
@@ -138,7 +140,7 @@ export async function POST(req: Request) {
         description,
         imageUrl,
         userId,
-        categoryId,
+        categoryId: categoryId as string,
         tags: validatedTags as string[],
       },
     });
@@ -148,6 +150,7 @@ export async function POST(req: Request) {
     return Response.json({ message: "Product created successfully" }, { status: 201 });
   } catch (error) {
     console.log(error);
+    console.log("halo");
     return Response.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

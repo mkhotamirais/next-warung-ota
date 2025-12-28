@@ -1,11 +1,11 @@
 "use client";
 
 import { updateProfileData } from "@/actions/account";
-import Load from "@/components/fallbacks/Load";
+import FallbackUpdateData from "@/components/fallbacks/FallbackUpdateData";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { useSession } from "next-auth/react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState, useTransition } from "react";
 import { FaCheck, FaSpinner, FaX } from "react-icons/fa6";
 import { toast } from "sonner";
@@ -30,30 +30,6 @@ export default function UpdateDataForm() {
   const [isResend, setIsResend] = useState(false);
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirected = searchParams.get("redirected");
-
-  useEffect(() => {
-    const refreshData = async () => {
-      if (redirected && redirected === "update-email") {
-        await update({});
-        toast.success("Email updated!");
-        router.replace("/dashboard/profile");
-        return;
-      }
-    };
-    const timeout = setTimeout(() => {
-      refreshData();
-    }, 1000);
-
-    return () => clearTimeout(timeout);
-  }, [redirected, update, router]);
-
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.replace("/login");
-    }
-  }, [status, router]);
 
   useEffect(() => {
     const setInitialData = () => {
@@ -119,14 +95,12 @@ export default function UpdateDataForm() {
 
   const isDataUnchanged = isNameUnchanged && isPhoneUnchanged && isEmailUnchanged;
 
+  let content;
+
   if (status === "loading") {
-    return <Load />;
-  }
-
-  return (
-    <div className="mb-4">
-      <h2 className="h2 mb-2">Your Data</h2>
-
+    content = <FallbackUpdateData />;
+  } else {
+    content = (
       <form onSubmit={handleSubmit}>
         <Input
           label="Name"
@@ -188,6 +162,14 @@ export default function UpdateDataForm() {
           Save
         </Button>
       </form>
+    );
+  }
+
+  return (
+    <div className="mb-4">
+      <h2 className="h2 mb-2">Your Data</h2>
+      {/* <FallbackUpdateData /> */}
+      {content}
     </div>
   );
 }

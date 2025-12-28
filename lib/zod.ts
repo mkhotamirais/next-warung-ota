@@ -115,7 +115,8 @@ export const ProductSchema = z
         message: "Harga harus angka positif.",
       }),
     stock: z.coerce.number().min(0, { message: "Stock harus angka positif." }),
-    tags: z.array(z.string()).optional(),
+    tags: z.array(z.string()),
+    // categoryId: z.cuid("Invalid category ID"),
     categoryId: z.cuid("Invalid category ID"),
     image: z
       .any()

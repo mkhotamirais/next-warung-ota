@@ -30,15 +30,17 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     if (!session?.user?.id) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
-    const body = await req.json();
-    const validatedFields = AddressSchema.safeParse(body);
+    const formData = await req.formData();
+    const isDefault = formData.get("isDefault") === "false" ? false : true;
+    const rawData = Object.fromEntries(formData.entries());
+    const validatedFields = AddressSchema.safeParse({ ...rawData, isDefault });
 
     if (!validatedFields.success) {
       return Response.json({ errors: z.treeifyError(validatedFields.error).properties }, { status: 400 });
     }
 
     const userId = session.user.id;
-    const { isDefault, ...updateData } = validatedFields.data;
+    const { ...updateData } = validatedFields.data;
     const defaultStatus = isDefault ?? false;
 
     const updatedAddress = await prisma.$transaction(async (tx) => {

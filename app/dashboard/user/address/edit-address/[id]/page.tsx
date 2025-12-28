@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import EditAddressForm from "./EditAddressForm";
 import { getAddressById } from "@/actions/account";
+// import EditAddressWrapper from "./EditAddressWrapper";
 
 export default async function EditAddress({ params }: { params: Promise<{ id: string }> }) {
   const id = (await params).id;
@@ -9,4 +10,5 @@ export default async function EditAddress({ params }: { params: Promise<{ id: st
   if (!address) redirect("/dashboard/user/address");
 
   return <EditAddressForm address={address} />;
+  // return <EditAddressWrapper />;
 }

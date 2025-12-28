@@ -1,37 +1,40 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useTransition } from "react";
+import { useState } from "react";
 import Button from "@/components/ui/Button";
 import { ProductCategory } from "@/lib/generated/prisma";
 import { toast } from "sonner";
 import { deleteProductCategory } from "@/actions/product-category";
 import { ModalClose, useCloseModal } from "@/components/ui/Modal";
+// import { useProductCategory } from "@/hooks/tanstack-hooks/useProductCategory";
 
 interface DeleteProps {
   category: ProductCategory;
 }
 
 export default function Delete({ category }: DeleteProps) {
-  const [pending, startTransition] = useTransition();
+  const [pending, setPending] = useState(false);
   const router = useRouter();
   const closeModal = useCloseModal();
+  // const { deleteCategory, isDeleting: pending } = useProductCategory();
 
-  const handleDelete = () => {
-    startTransition(async () => {
-      // const res = await fetch(`/api/product-category/${category.id}`, { method: "DELETE" });
-      // const result = await res.json();
-      const result = await deleteProductCategory(category.id);
+  const handleDelete = async () => {
+    setPending(true);
+    // const res = await fetch(`/api/product-category/${category.id}`, { method: "DELETE" });
+    // const result = await res.json();
+    // const result = await deleteCategory(category.id);
+    const result = await deleteProductCategory(category.id);
 
-      if (result?.error) {
-        toast.error(result.error);
-      }
-      closeModal();
-      router.refresh();
-      if (result?.message) {
-        toast.success(result.message);
-      }
-    });
+    if (result?.error) {
+      toast.error(result.error);
+      setPending(false);
+      return;
+    }
+    setPending(false);
+    closeModal();
+    router.refresh();
+    toast.success(result.message);
   };
 
   return (

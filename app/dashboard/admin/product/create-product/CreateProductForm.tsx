@@ -3,7 +3,7 @@
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Image from "next/image";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useRef, useState } from "react";
 import { FaTrash } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
@@ -12,12 +12,15 @@ import InputMultiple from "@/components/ui/InputMultiple";
 import { ProductCategory } from "@/lib/generated/prisma";
 import { toast } from "sonner";
 import { createProduct } from "@/actions/product";
+// import { useProduct } from "@/hooks/tanstack-hooks/useProduct";
+// import { useProductCategory } from "@/hooks/tanstack-hooks/useProductCategory";
 
 export interface CreateProductFormProps {
   productCategories: ProductCategory[];
 }
 
 export default function CreateProductForm({ productCategories }: CreateProductFormProps) {
+  // export default function CreateProductForm() {
   const [name, setName] = useState<string>("");
   const [price, setPrice] = useState<string>("");
   const [stock, setStock] = useState<string>("");
@@ -26,26 +29,18 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
   const [tags, setTags] = useState<string[]>([]);
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-
   const [errors, setErrors] = useState<Record<string, { errors: string[] }>>();
+  const [pending, setPending] = useState(false);
+  // const { createProduct, isCreating: pending } = useProduct();
+  // const { data: productCategories }: { data: ProductCategory[] | undefined } = useProductCategory();
 
-  const [pending, startTransition] = useTransition();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const productCategoriesOptions = productCategories
-    .sort((a, b) => a.name.localeCompare(b.name))
+    ?.sort((a, b) => a.name.localeCompare(b.name))
     .map((category) => ({ label: category.name, value: category.id }));
-  const defaultCategory = productCategories.find((category) => category.isDefault)!;
-
-  useEffect(() => {
-    const settingCategoryId = () => {
-      if (defaultCategory && !categoryId) {
-        setCategoryId(defaultCategory.id);
-      }
-    };
-    settingCategoryId();
-  }, [defaultCategory, categoryId]);
+  const defaultCategory = productCategories?.find((category) => category.isDefault);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -71,13 +66,14 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
 
   const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setPending(true);
 
     const formData = new FormData();
     formData.append("name", name);
     formData.append("price", price);
     formData.append("stock", stock);
     formData.append("description", description);
-    formData.append("categoryId", categoryId);
+    formData.append("categoryId", categoryId || defaultCategory?.id || "");
 
     if (image) {
       formData.append("image", image as Blob);
@@ -86,38 +82,38 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
       formData.append("tags", tag);
     });
 
-    startTransition(async () => {
-      // const res = await fetch("/api/product", { method: "POST", body: formData });
-      // const result = await res.json();
-      const result = await createProduct(formData);
+    // const res = await fetch("/api/product", { method: "POST", body: formData });
+    // const result = await res.json();
+    // const result = await createProduct(formData);
+    const result = await createProduct(formData);
 
-      if (result?.errors) {
-        setErrors(result.errors.properties);
-        return;
-      }
+    if (result?.errors) {
+      setErrors(result.errors.properties);
+      setPending(false);
+      return;
+    }
 
-      if (result?.error) {
-        toast.error(result.error);
-        return;
-      }
+    if (result?.error) {
+      toast.error(result.error);
+      setPending(false);
+      return;
+    }
 
-      toast.success(result.message);
+    toast.success(result.message);
 
-      setName("");
-      setPrice("");
-      setStock("");
-      setDescription("");
-      setTags([]);
-      setCategoryId(defaultCategory.id);
-      setImage(null);
-      setImagePreview(null);
+    setName("");
+    setPrice("");
+    setStock("");
+    setDescription("");
+    setTags([]);
+    setCategoryId(defaultCategory?.id || "");
+    setImage(null);
+    setImagePreview(null);
 
-      if (fileInputRef.current) fileInputRef.current.value = "";
-
-      // router.replace("/dashboard/admin/product");
-      router.back();
-      router.refresh();
-    });
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    setPending(false);
+    router.back();
+    router.refresh();
   };
 
   return (
@@ -196,14 +192,14 @@ export default function CreateProductForm({ productCategories }: CreateProductFo
         <Select
           id="productCategory"
           label="Category"
-          options={productCategoriesOptions}
-          value={categoryId || defaultCategory.id}
+          value={categoryId}
+          options={productCategoriesOptions || []}
           onChange={(e) => setCategoryId(e.target.value)}
           error={errors?.categoryId?.errors}
         />
         <InputMultiple label="Tags" id="tags" value={tags} onChange={setTags} />
 
-        <Button type="submit" disabled={pending} pending={pending}>
+        <Button type="submit" disabled={pending} pending={pending} className="w-fit">
           Create Product
         </Button>
       </form>

@@ -1,10 +1,13 @@
-import { User } from "next-auth";
+"use client";
 
-interface DashboardTitleProps {
-  user: User | undefined;
-}
+import { useSession } from "next-auth/react";
 
-export default function DashboardTitle({ user }: DashboardTitleProps) {
+export default function DashboardTitle() {
+  const { data: session } = useSession();
+  const user = session?.user;
+
+  if (!user) return null;
+
   return (
     <div>
       Hi {user?.name} | {user?.email} | {user?.role} | {user?.emailVerified ? "Verified" : "Not Verified"}

@@ -13,7 +13,7 @@ export default async function BasePage({ page, limit }: { page: number; limit: n
         title="Address List"
         totalCount={totalAddressCount}
         url="/dashboard/user/address/create-address"
-        label="Add Address"
+        label="Create Address"
       />
       <List
         addresses={addresses}

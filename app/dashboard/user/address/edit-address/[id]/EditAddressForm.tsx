@@ -1,98 +1,80 @@
 "use client";
 
-import { updateAddress } from "@/actions/account";
+// import { updateAddress } from "@/actions/account";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
+import { useAddress } from "@/hooks/tanstack-hooks/useAddress";
 import useFetchAddress from "@/hooks/useFetchAddress";
 import { useFormAddress } from "@/hooks/useFormAddress";
 import { Address } from "@/lib/generated/prisma";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function EditAddressForm({ address }: { address: Address }) {
-  const [label, setLabel] = useState("");
-  const [recipient, setRecipient] = useState("");
-  const [phone, setPhone] = useState("");
-  const [street, setStreet] = useState("");
+  const [label, setLabel] = useState(address.label || "");
+  const [recipient, setRecipient] = useState(address.recipient);
+  const [phone, setPhone] = useState(address.phone);
+  const [street, setStreet] = useState(address.street);
+  const [postalCode, setPostalCode] = useState(address.postalCode);
+  const [isDefault, setIsDefault] = useState(address.isDefault);
   const { province, setProvince, regency, setRegency, district, setDistrict, village, setVillage } = useFormAddress();
   const [provinces, regencies, districts, villages, pendingProvince, pendingRegency, pendingDistrict] =
     useFetchAddress();
-  const [postalCode, setPostalCode] = useState("");
-  const [isDefault, setIsDefault] = useState(false);
-
+  // const [pending, setPending] = useState(false);
   const [errors, setErrors] = useState<Record<string, { errors: string[] }> | undefined>({});
-
-  const [pending, startTransation] = useTransition();
-  const router = useRouter();
+  const { updateAddress, isUpdating: pending } = useAddress();
 
   useEffect(() => {
-    const settingInitialValues = () => {
-      if (address) {
-        setLabel(address?.label || "");
-        setRecipient(address.recipient);
-        setPhone(address.phone);
-        setStreet(address.street);
-        setProvince(address.province);
-        setRegency(address.regency);
-        setDistrict(address.district);
-        setVillage(address.village);
-        setPostalCode(address.postalCode);
-        setIsDefault(address.isDefault);
-      }
-    };
-    settingInitialValues();
-  }, [address, setDistrict, setProvince, setRegency, setStreet, setVillage]);
+    setProvince(address.province);
+    setRegency(address.regency);
+    setDistrict(address.district);
+    setVillage(address.village);
+  }, [address, setProvince, setRegency, setDistrict, setVillage]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    // setPending(true)
 
-    startTransation(async () => {
-      //   const res = await fetch(`/api/account/address/${address.id}`, {
-      //     method: "PUT",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify({
-      //       label,
-      //       recipient,
-      //       phone,
-      //       street,
-      //       province,
-      //       regency,
-      //       district,
-      //       village,
-      //       postalCode,
-      //       isDefault,
-      //     }),
-      //   });
-      //   const result = await res.json();
-      const result = await updateAddress(address.id, {
-        label,
-        recipient,
-        phone,
-        street,
-        province,
-        regency,
-        district,
-        village,
-        postalCode,
-        isDefault,
-      });
+    const formData = new FormData(e.currentTarget);
+    formData.append("label", label);
+    formData.append("recipient", recipient);
+    formData.append("phone", phone);
+    formData.append("street", street);
+    formData.append("province", province);
+    formData.append("regency", regency);
+    formData.append("district", district);
+    formData.append("village", village);
+    formData.append("postalCode", postalCode);
+    formData.append("isDefault", String(isDefault));
 
-      if (result?.errors) {
-        setErrors(result.errors);
-        return;
-      }
+    // const res = await fetch(`/api/account/address/${address.id}`, {
+    //   method: "PUT",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: formData,
+    // });
+    // const result = await res.json();
+    const result = await updateAddress({ id: address.id, formData });
 
-      if (result?.error) {
-        toast.error(result.error);
-        return;
-      }
+    if (result?.errors) {
+      setErrors(result.errors);
+      // setPending(false);
+      return;
+    }
 
-      toast.success(result.message);
-      setErrors(undefined);
-      router.replace("/dashboard/user/address");
-    });
+    if (result?.error) {
+      toast.error(result.error);
+      // setPending(false);
+      return;
+    }
+
+    // setPending(false);
+    toast.success(result.message);
+    setErrors(undefined);
+    router.replace("/dashboard/user/address");
   };
 
   return (

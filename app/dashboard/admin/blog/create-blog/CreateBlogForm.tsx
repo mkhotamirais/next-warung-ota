@@ -3,7 +3,7 @@
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Image from "next/image";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useRef, useState } from "react";
 import { FaTrash } from "react-icons/fa6";
 import { useRouter } from "next/navigation";
 import Button from "@/components/ui/Button";
@@ -11,30 +11,28 @@ import TiptapEditor from "@/components/ui/tiptap/TiptapEditor";
 import { BlogCategory } from "@/lib/generated/prisma";
 import { toast } from "sonner";
 import { createBlog } from "@/actions/blog";
+// import { useBlog } from "@/hooks/tanstack-hooks/useBlog";
+// import { useBlogCategory } from "@/hooks/tanstack-hooks/useBlogCategory";
 
 export default function CreateBlogForm({ blogCategories }: { blogCategories: BlogCategory[] }) {
+  // export default function CreateBlogForm() {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [categoryId, setCategoryId] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, { errors: string[] }>>();
-  const [pending, startTransition] = useTransition();
+  const [pending, setPending] = useState(false);
+  // const { createBlog, isCreating: pending } = useBlog();
+  // const { data: blogCategories }: { data: BlogCategory[] | undefined } = useBlogCategory();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
-  const blogCategoriesOptions = blogCategories.map((category) => ({ label: category.name, value: category.id }));
-
-  const defaultCategory = blogCategories.find((category) => category.isDefault)!;
-  useEffect(() => {
-    const settingCategoryId = () => {
-      if (defaultCategory && !categoryId) {
-        setCategoryId(defaultCategory.id);
-      }
-    };
-    settingCategoryId();
-  }, [defaultCategory, categoryId]);
+  const blogCategoriesOptions = blogCategories
+    ?.sort((a, b) => a.name.localeCompare(b.name))
+    .map((category) => ({ label: category.name, value: category.id }));
+  const defaultCategory = blogCategories?.find((category) => category.isDefault);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -62,33 +60,36 @@ export default function CreateBlogForm({ blogCategories }: { blogCategories: Blo
 
   const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setPending(true);
 
     const formData = new FormData(e.currentTarget);
     formData.append("title", title);
     formData.append("content", content);
-    formData.append("categoryId", categoryId);
+    formData.append("categoryId", categoryId || defaultCategory?.id || "");
     if (image) {
       formData.append("image", image as Blob);
     }
 
-    startTransition(async () => {
-      // const res = await fetch("/api/blog", { method: "POST", body: formData });
-      // const result = await res.json();
-      const result = await createBlog(formData);
+    // const res = await fetch("/api/blog", { method: "POST", body: formData });
+    // const result = await res.json();
+    // const result = await createBlog(formData);
+    const result = await createBlog(formData);
 
-      if (result?.errors) {
-        setErrors(result.errors.properties);
-        return;
-      }
+    if (result?.errors) {
+      setErrors(result.errors.properties);
+      setPending(false);
+      return;
+    }
 
-      if (result?.error) {
-        toast.error(result.error);
-        return;
-      }
-      toast.success(result?.message);
-      router.refresh();
-      router.back();
-    });
+    if (result?.error) {
+      toast.error(result.error);
+      setPending(false);
+      return;
+    }
+    setPending(false);
+    toast.success(result?.message);
+    router.refresh();
+    router.back();
   };
 
   return (
@@ -126,8 +127,8 @@ export default function CreateBlogForm({ blogCategories }: { blogCategories: Blo
       <Select
         id="category"
         label="category"
-        value={categoryId || defaultCategory.id}
-        options={blogCategoriesOptions}
+        value={categoryId}
+        options={blogCategoriesOptions || []}
         onChange={(e) => setCategoryId(e.target.value)}
         error={errors?.categoryId?.errors}
       />

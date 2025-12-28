@@ -1,4 +1,4 @@
-import ProductList from "./ProductList";
+import List from "./List";
 import SearchProductAdmin from "./SearchProductAdmin";
 import { getProducts } from "@/actions/product";
 import AuthTitleHeader from "@/components/AuthTitleHeader";
@@ -16,7 +16,7 @@ export default async function BasePage({ page, limit, keyword }: { page: number;
       <div className="mb-4">
         <SearchProductAdmin />
       </div>
-      <ProductList
+      <List
         products={products}
         totalPages={totalPages}
         totalProductsCount={totalProductsCount}

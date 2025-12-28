@@ -309,37 +309,32 @@ export const getAddressById = async (id: string): Promise<Address | null> => {
   }
 };
 
-type AddressInputData = z.infer<typeof AddressSchema>;
 // POST /api/account/address
-export async function createAddress(data: AddressInputData) {
+export async function createAddress(formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const userId = session.user.id;
-  const validatedFields = AddressSchema.safeParse(data);
+  const isDefault = formData.get("isDefault") === "false" ? false : true;
+  const data = Object.fromEntries(formData.entries());
+  const validatedFields = AddressSchema.safeParse({ ...data, isDefault });
 
-  if (!validatedFields.success) return { errors: z.treeifyError(validatedFields.error).properties };
+  if (!validatedFields.success) return { errors: z.treeifyError(validatedFields.error) };
 
-  const { isDefault, ...addressData } = validatedFields.data;
+  const { ...addressData } = validatedFields.data;
   const cleanData = { ...addressData, label: addressData.label || "Alamat Baru" };
-  const defaultStatus = isDefault ?? false;
 
   try {
     const newAddress = await prisma.$transaction(async (tx) => {
       const addressCount = await tx.address.count({ where: { userId } });
       const isFirstAddress = addressCount === 0;
-      const newIsDefault = isFirstAddress || defaultStatus;
+      const newIsDefault = isFirstAddress || isDefault;
 
       if (newIsDefault && !isFirstAddress) {
-        await tx.address.updateMany({
-          where: { userId, isDefault: true },
-          data: { isDefault: false },
-        });
+        await tx.address.updateMany({ where: { userId, isDefault: true }, data: { isDefault: false } });
       }
 
-      return await tx.address.create({
-        data: { ...cleanData, userId, isDefault: newIsDefault },
-      });
+      return await tx.address.create({ data: { ...cleanData, userId, isDefault: newIsDefault } });
     });
 
     revalidatePath("/dashboard/account/address");
@@ -354,17 +349,18 @@ export async function createAddress(data: AddressInputData) {
 }
 
 // PUT /api/account/address/:id
-export async function updateAddress(id: string, data: AddressInputData) {
+export async function updateAddress(id: string, formData: FormData) {
   const session = await auth();
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const userId = session.user.id;
+  const isDefault = formData.get("isDefault") === "false" ? false : true;
+  const data = Object.fromEntries(formData.entries());
   const validatedFields = AddressSchema.safeParse(data);
 
   if (!validatedFields.success) return { errors: z.treeifyError(validatedFields.error).properties };
 
-  const { isDefault, ...updateData } = validatedFields.data;
-  const defaultStatus = isDefault ?? false;
+  const { ...updateData } = validatedFields.data;
 
   try {
     const updatedAddress = await prisma.$transaction(async (tx) => {
@@ -375,17 +371,11 @@ export async function updateAddress(id: string, data: AddressInputData) {
 
       if (!existingAddress) throw new Error("NOT_FOUND");
 
-      if (defaultStatus && !existingAddress.isDefault) {
-        await tx.address.updateMany({
-          where: { userId, isDefault: true },
-          data: { isDefault: false },
-        });
+      if (isDefault && !existingAddress.isDefault) {
+        await tx.address.updateMany({ where: { userId, isDefault: true }, data: { isDefault: false } });
       }
 
-      return await tx.address.update({
-        where: { id: existingAddress.id },
-        data: { ...updateData, isDefault: defaultStatus },
-      });
+      return await tx.address.update({ where: { id: existingAddress.id }, data: { ...updateData, isDefault } });
     });
 
     revalidatePath("/dashboard/account/address");
@@ -417,15 +407,9 @@ export async function deleteAddress(id: string) {
       await tx.address.delete({ where: { id: addressToDelete.id } });
 
       if (addressToDelete.isDefault) {
-        const remainingAddress = await tx.address.findFirst({
-          where: { userId },
-          orderBy: { createdAt: "asc" },
-        });
+        const remainingAddress = await tx.address.findFirst({ where: { userId }, orderBy: { createdAt: "asc" } });
         if (remainingAddress) {
-          await tx.address.update({
-            where: { id: remainingAddress.id },
-            data: { isDefault: true },
-          });
+          await tx.address.update({ where: { id: remainingAddress.id }, data: { isDefault: true } });
         }
       }
     });
@@ -533,5 +517,90 @@ export async function resetPassword(data: { token: string | null; email: string 
   } catch (error) {
     console.log(error);
     return { error: "Terjadi kesalahan server saat mereset password." };
+  }
+}
+
+export async function verifyEmailRequest() {
+  const session = await auth();
+  if (!session || !session.user || !session.user.email) return { error: "Unauthorized" };
+
+  const userEmail = session.user.email;
+
+  try {
+    if (session.user.pendingEmail) {
+      await sendEmailChangeVerification(session.user.pendingEmail, session.user.id);
+    } else {
+      await sendEmailVerification(userEmail, session.user.id);
+    }
+
+    return { message: "Email berhasil diverifikasi. Silakan cek email Anda." };
+  } catch (error) {
+    console.log(error);
+    return { error: "Terjadi kesalahan server saat memverifikasi email." };
+  }
+}
+
+export async function verifyEmail({ token, email }: { token: string; email: string }) {
+  try {
+    const normalizedEmail = email.toLowerCase();
+
+    const verificationToken = await prisma.verificationToken.findFirst({
+      where: { identifier: normalizedEmail, token },
+    });
+
+    if (!verificationToken) {
+      const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+      if (user?.emailVerified) return { success: true, message: "Email already verified" };
+      return { error: "Token not found or invalid" };
+    }
+
+    if (verificationToken.expires < new Date()) {
+      await prisma.verificationToken.deleteMany({ where: { identifier: normalizedEmail, token } });
+      return { error: "Token has expired" };
+    }
+
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { email: normalizedEmail },
+        data: { emailVerified: new Date() },
+      }),
+      prisma.verificationToken.deleteMany({
+        where: { identifier: normalizedEmail, token },
+      }),
+    ]);
+
+    revalidatePath("/dashboard");
+    return { success: true, message: "Email successfully verified" };
+  } catch (error) {
+    console.error("Verification error:", error);
+    return { error: "Internal Server Error" };
+  }
+}
+
+export async function verifyEmailChange({ token, userId }: { token: string; userId: string }) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId, emailChangeVerificationToken: token },
+      select: { pendingEmail: true },
+    });
+
+    if (!user) return { error: "Token not found or invalid" };
+    if (!user.pendingEmail) return { error: "No pending email found" };
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        email: user.pendingEmail,
+        emailVerified: new Date(),
+        pendingEmail: null,
+        emailChangeVerificationToken: null,
+      },
+    });
+
+    revalidatePath("/dashboard/profile");
+    return { success: true, message: "Email successfully updated" };
+  } catch (error) {
+    console.error("Email change error:", error);
+    return { error: "Internal Server Error" };
   }
 }

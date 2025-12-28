@@ -1,3 +1,13 @@
+export const routes = {
+  //  publicRoutes = ["/", "/about", "/contact", "/blog", "/product"],
+  authRoutes: ["/signin", "/signup", "/reset-password-request", "/reset-password"],
+  adminRoutes: ["/dashboard/admin"],
+  // const userRoutes = ["/dashboard/user"],
+  userRoutes: ["/cart", "/checkout", "/dashboard/user"],
+  verifyRoutes: ["/verify-email"],
+  verifyPendingRotes: ["/verify-email-request"],
+};
+
 export const menu = {
   mainMenu: [
     { label: "Home", url: "/" },

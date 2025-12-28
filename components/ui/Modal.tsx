@@ -115,13 +115,13 @@ export default function Modal({ trigger, className, contentClassName, children }
   } as React.Attributes);
 
   const ModalContent = (
-    <dialog
+    <div
       onClick={() => setOpen(false)}
       className={clsx(
         "z-50 fixed w-full h-full inset-0 flex bg-black/50 items-center justify-center transition-opacity",
         open ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
       )}
-      aria-hidden={!open}
+      // aria-hidden={!open}
     >
       <div
         id="modal-content"
@@ -136,7 +136,7 @@ export default function Modal({ trigger, className, contentClassName, children }
       >
         {children}
       </div>
-    </dialog>
+    </div>
   );
 
   return (

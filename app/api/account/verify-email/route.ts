@@ -1,46 +1,84 @@
 import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
-  let token: string;
-  let email: string;
-
   try {
-    const bodyText = await req.text();
-    if (!bodyText) return Response.json({ message: "Missing token and email in request body." }, { status: 400 });
+    const body = await req.json().catch(() => null);
+    const { token, email } = body || {};
 
-    const body = JSON.parse(bodyText);
-    token = body.token;
-    email = body.email;
-  } catch (error) {
-    console.log(error);
-    return Response.json({ message: "Invalid JSON format in request." }, { status: 400 });
-  }
+    if (!token || !email) {
+      return Response.json({ message: "Token and email are required" }, { status: 400 });
+    }
 
-  try {
-    const verificationToken = await prisma.verificationToken.findFirst({ where: { identifier: email, token } });
+    const normalizedEmail = email.toLowerCase();
+
+    const verificationToken = await prisma.verificationToken.findFirst({
+      where: { identifier: normalizedEmail, token },
+    });
 
     if (!verificationToken) {
-      const user = await prisma.user.findUnique({ where: { email } });
-      if (user && user.emailVerified) return Response.json({ message: "Email already verified" }, { status: 200 });
-      return Response.json({ message: "Token not found or invalid" }, { status: 404 });
+      const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+      const status = user?.emailVerified ? 200 : 404;
+      const message = user?.emailVerified ? "Email already verified" : "Token not found or invalid";
+      return Response.json({ message }, { status });
     }
 
     if (verificationToken.expires < new Date()) {
-      await prisma.verificationToken.deleteMany({ where: { identifier: email, token: token } });
+      await prisma.verificationToken.deleteMany({ where: { identifier: normalizedEmail, token } });
       return Response.json({ message: "Token has expired" }, { status: 400 });
     }
 
-    const [updatedUser] = await prisma.$transaction([
-      prisma.user.update({ where: { email: email }, data: { emailVerified: new Date() } }),
-      prisma.verificationToken.deleteMany({ where: { identifier: email, token: token } }),
+    await prisma.$transaction([
+      prisma.user.update({
+        where: { email: normalizedEmail },
+        data: { emailVerified: new Date() },
+      }),
+      prisma.verificationToken.deleteMany({
+        where: { identifier: normalizedEmail, token },
+      }),
     ]);
 
-    return Response.json(
-      { message: "Email successfully verified", email: updatedUser.email },
-      { status: 200, headers: { "Content-Type": "application/json" } }
-    );
+    return Response.json({ message: "Email successfully verified" });
   } catch (error) {
     console.error("Verification error:", error);
     return Response.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }
+
+// import prisma from "@/lib/prisma";
+
+// export async function POST(req: Request) {
+//   try {
+//     const body = await req.json().catch(() => null);
+
+//     if (!body?.token || !body?.email)
+//       return Response.json({ message: "Token and email are required." }, { status: 400 });
+
+//     const { token, email } = body;
+//     const normalizedEmail = email.toLowerCase();
+
+//     const verificationToken = await prisma.verificationToken.findFirst({
+//       where: { identifier: normalizedEmail, token },
+//     });
+
+//     if (!verificationToken) {
+//       const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
+//       if (user?.emailVerified) return Response.json({ message: "Email already verified" }, { status: 200 });
+//       return Response.json({ message: "Token not found or invalid" }, { status: 404 });
+//     }
+
+//     if (verificationToken.expires < new Date()) {
+//       await prisma.verificationToken.deleteMany({ where: { identifier: normalizedEmail, token } });
+//       return Response.json({ message: "Token has expired" }, { status: 400 });
+//     }
+
+//     const [updatedUser] = await prisma.$transaction([
+//       prisma.user.update({ where: { email: normalizedEmail }, data: { emailVerified: new Date() } }),
+//       prisma.verificationToken.deleteMany({ where: { identifier: normalizedEmail, token } }),
+//     ]);
+
+//     return Response.json({ message: "Email successfully verified", email: updatedUser.email }, { status: 200 });
+//   } catch (error) {
+//     console.error("Verification error:", error);
+//     return Response.json({ message: "Internal Server Error" }, { status: 500 });
+//   }
+// }

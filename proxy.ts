@@ -1,13 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
-
-// const publicRoutes = ["/", "/about", "/contact", "/blog", "/product"];
-const authRoutes = ["/signin", "/signup", "/reset-password-request", "/reset-password"];
-const adminRoutes = ["/dashboard/admin"];
-// const userRoutes = ["/dashboard/user"];
-const userRoutes = ["/cart", "/checkout", "/dashboard/user"];
-const verifyRoutes = ["/verify-email"];
-const verifyPendingRotes = ["/verify-email-request"];
+import { routes as r } from "@/lib/content";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -20,11 +13,11 @@ export async function proxy(request: NextRequest) {
   const isVerifiedEmail = !!session?.user.emailVerified;
 
   // const isPublicRoute = publicRoutes.some((route) => pathname.startsWith(route));
-  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
-  const isAdminRoute = adminRoutes.some((route) => pathname.startsWith(route));
-  const isUserRoute = userRoutes.some((route) => pathname.startsWith(route));
-  const isVerifyRoute = verifyRoutes.some((route) => pathname.startsWith(route));
-  const isVerifyPendingRoute = verifyPendingRotes.some((route) => pathname.startsWith(route));
+  const isAuthRoute = r.authRoutes.some((route) => pathname.startsWith(route));
+  const isAdminRoute = r.adminRoutes.some((route) => pathname.startsWith(route));
+  const isUserRoute = r.userRoutes.some((route) => pathname.startsWith(route));
+  const isVerifyRoute = r.verifyRoutes.some((route) => pathname.startsWith(route));
+  const isVerifyPendingRoute = r.verifyPendingRotes.some((route) => pathname.startsWith(route));
 
   if (!isLoggedIn && (isUserRoute || isVerifyPendingRoute || isVerifyRoute || pathname.startsWith("/dashboard"))) {
     return NextResponse.redirect(new URL("/signin", request.url));

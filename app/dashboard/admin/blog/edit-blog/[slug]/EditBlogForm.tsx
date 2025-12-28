@@ -3,15 +3,16 @@
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import Image from "next/image";
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState } from "react";
 import { FaTrash } from "react-icons/fa6";
-import { useRouter } from "next/navigation";
 import { BlogCategory } from "@/lib/generated/prisma";
 import { BlogProps } from "@/types/types";
 import Button from "@/components/ui/Button";
 import TiptapEditor from "@/components/ui/tiptap/TiptapEditor";
 import { toast } from "sonner";
 import { updateBlog } from "@/actions/blog";
+import { useRouter } from "next/navigation";
+// import { useBlog } from "@/hooks/tanstack-hooks/useBlog";
 
 interface UpdateBlogFormProps {
   blogCategories: BlogCategory[];
@@ -19,52 +20,22 @@ interface UpdateBlogFormProps {
 }
 
 export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormProps) {
-  // export default function EditBlogForm() {
-  // const params = useParams();
-  // const slug = params.slug;
-
-  // const [blog, setBlog] = useState<BlogProps | null>(null);
-  // const [blogCategories, setBlogCategories] = useState<BlogCategory[]>([]);
   const [title, setTitle] = useState(blog?.title);
   const [content, setContent] = useState(blog?.content);
-
-  // const [title, setTitle] = useState("");
-  // const [content, setContent] = useState("");
-  // const [categoryId, setCategoryId] = useState("");
   const [categoryId, setCategoryId] = useState(blog?.categoryId);
   const [image, setImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const [errors, setErrors] = useState<Record<string, { errors: string[] }>>();
-  const [pending, startTransition] = useTransition();
+  const [pending, setPending] = useState(false);
   const router = useRouter();
+  // const { updateBlog, isUpdating: pending } = useBlog();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const blogCategoriesOptions = blogCategories.map((category) => ({ label: category.name, value: category.id }));
+  const blogCategoriesOptions = blogCategories?.map((category) => ({ label: category.name, value: category.id }));
 
-  // useEffect(() => {
-  //   const getBlogCategories = async () => {
-  //     const res = await fetch("/api/blog-category");
-  //     const data = await res.json();
-  //     setBlogCategories(data);
-  //   };
-  //   getBlogCategories();
-  // }, []);
-
-  // useEffect(() => {
-  //   const getBlog = async () => {
-  //     const res = await fetch(`/api/blog/${slug}`);
-  //     const blog = await res.json();
-  //     setTitle(blog.title);
-  //     setContent(blog.content);
-  //     setCategoryId(blog.categoryId!);
-  //     setImagePreview(blog.imageUrl!);
-  //   };
-  //   getBlog();
-  // }, [slug]);
-
-  const defaultCategory = blogCategories.find((category) => category.isDefault)!;
+  const defaultCategory = blogCategories?.find((category) => category.isDefault);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -91,8 +62,10 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
     }
   };
 
-  const handleUpdate = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setPending(true);
+
     const formData = new FormData(e.currentTarget);
     formData.append("title", title);
     formData.append("content", content);
@@ -101,23 +74,26 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
       formData.append("image", image as Blob);
     }
 
-    startTransition(async () => {
-      // const res = await fetch(`/api/blog/${slug}`, { method: "PUT", body: formData });
-      // const result = await res.json();
-      const result = await updateBlog(blog.slug, formData);
-      if (result?.errors) {
-        setErrors(result.errors.properties);
-        return;
-      }
-      if (result?.error) {
-        toast.error(result.error);
-        return;
-      }
-      toast.success(result?.message);
-      router.refresh();
-      router.back();
-    });
+    // const res = await fetch(`/api/blog/${slug}`, { method: "PUT", body: formData });
+    // const result = await res.json();
+    // const result = await updateBlog({ slug: blog.slug, formData });
+    const result = await updateBlog(blog.slug, formData);
+    if (result?.errors) {
+      setErrors(result.errors.properties);
+      setPending(false);
+      return;
+    }
+    if (result?.error) {
+      toast.error(result.error);
+      setPending(false);
+      return;
+    }
+    setPending(false);
+    toast.success(result?.message);
+    router.refresh();
+    router.back();
   };
+
   return (
     <form onSubmit={handleUpdate}>
       {/* image */}
@@ -175,7 +151,7 @@ export default function EditBlogForm({ blogCategories, blog }: UpdateBlogFormPro
       <Select
         id="blogCategory"
         label="Category"
-        options={blogCategoriesOptions}
+        options={blogCategoriesOptions || []}
         value={categoryId || defaultCategory?.id}
         onChange={(e) => setCategoryId(e.target.value)}
         error={errors?.categoryId?.errors}

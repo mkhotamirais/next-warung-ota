@@ -60,7 +60,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ slug: st
     const validatedFields = ProductSchema.safeParse({ ...rawData, image: imageFile, tags });
 
     if (!validatedFields.success) {
-      return Response.json({ errors: z.treeifyError(validatedFields.error).properties }, { status: 400 });
+      return Response.json({ errors: z.treeifyError(validatedFields.error) }, { status: 400 });
     }
 
     const { name, price, stock, slug: newSlug, description, tags: validatedTags, categoryId } = validatedFields.data;

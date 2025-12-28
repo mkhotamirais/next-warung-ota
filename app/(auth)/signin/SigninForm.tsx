@@ -3,7 +3,7 @@
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { SigninSchema } from "@/lib/zod";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState, useTransition } from "react";
@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import z from "zod";
 
 export default function SigninForm() {
+  const { update } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [pending, startTransition] = useTransition();
@@ -39,6 +40,7 @@ export default function SigninForm() {
           toast.error("Terjadi kesalahan yang tidak diketahui.", { position: "top-center" });
         }
       } else {
+        await update({});
         router.push("/dashboard");
       }
     });

@@ -1,11 +1,14 @@
 "use client";
 
 import Button from "@/components/ui/Button";
+import { useSession } from "next-auth/react";
 import React, { useTransition } from "react";
 import { toast } from "sonner";
 
-export default function EmailVerificationBanner({ isVerified }: { isVerified: boolean }) {
+export default function EmailVerificationBanner() {
   const [pending, startTransition] = useTransition();
+  const { data: session } = useSession();
+  const isVerified = !!session?.user?.emailVerified;
 
   const handleResend = () => {
     startTransition(async () => {

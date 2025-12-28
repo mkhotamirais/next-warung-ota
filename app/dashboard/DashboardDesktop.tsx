@@ -31,8 +31,15 @@ export default function DashboardDesktop() {
           </Button>
         </Link>
       ))}
-      <Button type="button" variant="secondary" onClick={handleLogout} className="w-full mt-2" disabled={pendingLogout}>
-        {pendingLogout ? "Pending.." : "Logout"}
+      <Button
+        type="button"
+        variant="secondary"
+        onClick={handleLogout}
+        className="w-full mt-2"
+        disabled={pendingLogout}
+        pending={pendingLogout}
+      >
+        Logout
       </Button>
     </div>
   );

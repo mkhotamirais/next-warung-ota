@@ -1,14 +1,15 @@
 "use client";
 
-import { createAddress } from "@/actions/account";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import useAddresses from "@/hooks/useFetchAddress";
 import { useFormAddress } from "@/hooks/useFormAddress";
 import { useRouter } from "next/navigation";
-import React, { useState, useTransition } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
+// import { useAddress } from "@/hooks/tanstack-hooks/useAddress";
+import { createAddress } from "@/actions/account";
 
 export default function CreateAddressForm() {
   const [label, setLabel] = useState("");
@@ -19,71 +20,62 @@ export default function CreateAddressForm() {
   const [provinces, regencies, districts, villages, pendingProvince, pendingRegency, pendingDistrict] = useAddresses();
   const [postalCode, setPostalCode] = useState("");
   const [isDefault, setIsDefault] = useState(false);
-
+  const [pending, setPending] = useState(false);
   const [errors, setErrors] = useState<Record<string, { errors: string[] }> | undefined>({});
+  // const { createAddress, isCreating: pending } = useAddress();
 
-  const [pending, startTransation] = useTransition();
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setPending(true);
 
-    startTransation(async () => {
-      //   const res = await fetch("/api/account/address", {
-      //     method: "POST",
-      //     headers: { "Content-Type": "application/json" },
-      //     body: JSON.stringify({
-      //       label,
-      //       recipient,
-      //       phone,
-      //       street,
-      //       province,
-      //       regency,
-      //       district,
-      //       village,
-      //       postalCode,
-      //       isDefault,
-      //     }),
-      //   });
-      //   const result = await res.json();
-      const result = await createAddress({
-        label,
-        recipient,
-        phone,
-        street,
-        province,
-        regency,
-        district,
-        village,
-        postalCode,
-        isDefault,
-      });
+    const formData = new FormData(e.currentTarget);
+    formData.append("label", label);
+    formData.append("recipient", recipient);
+    formData.append("phone", phone);
+    formData.append("street", street);
+    formData.append("province", province);
+    formData.append("regency", regency);
+    formData.append("district", district);
+    formData.append("village", village);
+    formData.append("postalCode", postalCode);
+    formData.append("isDefault", String(isDefault));
 
-      if (result?.errors) {
-        setErrors(result.errors);
-        return;
-      }
+    // const res = await fetch("/api/account/address", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(formData),
+    // });
+    // const result = await res.json();
+    const result = await createAddress(formData);
 
-      if (result?.error) {
-        toast.error(result.error);
-        return;
-      }
+    if (result?.errors) {
+      setErrors(result.errors.properties);
+      setPending(false);
+      return;
+    }
 
-      toast.success(result.message);
-      setErrors(undefined);
+    if (result?.error) {
+      toast.error(result.error);
+      setPending(false);
+      return;
+    }
 
-      setLabel("");
-      setRecipient("");
-      setPhone("");
-      setStreet("");
-      setProvince("");
-      setRegency("");
-      setDistrict("");
-      setVillage("");
-      setPostalCode("");
-      setIsDefault(false);
-      router.push("/dashboard/user/address");
-    });
+    setPending(false);
+    setErrors(undefined);
+    toast.success(result.message);
+    setLabel("");
+    setRecipient("");
+    setPhone("");
+    setStreet("");
+    setProvince("");
+    setRegency("");
+    setDistrict("");
+    setVillage("");
+    setPostalCode("");
+    setIsDefault(false);
+    router.push("/dashboard/user/address");
   };
 
   return (

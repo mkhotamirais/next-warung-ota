@@ -19,9 +19,7 @@ const revalidateProduct = () => {
 export async function getProductNames(keywords?: string) {
   if (!keywords) return [];
 
-  const whereClause: {
-    name?: { contains: string; mode: "insensitive" };
-  } = {};
+  const whereClause: { name?: { contains: string; mode: "insensitive" } } = {};
 
   whereClause.name = { contains: keywords, mode: "insensitive" };
 
@@ -192,7 +190,7 @@ export async function createProduct(formData: FormData) {
 }
 
 // PUT /api/product/:id
-export async function updateProduct(productId: string, formData: FormData) {
+export async function updateProduct(slug: string, formData: FormData) {
   const session = await auth();
   if (!session || !session.user || session.user.role !== "ADMIN") {
     return { error: "Unauthorized" };
@@ -212,22 +210,18 @@ export async function updateProduct(productId: string, formData: FormData) {
     return { errors: z.treeifyError(validatedFields.error) };
   }
 
-  const { name, price, stock, slug, description, tags: validatedTags, categoryId } = validatedFields.data;
+  const { name, price, stock, description, tags: validatedTags, categoryId } = validatedFields.data;
 
   try {
     const oldProduct = await prisma.product.findUnique({
-      where: { id: productId },
-      select: { name: true, imageUrl: true },
+      where: { slug },
+      select: { name: true, slug: true, imageUrl: true },
     });
 
-    if (!oldProduct) {
-      return { error: "Produk tidak ditemukan." };
-    }
+    if (!oldProduct) return { error: "Produk tidak ditemukan." };
 
-    const existingProductByName = await prisma.product.findFirst({ where: { name, id: { not: productId } } });
-    if (existingProductByName) {
-      return { error: "Nama produk sudah ada." };
-    }
+    const existingProductByName = await prisma.product.findFirst({ where: { name, slug: { not: slug } } });
+    if (existingProductByName) return { error: "Nama produk sudah ada." };
 
     let imageUrlUpdate = oldProduct.imageUrl;
 
@@ -248,7 +242,7 @@ export async function updateProduct(productId: string, formData: FormData) {
     }
 
     await prisma.product.update({
-      where: { id: productId },
+      where: { slug },
       data: {
         name,
         price,
@@ -271,7 +265,7 @@ export async function updateProduct(productId: string, formData: FormData) {
 }
 
 // DELETE /api/product/:id
-export async function deleteProduct(productId: string) {
+export async function deleteProduct(slug: string) {
   const session = await auth();
   if (!session || !session.user || session.user.role !== "ADMIN") {
     return { error: "Unauthorized" };
@@ -279,13 +273,11 @@ export async function deleteProduct(productId: string) {
 
   try {
     const existingProduct = await prisma.product.findUnique({
-      where: { id: productId },
-      select: { id: true, imageUrl: true },
+      where: { slug },
+      select: { id: true, slug: true, imageUrl: true },
     });
 
-    if (!existingProduct) {
-      return { success: false, message: "Produk tidak ditemukan." };
-    }
+    if (!existingProduct) return { success: false, message: "Produk tidak ditemukan." };
 
     if (existingProduct.imageUrl) {
       try {
@@ -295,7 +287,7 @@ export async function deleteProduct(productId: string) {
       }
     }
 
-    await prisma.product.delete({ where: { id: productId } });
+    await prisma.product.delete({ where: { slug } });
 
     revalidateProduct();
 

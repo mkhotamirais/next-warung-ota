@@ -1,43 +1,49 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useRef, useState, useTransition } from "react";
+import { useRef, useState } from "react";
 import Button from "@/components/ui/Button";
 import { toast } from "sonner";
 import Input from "@/components/ui/Input";
 import { createProductCategory } from "@/actions/product-category";
+// import { useProductCategory } from "@/hooks/tanstack-hooks/useProductCategory";
 
 export default function Create() {
-  const [pending, startTransition] = useTransition();
   const [name, setName] = useState("");
+  const [pending, setPending] = useState(false);
   const [errors, setErrors] = useState<Record<string, { errors: string[] }> | undefined>({});
+  // const { createCategory, isCreating: pending } = useProductCategory();
 
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setPending(true);
 
-    startTransition(async () => {
-      // const res = await fetch("/api/product-category", { method: "POST", body: JSON.stringify({ name }) });
-      // const result = await res.json();
-      const result = await createProductCategory({ name });
+    // const res = await fetch("/api/product-category", { method: "POST", body: JSON.stringify({ name }) });
+    // const result = await res.json();
+    // const result = await createCategory(name);
+    const result = await createProductCategory({ name });
 
-      if (result?.errors) {
-        setErrors(result.errors.properties);
-        return;
-      }
+    if (result?.errors) {
+      setErrors(result.errors.properties);
+      setPending(false);
+      setTimeout(() => setErrors(undefined), 3000);
+      return;
+    }
 
-      if (result?.error) {
-        toast.error(result.error);
-        return;
-      }
-      setName("");
+    if (result?.error) {
+      toast.error(result.error);
+      setPending(false);
+      return;
+    }
+    setName("");
 
-      router.refresh();
-      toast.success(result?.message);
-      inputRef.current?.blur();
-    });
+    setPending(false);
+    toast.success(result?.message);
+    router.refresh();
+    inputRef.current?.blur();
   };
 
   return (

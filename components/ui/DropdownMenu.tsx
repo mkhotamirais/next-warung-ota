@@ -146,7 +146,7 @@ export default function DropdownMenu({ trigger, className, children, title = "Op
 
   return (
     <DropdownMenuContext.Provider value={{ open, setOpen }}>
-      <div className={twMerge(className, "relative")} ref={containerRef}>
+      <div className={twMerge(className, "relative self-start")} ref={containerRef}>
         {triggerWithHandler}
         <div
           id="dropdownMenu-content"

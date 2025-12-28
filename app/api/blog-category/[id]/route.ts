@@ -4,7 +4,7 @@ import { BlogCategorySchema } from "@/lib/zod";
 import { revalidatePath } from "next/cache";
 import z from "zod";
 
-export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const session = await auth();
   if (!session) return Response.json({ error: "Unauthorized" }, { status: 401 });

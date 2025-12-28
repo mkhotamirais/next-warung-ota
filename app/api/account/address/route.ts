@@ -40,15 +40,18 @@ export async function POST(req: Request) {
     const session = await auth();
     if (!session?.user?.id) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-    const body = await req.json();
-    const validatedFields = AddressSchema.safeParse(body);
+    const formData = await req.formData();
+    const isDefault = formData.get("isDefault") === "false" ? false : true;
+    const data = Object.fromEntries(formData.entries());
+    const dataForValidation = { ...data, isDefault };
 
+    const validatedFields = AddressSchema.safeParse(dataForValidation);
     if (!validatedFields.success) {
       return Response.json({ errors: z.treeifyError(validatedFields.error).properties }, { status: 400 });
     }
 
     const userId = session.user.id;
-    const { isDefault, ...addressData } = validatedFields.data;
+    const { ...addressData } = validatedFields.data;
     const cleanData = { ...addressData, label: addressData.label || "Alamat Baru" };
     const defaultStatus = isDefault ?? false;
 
@@ -64,9 +67,7 @@ export async function POST(req: Request) {
         });
       }
 
-      return await tx.address.create({
-        data: { ...cleanData, userId, isDefault: newIsDefault },
-      });
+      return await tx.address.create({ data: { ...cleanData, userId, isDefault } });
     });
 
     revalidatePath("/dashboard/account/address");
