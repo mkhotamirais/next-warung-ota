@@ -20,7 +20,7 @@ export default function ProductCardAdmin({ product }: { product: ProductProps })
   return (
     <div className="flex justify-between mb-2 items-center w-full border border-gray-300 bg-white rounded">
       <div className="flex gap-2 w-full p-1">
-        <Link href={`/product/detail/${product.slug}`} className="">
+        <Link href={`/product-detail/${product.slug}`} className="">
           <Image
             src={product?.imageUrl || "/images/logo-warungota.png"}
             alt={product.name}
@@ -30,7 +30,7 @@ export default function ProductCardAdmin({ product }: { product: ProductProps })
           />
         </Link>
         <div className="flex flex-col gap-1">
-          <Link href={`/product/detail/${product.slug}`} className="hover:underline">
+          <Link href={`/product-detail/${product.slug}`} className="hover:underline">
             <h3 className="first-letter:capitalize leading-none">{smartTrim(product.name, 45)}</h3>
           </Link>
           <p className="font-semibold">Rp{formatRupiah(product.price)}</p>

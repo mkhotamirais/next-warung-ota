@@ -10,7 +10,7 @@ import { getProductCategories } from "@/actions/product-category";
 import { useFilterSearch } from "@/hooks/useFilterSearch";
 import { SortType } from "@/types/types";
 
-const btnStyle = "border border-gray-300 py-1 px-2 rounded text-sm hover:ring-1 hover:ring-primary";
+const btnStyle = "border border-gray-300 py-1 px-2 rounded text-sm hover:ring-1 hover:ring-primary text-left";
 const h5 = "font-light text-sm text-gray-600 mb-2";
 
 const TriggerFilter = (
@@ -152,7 +152,7 @@ export default function HeaderFilter() {
                       type="button"
                       key={c.slug}
                       onClick={() => handleCategory(c.slug)}
-                      className={`${c.slug === category ? "bg-primary text-white" : ""} ${btnStyle}`}
+                      className={`${c.slug === category ? "bg-primary text-white " : ""} ${btnStyle}`}
                     >
                       {c.name}
                     </button>

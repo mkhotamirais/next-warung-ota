@@ -43,11 +43,13 @@ export default function NavMobile() {
           <h2 className="mb-2">
             Hi, <span className="font-semibold">{session?.user?.name}</span>
           </h2>
-          <Link href={"/dashboard"}>
-            <Button variant="ghost" className="w-full justify-start">
-              Settings
-            </Button>
-          </Link>
+          <DrawerClose asChild>
+            <Link href={"/dashboard"}>
+              <Button variant="ghost" className="w-full justify-start">
+                Settings
+              </Button>
+            </Link>
+          </DrawerClose>
         </div>
         <Footer className="absolute bottom-0" />
       </div>

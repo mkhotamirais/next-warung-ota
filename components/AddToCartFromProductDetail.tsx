@@ -4,6 +4,7 @@ import { upsertCartItem } from "@/actions/cart"; // Ganti nama fungsi Server Act
 import Button from "@/components/ui/Button";
 import { useCart } from "@/hooks/useCart";
 import { SingleProductProps } from "@/types/types";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
@@ -15,6 +16,8 @@ export default function AddToCartFromProductDetail({ product }: { product: Singl
   const [pending, startTransition] = useTransition();
   const [productId, setProductId] = useState(product.id);
   const { setCartQty } = useCart();
+  const { data: session, status } = useSession();
+
   const router = useRouter();
 
   useEffect(() => {
@@ -82,6 +85,8 @@ export default function AddToCartFromProductDetail({ product }: { product: Singl
       router.refresh();
     });
   };
+
+  if (session?.user.role === "ADMIN" || status !== "authenticated") return null;
 
   return (
     <form onSubmit={handleSubmit} className="my-4">

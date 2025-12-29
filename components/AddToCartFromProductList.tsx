@@ -6,6 +6,7 @@ import { LuCheck, LuLoader, LuShoppingCart } from "react-icons/lu";
 import { toast } from "sonner";
 import { useCart } from "@/hooks/useCart";
 import clsx from "clsx";
+import { useSession } from "next-auth/react";
 
 interface AddToCartFromProductListProps {
   productId: string;
@@ -16,6 +17,7 @@ export default function AddToCartFromProductList({ productId, productName }: Add
   const [pending, setPending] = useState<string>("");
   const [added, setAdded] = useState(false);
   const { setCartQty } = useCart();
+  const { data: session, status } = useSession();
 
   const handleAddToCartFromProductList = async () => {
     if (added) return;
@@ -33,6 +35,8 @@ export default function AddToCartFromProductList({ productId, productName }: Add
 
     setPending("");
   };
+
+  if (session?.user.role === "ADMIN" || status !== "authenticated") return null;
 
   return (
     <button
