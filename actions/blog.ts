@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
+import { generateSlug } from "@/lib/utils";
 import { BlogSchema } from "@/lib/zod";
 import { put, del } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
@@ -84,18 +85,16 @@ export async function createBlog(formData: FormData) {
   }
   const userId = session.user.id as string;
 
-  const imageFile = formData.get("image") as File | null;
+  const image = formData.get("image") as File | null;
+  const imageFile = image instanceof File && image.size > 0 ? image : null;
   const rawData = Object.fromEntries(formData.entries());
 
-  const dataForValidation = { ...rawData, image: imageFile instanceof File && imageFile.size > 0 ? imageFile : null };
+  const dataForValidation = { ...rawData, image: imageFile };
+  const slug = generateSlug(rawData.title as string);
 
   const validatedFields = BlogSchema.safeParse(dataForValidation);
-
   if (!validatedFields.success) {
-    return {
-      error: "Validation failed" as const,
-      errors: z.treeifyError(validatedFields.error),
-    };
+    return { errors: z.treeifyError(validatedFields.error) };
   }
 
   let imageUrl = "";
@@ -109,7 +108,7 @@ export async function createBlog(formData: FormData) {
     }
   }
 
-  const { title, slug, content } = validatedFields.data;
+  const { title, content } = validatedFields.data;
   let categoryId = validatedFields.data.categoryId;
 
   try {
@@ -148,23 +147,19 @@ export async function updateBlog(slug: string, formData: FormData) {
   }
 
   const currentBlog = await prisma.blog.findFirst({ where: { slug }, select: { userId: true, imageUrl: true } });
-
   if (!currentBlog) {
     return { error: "Blog not found", status: 404 };
   }
 
-  const imageFile = formData.get("image") as File | null;
-  const rawData = Object.fromEntries(formData.entries());
+  const image = formData.get("image") as File | null;
+  const imageFile = image instanceof File && image.size > 0 ? image : null;
 
-  const dataForValidation = { ...rawData, image: imageFile instanceof File && imageFile.size > 0 ? imageFile : null };
+  const rawData = Object.fromEntries(formData.entries());
+  const dataForValidation = { ...rawData, image: imageFile };
 
   const validatedFields = BlogSchema.safeParse(dataForValidation);
-
   if (!validatedFields.success) {
-    return {
-      error: "Validation failed",
-      errors: z.treeifyError(validatedFields.error),
-    };
+    return { errors: z.treeifyError(validatedFields.error) };
   }
 
   const { title, content } = validatedFields.data;
@@ -195,6 +190,12 @@ export async function updateBlog(slug: string, formData: FormData) {
       const blob = await put(`blogs/${Date.now()}-${imageFile.name}`, imageFile, { access: "public", multipart: true });
       newImageUrl = blob.url;
     }
+    if (rawData.removeImage === "true") {
+      if (currentBlog.imageUrl) {
+        await del(currentBlog.imageUrl);
+      }
+      newImageUrl = "";
+    }
 
     await prisma.blog.update({ data: { title, slug, content, imageUrl: newImageUrl, categoryId }, where: { slug } });
 
@@ -207,20 +208,31 @@ export async function updateBlog(slug: string, formData: FormData) {
 }
 
 // DELETE /api/blog/:id
-export async function deleteBlog(slug: string, imageUrl?: string) {
+export async function deleteBlog(slug: string) {
   const session = await auth();
   if (!session || !session.user || session.user.role !== "ADMIN") {
     return { error: "Unauthorized" };
   }
 
   try {
-    if (imageUrl) {
-      await del(imageUrl);
+    const existingBlog = await prisma.blog.findUnique({
+      where: { slug },
+      select: { id: true, title: true, slug: true, imageUrl: true },
+    });
+
+    if (!existingBlog) return { success: false, message: "Blog tidak ditemukan." };
+
+    if (existingBlog.imageUrl) {
+      try {
+        await del(existingBlog.imageUrl);
+      } catch (blobError) {
+        console.log("Failed to delete Vercel blob:", blobError);
+      }
     }
-    const result = await prisma.blog.delete({ where: { slug } });
+    await prisma.blog.delete({ where: { slug } });
 
     revalidateBlog();
-    return { message: `Blog "${result.title}" deleted successfully` };
+    return { message: `Blog "${existingBlog?.title}" deleted successfully` };
   } catch (error) {
     console.log("Database error during blog deletion:", error);
     return { error: "Failed to delete blog" };

@@ -2,13 +2,14 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Button from "@/components/ui/Button";
 import Link from "next/link";
 import { verifyEmail } from "@/actions/account";
+import { Button } from "@/components/ui/button";
 
 export default function VerifyEmailPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const callbackUrl = searchParams.get("callbackUrl");
 
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [message, setMessage] = useState("Memverifikasi token...");
@@ -55,7 +56,7 @@ export default function VerifyEmailPage() {
         setMessage("Verifikasi berhasil. Menyinkronkan data...");
 
         setTimeout(() => {
-          router.push("/dashboard?verified=new-email");
+          router.replace(callbackUrl || "/");
         }, 1500);
       } catch (err) {
         console.error("Kesalahan verifikasi:", err);
@@ -65,29 +66,29 @@ export default function VerifyEmailPage() {
     };
 
     runVerification();
-  }, [token, emailParam, router]);
+  }, [token, emailParam, router, callbackUrl]);
   return (
     <div
       className={`p-8 rounded-lg shadow-lg text-center transition-colors duration-300 ${
         status === "success"
           ? "bg-green-100 border border-green-300"
           : status === "error"
-          ? "bg-red-100 border border-red-300"
-          : "bg-white border border-gray-200"
+            ? "bg-red-100 border border-red-300"
+            : "bg-white border border-gray-200"
       }`}
     >
       <h1 className="text-xl font-bold mb-4">
         {status === "success"
           ? "Verifikasi Berhasil! ✅"
           : status === "error"
-          ? "Verifikasi Gagal ❌"
-          : "Memproses... 🔄"}
+            ? "Verifikasi Gagal ❌"
+            : "Memproses... 🔄"}
       </h1>
       <p className={status === "success" ? "text-green-800" : status === "error" ? "text-red-800" : "text-gray-700"}>
         {message}
       </p>
       {status === "error" && (
-        <Button className="mt-4">
+        <Button className="mt-4" asChild>
           <Link href="/signin">Coba Masuk Kembali</Link>
         </Button>
       )}

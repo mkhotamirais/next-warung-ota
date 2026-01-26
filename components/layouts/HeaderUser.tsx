@@ -1,9 +1,9 @@
 "use client";
 
-import Button from "../ui/Button";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { LuLogIn } from "react-icons/lu";
+import { Button } from "../ui/button";
 
 export default function HeaderUser() {
   const { data: session, status } = useSession();
@@ -18,20 +18,20 @@ export default function HeaderUser() {
 
   if (!session) {
     return (
-      <Link href="/signin" className="inline-block ml-1">
-        <Button size="sm" aria-label="login" className="">
+      <Button size="sm" aria-label="login" asChild>
+        <Link href="/signin" className="inline-block ml-1">
           <span className="hidden mr-2 lg:inline-block">Sign In</span>
           <LuLogIn className="mt-0.5" />
-        </Button>
-      </Link>
+        </Link>
+      </Button>
     );
   }
 
   return (
-    <Link href="/dashboard" className="inline-block ml-1">
-      <Button size="sm" className="rounded-full size-8">
+    <Button size="sm" asChild>
+      <Link href="/dashboard" className="inline-block ml-1">
         {initial}
-      </Button>
-    </Link>
+      </Link>
+    </Button>
   );
 }

@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import { Prisma } from "@/lib/generated/prisma";
 import prisma from "@/lib/prisma";
+import { generateSlug } from "@/lib/utils";
 import { ProductSchema } from "@/lib/zod";
 import { SortType } from "@/types/types";
 import { put } from "@vercel/blob";
@@ -101,12 +102,13 @@ export async function POST(req: Request) {
     if (!validatedFields.success) {
       return Response.json(
         { error: "Validation failed", errors: z.treeifyError(validatedFields.error) },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
-    const { name, price, stock, slug, description, tags: validatedTags } = validatedFields.data;
+    const { name, price, stock, description, tags: validatedTags } = validatedFields.data;
     let categoryId = validatedFields.data.categoryId;
+    const slug = generateSlug(name);
 
     const existingCategory = await prisma.productCategory.findUnique({ where: { id: categoryId } });
     if (!existingCategory) {
@@ -134,8 +136,8 @@ export async function POST(req: Request) {
     await prisma.product.create({
       data: {
         name,
-        price,
-        stock,
+        price: Number(price),
+        stock: Number(stock),
         slug,
         description,
         imageUrl,
@@ -150,7 +152,6 @@ export async function POST(req: Request) {
     return Response.json({ message: "Product created successfully" }, { status: 201 });
   } catch (error) {
     console.log(error);
-    console.log("halo");
     return Response.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

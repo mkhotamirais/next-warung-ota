@@ -166,21 +166,28 @@ model CartItem {
 
 model Order {
   id          String      @id @default(cuid())
-  userId      String
-  User        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   totalAmount Int
   status      OrderStatus @default(PENDING)
   OrderItem   OrderItem[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  Address     Address?    @relation(fields: [addressId], references: [id])
-  addressId   String?
+
+  // Identitas Gateway (Satu model untuk semua)
+  gateway    String // "XENDIT", "MIDTRANS", dll
+  externalId String  @unique // ID yang dikirim ke gateway
+  paymentUrl String? // Link pembayaran dari gateway
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  addressId String?
+  Address   Address? @relation(fields: [addressId], references: [id])
+  userId    String
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model OrderItem {
   id      String @id @default(cuid())
   orderId String
-  Order   Order  @relation(fields: [orderId], references: [id])
+  Order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   productId String
   Product   Product @relation(fields: [productId], references: [id])

@@ -85,9 +85,9 @@ export default function Menubar({ editor }: { editor: Editor | null }) {
   ];
 
   return (
-    <div className="border rounded p-1 mb-1 bg-background space-x-2 z-50">
+    <div className="border rounded-lg p-1 mb-1 bg-background space-x-2 z-50">
       {options.map((item, i) => (
-        <Toggle key={i} pressed={item.preesed} onPressedChange={item.onClick}>
+        <Toggle key={i} pressed={item.preesed} onPressedChange={item.onClick} tabIndex={-1}>
           {item.icon}
         </Toggle>
       ))}

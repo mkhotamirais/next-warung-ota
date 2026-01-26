@@ -17,7 +17,7 @@ export const POST = async (req: Request) => {
 
   try {
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return Response.json({ error: "Email belum terdaftar" });
+    if (!user) return Response.json({ error: "Email salah atau belum terdaftar" });
 
     const { token, expires } = generateToken();
     const resetLink = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}&email=${email}`;

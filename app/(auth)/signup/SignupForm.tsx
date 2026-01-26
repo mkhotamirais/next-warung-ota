@@ -1,100 +1,102 @@
 "use client";
 
 import { signup } from "@/actions/account";
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
-import { toast } from "sonner";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import z from "zod";
+import { SignupSchema } from "@/lib/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { InputPassword } from "@/components/ui/InputPassword";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+
+type inferSchema = z.infer<typeof SignupSchema>;
 
 export default function SignupForm() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState<Record<string, { errors: string[] }> | undefined>({});
+  const form = useForm<inferSchema>({
+    resolver: zodResolver(SignupSchema),
+    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
+  });
+  const disabled = form.formState.isSubmitting;
 
-  const [pending, startTransition] = useTransition();
-  const router = useRouter();
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    startTransition(async () => {
-      // const res = await fetch("/api/account/signup", {
-      //   method: "POST",
-      //   body: JSON.stringify({ name, email, password, confirmPassword }),
-      // });
-      // const data = await res.json();
-      const data = await signup({ name, email, password, confirmPassword });
-
-      if (data?.errors) {
-        setErrors(data?.errors);
-        setPassword("");
-        setConfirmPassword("");
-        return;
+  const onSubmit = async (data: inferSchema) => {
+    try {
+      const res = await signup(data);
+      if (res?.message) {
+        form.reset();
+        form.clearErrors();
+        signIn("credentials", { email: data.email, password: data.password });
       }
-
-      if (data?.error) {
-        toast.error(data?.error, { position: "top-center" });
-        setName("");
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
-        return;
-      }
-
-      await signIn("credentials", { email, password, redirect: false });
-
-      router.push("/dashboard");
-    });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Input
-        id="name"
-        label="Name"
-        placeholder="Your name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        error={errors?.name?.errors}
-      />
-      <Input
-        id="email"
-        label="Email"
-        placeholder="Your email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        error={errors?.email?.errors}
-      />
-      <Input
-        id="password"
-        type="password"
-        label="Password"
-        placeholder="********"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        error={errors?.password?.errors}
-      />
-      <Input
-        id="confirm-password"
-        type="password"
-        label="Confirm Password"
-        placeholder="********"
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        error={errors?.confirmPassword?.errors}
-      />
-      <Button
-        type="submit"
-        disabled={pending}
-        pending={pending}
-        className="w-full mt-2 focus:border! focus:border-gray-700!"
-      >
-        Sign Up
-      </Button>
-    </form>
+    <>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {/* name */}
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name</FormLabel>
+                <FormControl>
+                  <Input placeholder="name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input placeholder="email" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <InputPassword {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="confirmPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm Password</FormLabel>
+                <FormControl>
+                  <InputPassword {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit" className="w-full mt-4" disabled={disabled}>
+            {disabled && <Spinner />}
+            Sign Up
+          </Button>
+        </form>
+      </Form>
+    </>
   );
 }

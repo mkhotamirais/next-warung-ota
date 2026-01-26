@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
+import { generateSlug } from "@/lib/utils";
 import { ProductSchema } from "@/lib/zod";
 import { SortType } from "@/types/types";
 import { del, put } from "@vercel/blob";
@@ -17,16 +18,16 @@ const revalidateProduct = () => {
 
 // GET /api/product-names
 export async function getProductNames(keywords?: string) {
-  if (!keywords) return [];
+  // if (!keywords) return [];
 
   const whereClause: { name?: { contains: string; mode: "insensitive" } } = {};
 
-  whereClause.name = { contains: keywords, mode: "insensitive" };
+  whereClause.name = { contains: keywords || "", mode: "insensitive" };
 
   try {
     const products = await prisma.product.findMany({
       where: whereClause,
-      select: { name: true },
+      select: { name: true, slug: true },
       distinct: ["name"],
       orderBy: { name: "asc" },
       take: 10,
@@ -139,23 +140,29 @@ export async function createProduct(formData: FormData) {
 
   const userId = session.user.id as string;
 
-  const file = formData.get("image") as File | null;
-  const imageFile = file instanceof File && file.size > 0 ? file : null;
+  const image = formData.get("image") as File | null;
+  const imageFile = image instanceof File && image.size > 0 ? image : null;
   const tags = formData.getAll("tags");
 
   const rawData = Object.fromEntries(formData.entries());
   const dataForValidation = { ...rawData, image: imageFile, tags };
+
+  const slug = generateSlug(rawData.name as string);
+  const price = parseInt(rawData.price as string);
+  const stock = parseInt(rawData.stock as string);
+
+  if (isNaN(price)) return { error: "Harga harus berupa angka." };
+  if (isNaN(stock)) return { error: "Stok harus berupa angka." };
 
   const validatedFields = ProductSchema.safeParse(dataForValidation);
   if (!validatedFields.success) {
     return { errors: z.treeifyError(validatedFields.error) };
   }
 
-  const { name, price, stock, slug, description, tags: validatedTags } = validatedFields.data;
+  const { name, description, tags: validatedTags } = validatedFields.data;
+  let categoryId = validatedFields.data.categoryId;
 
   try {
-    let categoryId = validatedFields.data.categoryId;
-
     const existingCategory = await prisma.productCategory.findUnique({ where: { id: categoryId } });
     if (!existingCategory) {
       const defaultCategory = await prisma.productCategory.findFirst({ where: { isDefault: true } });
@@ -199,6 +206,11 @@ export async function updateProduct(slug: string, formData: FormData) {
     return { error: "Unauthorized" };
   }
 
+  const currentProduct = await prisma.product.findFirst({ where: { slug }, select: { userId: true, imageUrl: true } });
+  if (!currentProduct) {
+    return { error: "Product not found", status: 404 };
+  }
+
   const file = formData.get("image") as File | null;
   const imageFile = file instanceof File && file.size > 0 ? file : null;
   const tags = formData.getAll("tags");
@@ -207,13 +219,18 @@ export async function updateProduct(slug: string, formData: FormData) {
   const rawData = Object.fromEntries(formData.entries());
   const dataForValidation = { ...rawData, image: imageFile, tags };
 
-  const validatedFields = ProductSchema.safeParse(dataForValidation);
+  const price = parseInt(rawData.price as string);
+  const stock = parseInt(rawData.stock as string);
 
+  if (isNaN(price)) return { error: "Harga harus berupa angka." };
+  if (isNaN(stock)) return { error: "Stok harus berupa angka." };
+
+  const validatedFields = ProductSchema.safeParse(dataForValidation);
   if (!validatedFields.success) {
     return { errors: z.treeifyError(validatedFields.error) };
   }
 
-  const { name, price, stock, description, tags: validatedTags, categoryId } = validatedFields.data;
+  const { name, description, tags: validatedTags, categoryId } = validatedFields.data;
 
   try {
     const oldProduct = await prisma.product.findUnique({
@@ -242,6 +259,13 @@ export async function updateProduct(slug: string, formData: FormData) {
         multipart: true,
       });
       imageUrlUpdate = blob.url;
+    }
+
+    if (rawData.removeImage === "true") {
+      if (currentProduct.imageUrl) {
+        await del(currentProduct.imageUrl);
+      }
+      imageUrlUpdate = "";
     }
 
     await prisma.product.update({

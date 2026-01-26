@@ -1,6 +1,5 @@
 import Link from "next/link";
-import React from "react";
-import Button from "./ui/Button";
+import { Button } from "./ui/button";
 
 interface AuthTitleHeaderProps {
   title: string;
@@ -11,15 +10,13 @@ interface AuthTitleHeaderProps {
 
 export default function AuthTitleHeader({ title, totalCount, url, label }: AuthTitleHeaderProps) {
   return (
-    <div className="flex items-center justify-between">
-      <h2 className="h2">
+    <div className="flex items-center justify-between mb-4 w-full">
+      <h1 className="h1">
         {title} ({totalCount})
-      </h2>
-      <Link href={url}>
-        <Button className="w-fit" variant="link">
-          {label}
-        </Button>
-      </Link>
+      </h1>
+      <Button className="w-fit" asChild>
+        <Link href={url}>{label}</Link>
+      </Button>
     </div>
   );
 }

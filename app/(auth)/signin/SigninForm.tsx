@@ -1,94 +1,84 @@
 "use client";
 
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
+import { Button } from "@/components/ui/button";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { SigninSchema } from "@/lib/zod";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Spinner } from "@/components/ui/spinner";
+import { InputPassword } from "@/components/ui/InputPassword";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState, useTransition } from "react";
 import { toast } from "sonner";
-import z from "zod";
+
+type inferSchema = z.infer<typeof SigninSchema>;
 
 export default function SigninForm() {
-  const { update } = useSession();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [pending, startTransition] = useTransition();
-  const [errors, setErrors] = useState<Record<string, { errors: string[] }> | undefined>({});
+  const form = useForm<inferSchema>({
+    resolver: zodResolver(SigninSchema),
+    defaultValues: { email: "", password: "" },
+  });
 
+  const pending = form.formState.isSubmitting;
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const onSubmit = async (data: inferSchema) => {
+    const { email, password } = data;
+    const res = await signIn("credentials", { email, password, redirect: false });
 
-    const formData = { email, password };
-    const validatedFields = SigninSchema.safeParse(formData);
-
-    if (!validatedFields.success) {
-      const errors = z.treeifyError(validatedFields.error).properties;
-      setErrors(errors);
-      return;
+    if (res?.error) {
+      if (res.code === "credentials") {
+        toast.error("Invalid email or password.");
+      } else {
+        toast.error(res.code);
+      }
     }
 
-    startTransition(async () => {
-      const res = await signIn("credentials", { email, password, redirect: false });
-      if (res?.error) {
-        if (res.error === "CredentialsSignin") {
-          toast.error("Email atau password salah.", { position: "top-center" });
-        } else {
-          toast.error("Terjadi kesalahan yang tidak diketahui.", { position: "top-center" });
-        }
-      } else {
-        await update({});
-        router.push("/dashboard");
-      }
-    });
+    router.refresh();
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Input
-        id="email"
-        label="Email"
-        placeholder="example@email.com"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        error={errors?.email?.errors}
-      />
-      <Input
-        type="password"
-        id="password"
-        label={
-          <div className="flex justify-between mb-2">
-            <div>Password</div>
-            <Link
-              href="/reset-password-request"
-              tabIndex={-1}
-              className="text-primary font-semibold hover:underline text-sm"
-            >
-              Lupa Password?
-            </Link>
-          </div>
-        }
-        placeholder="********"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        error={errors?.password?.errors}
-      />
-      {/* <div className="mb-2 flex justify-end">
-        <Link href="/forgot-password" tabIndex={-1} className="text-primary font-semibold hover:underline text-sm">
-          Lupa Password?
-        </Link>
-      </div> */}
-      <Button
-        type="submit"
-        disabled={pending}
-        pending={pending}
-        className="w-full mt-2 focus:border! focus:border-gray-700!"
-      >
-        Sign In
-      </Button>
-    </form>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input placeholder="exaple@email.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <FormControl>
+                <InputPassword {...field} />
+              </FormControl>
+              <FormDescription className="flex justify-end">
+                <Link href="/reset-password-request" className="text-primary hover:underline" tabIndex={-1}>
+                  Forgot password?
+                </Link>
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit" disabled={pending} className="w-full">
+          {pending && <Spinner />}
+          Sign In
+        </Button>
+      </form>
+    </Form>
   );
 }

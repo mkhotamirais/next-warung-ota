@@ -6,15 +6,16 @@ import { useEffect } from "react";
 import { toast } from "sonner";
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
+  const emailVerified = session?.user?.emailVerified;
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "authenticated") {
+    if (status === "authenticated" && emailVerified) {
       toast.success("Selamat datang kembali!");
       router.replace("/dashboard");
     }
-  }, [status, router]);
+  }, [status, router, emailVerified]);
 
   return <>{children}</>;
 }

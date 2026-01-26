@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import Button from "@/components/ui/Button";
 import Link from "next/link";
 import { verifyEmailChange } from "@/actions/account";
+import { Button } from "@/components/ui/button";
 export default function VerifyEmailChangePage() {
   const searchParams = useSearchParams();
 
@@ -15,6 +15,7 @@ export default function VerifyEmailChangePage() {
 
   const token = searchParams.get("token");
   const userId = searchParams.get("userId");
+  const callbackUrl = searchParams.get("callbackUrl");
 
   useEffect(() => {
     if (!token || !userId) {
@@ -50,7 +51,7 @@ export default function VerifyEmailChangePage() {
         setMessage("Alamat email berhasil diperbarui. Mengalihkan Anda...");
 
         setTimeout(async () => {
-          router.replace("/dashboard/profile?verified=update-email");
+          router.replace(callbackUrl || "/");
         }, 500);
       } catch (err) {
         console.error("Kesalahan dalam proses konfirmasi:", err);
@@ -67,24 +68,24 @@ export default function VerifyEmailChangePage() {
         status === "success"
           ? "bg-green-100 border border-green-300"
           : status === "error"
-          ? "bg-red-100 border border-red-300"
-          : "bg-white border border-gray-200"
+            ? "bg-red-100 border border-red-300"
+            : "bg-white border border-gray-200"
       }`}
     >
       <h1 className="text-xl font-bold mb-4">
         {status === "success"
           ? "Perubahan Email Berhasil! ✅"
           : status === "error"
-          ? "Konfirmasi Gagal ❌"
-          : "Memproses... 🔄"}
+            ? "Konfirmasi Gagal ❌"
+            : "Memproses... 🔄"}
       </h1>
       <p className={status === "success" ? "text-green-800" : status === "error" ? "text-red-800" : "text-gray-700"}>
         {message}
       </p>
       {status === "error" && (
-        <Link href="/profile">
-          <Button className="mt-4">Kembali ke Profile</Button>
-        </Link>
+        <Button className="mt-4" asChild>
+          <Link href="/profile">Kembali ke Profile</Link>
+        </Button>
       )}
     </div>
   );

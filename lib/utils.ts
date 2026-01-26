@@ -1,4 +1,10 @@
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 import { ProductProps } from "@/types/types";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 export const roles = ["admin", "editor", "user"];
 
@@ -104,4 +110,14 @@ export const sortProductsImageFirst = (products: ProductProps[]) => {
     return 0;
   });
   return orderedProducts;
+};
+
+export const generateSlug = (text: string) => {
+  const slug = text
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+  return slug;
 };

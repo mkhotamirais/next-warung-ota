@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
+import { generateSlug } from "@/lib/utils";
 import { ProductCategorySchema } from "@/lib/zod";
 import { revalidatePath } from "next/cache";
 import z from "zod";
@@ -35,7 +36,8 @@ export async function POST(req: Request) {
       return Response.json({ errors: z.treeifyError(validatedFields.error).properties }, { status: 400 });
     }
 
-    const { name, slug } = validatedFields.data;
+    const { name } = validatedFields.data;
+    const slug = generateSlug(name);
 
     const existing = await prisma.productCategory.findUnique({ where: { slug } });
     if (existing) {

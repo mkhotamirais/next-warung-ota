@@ -14,6 +14,7 @@ export const menu = {
     { label: "About", url: "/about" },
     { label: "Contact", url: "/contact" },
     { label: "Blog", url: "/blog" },
+    { label: "Product", url: "/product" },
   ],
   footerMenu: [
     { label: "Home", url: "/" },
@@ -37,6 +38,43 @@ export const menu = {
     { label: "Blog Category", url: "/dashboard/admin/blog-category" },
   ],
 };
+
+export const mainMenu = [
+  { label: "Home", url: "/" },
+  { label: "About", url: "/about" },
+  { label: "Contact", url: "/contact" },
+  { label: "Blog", url: "/blog" },
+  { label: "Product", url: "/product" },
+];
+
+export const userMenu = [
+  { label: "Profile", url: "/user/profile" },
+  { label: "Address", url: "/user/address" },
+];
+
+export const adminMenu = [
+  { label: "Product", url: "/admin/product" },
+  { label: "Create Product", url: "/admin/product/create-product" },
+  { label: "Product Category", url: "/admin/product-category" },
+  { label: "Blog", url: "/admin/blog" },
+  { label: "Create Blog", url: "/admin/blog/create-blog" },
+  { label: "Blog Category", url: "/admin/blog-category" },
+];
+
+export const superAdminMenu = [
+  { label: "Super Admin Dashboard", url: "/super-admin/dashboard" },
+  { label: "User Management", url: "/super-admin/users" },
+  //
+];
+
+export const publicRoutes = ["/", "/about"];
+export const authRoutes = ["/signin", "/signup"];
+export const transactionRoutes = ["/user/cart", "/user/checkout"];
+export const userRoute = "/user";
+export const userWhiteListRoutes = ["/user", "/user/profile"];
+export const adminRoute = "/admin";
+export const verifyRoute = "/verify-email";
+export const verifyPendingRoute = "/verify-email-request";
 
 export const content = {
   home: {

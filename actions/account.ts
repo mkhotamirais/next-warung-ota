@@ -2,7 +2,7 @@
 
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
-import { ChangePasswordSchema, DeleteAccountSchema, ProfileDataSchema } from "@/lib/zod";
+import { ChangePasswordSchema, DeleteAccountSchema, ProfileDataSchema, ResetPasswordSchema } from "@/lib/zod";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { compare, hash } from "bcrypt-ts";
@@ -15,7 +15,7 @@ import crypto from "crypto";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export async function sendEmailVerification(email: string, userId?: string) {
+export async function sendEmailVerification(email: string, userId?: string, callbackUrl?: string) {
   try {
     const token = crypto.randomBytes(32).toString("hex");
     const expires = new Date(Date.now() + 24 * 3600 * 1000);
@@ -29,7 +29,12 @@ export async function sendEmailVerification(email: string, userId?: string) {
     if (!baseUrl) {
       throw new Error("NEXTAUTH_URL not set in environment.");
     }
-    const verificationUrl = `${baseUrl}/verify-email?token=${token}&email=${encodeURIComponent(email)}`;
+    const finalRedirect = callbackUrl || "/user";
+    const separator = finalRedirect.includes("?") ? "&" : "?";
+
+    const callbackWithQuery = `${finalRedirect}${separator}verify-email=new-email`;
+
+    const verificationUrl = `${baseUrl}/verify-email?token=${token}&email=${encodeURIComponent(email)}&callbackUrl=${encodeURIComponent(callbackWithQuery)}`;
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
     const userName = user?.name || "Pengguna";
@@ -66,7 +71,7 @@ export async function sendEmailVerification(email: string, userId?: string) {
   }
 }
 
-export async function sendEmailChangeVerification(newEmail: string, userId: string) {
+export async function sendEmailChangeVerification(newEmail: string, userId: string, callbackUrl?: string) {
   try {
     const token = crypto.randomBytes(32).toString("hex");
     const baseUrl = process.env.NEXTAUTH_URL;
@@ -77,8 +82,12 @@ export async function sendEmailChangeVerification(newEmail: string, userId: stri
 
     await prisma.user.update({ where: { id: userId }, data: { emailChangeVerificationToken: token } });
 
-    // URL diarahkan ke halaman client untuk verifikasi POST
-    const verificationUrl = `${baseUrl}/verify-email-change?token=${token}&userId=${userId}`;
+    const finalRedirect = callbackUrl || "/user";
+    const separator = finalRedirect.includes("?") ? "&" : "?";
+
+    const callbackWithQuery = `${finalRedirect}${separator}verify-email=update-email`;
+
+    const verificationUrl = `${baseUrl}/verify-email-change?token=${token}&userId=${userId}&callbackUrl=${encodeURIComponent(callbackWithQuery)}`;
 
     const user = await prisma.user.findUnique({ where: { id: userId } });
     const userName = user?.name || "Pengguna";
@@ -309,15 +318,16 @@ export const getAddressById = async (id: string): Promise<Address | null> => {
   }
 };
 
+type CreateAddressData = z.infer<typeof AddressSchema>;
+
 // POST /api/account/address
-export async function createAddress(formData: FormData) {
+export async function createAddress(data: CreateAddressData) {
   const session = await auth();
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const userId = session.user.id;
-  const isDefault = formData.get("isDefault") === "false" ? false : true;
-  const data = Object.fromEntries(formData.entries());
-  const validatedFields = AddressSchema.safeParse({ ...data, isDefault });
+  const isDefault = data.isDefault === false ? false : true;
+  const validatedFields = AddressSchema.safeParse({ ...data });
 
   if (!validatedFields.success) return { errors: z.treeifyError(validatedFields.error) };
 
@@ -348,14 +358,15 @@ export async function createAddress(formData: FormData) {
   }
 }
 
+type UpdateAddressData = z.infer<typeof AddressSchema>;
+
 // PUT /api/account/address/:id
-export async function updateAddress(id: string, formData: FormData) {
+export async function updateAddress(id: string, data: UpdateAddressData) {
   const session = await auth();
   if (!session?.user?.id) return { error: "Unauthorized" };
 
   const userId = session.user.id;
-  const isDefault = formData.get("isDefault") === "false" ? false : true;
-  const data = Object.fromEntries(formData.entries());
+  const isDefault = data.isDefault === false ? false : true;
   const validatedFields = AddressSchema.safeParse(data);
 
   if (!validatedFields.success) return { errors: z.treeifyError(validatedFields.error).properties };
@@ -465,7 +476,7 @@ export async function resetPasswordRequest(data: { email: string }) {
 
   try {
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return { message: "Jika email terdaftar, tautan reset telah dikirim." };
+    if (!user) return { message: "Email salah atau belum terdaftar." };
 
     const { token, expires } = generateToken();
     const resetLink = `${process.env.NEXTAUTH_URL}/reset-password?token=${token}&email=${email}`;
@@ -492,19 +503,22 @@ export async function resetPasswordRequest(data: { email: string }) {
 
 const SALT_ROUNDS = 10;
 
-export async function resetPassword(data: { token: string | null; email: string | null; newPassword: string }) {
-  const { token, email, newPassword } = data;
-
-  if (!token || !email || !newPassword || newPassword.length < 8) {
-    return { error: "Input tidak valid. Pastikan password minimal 8 karakter." };
-  }
-
+export async function resetPassword(
+  token: string | null,
+  email: string | null,
+  newPassword: string,
+  confirmNewPassword: string,
+) {
   try {
-    const resetToken = await prisma.passwordResetToken.findFirst({ where: { token: token, User: { email: email } } });
+    if (!token || !email) return { error: "Token, email harus ada." };
 
+    const resetToken = await prisma.passwordResetToken.findFirst({ where: { token: token, User: { email: email } } });
     if (!resetToken) return { error: "Tautan reset tidak valid atau sudah digunakan." };
 
     if (resetToken.expires < new Date()) return { error: "Tautan reset sudah kedaluwarsa." };
+
+    const validatedFields = ResetPasswordSchema.safeParse({ newPassword, confirmNewPassword });
+    if (!validatedFields.success) return { errors: z.treeifyError(validatedFields.error).properties };
 
     const hashedPassword = await hash(newPassword, SALT_ROUNDS);
 
@@ -520,17 +534,18 @@ export async function resetPassword(data: { token: string | null; email: string 
   }
 }
 
-export async function verifyEmailRequest() {
+export async function verifyEmailRequest(callbackUrl?: string) {
   const session = await auth();
   if (!session || !session.user || !session.user.email) return { error: "Unauthorized" };
 
   const userEmail = session.user.email;
+  const targetUrl = callbackUrl || "/user";
 
   try {
     if (session.user.pendingEmail) {
-      await sendEmailChangeVerification(session.user.pendingEmail, session.user.id);
+      await sendEmailChangeVerification(session.user.pendingEmail, session.user.id, targetUrl);
     } else {
-      await sendEmailVerification(userEmail, session.user.id);
+      await sendEmailVerification(userEmail, session.user.id, targetUrl);
     }
 
     return { message: "Email berhasil diverifikasi. Silakan cek email Anda." };

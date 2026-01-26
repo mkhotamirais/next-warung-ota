@@ -36,15 +36,13 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
 
 export async function PUT(req: Request, { params }: { params: Promise<{ slug: string }> }) {
   try {
-    const { slug: currentSlug } = await params;
+    const { slug } = await params;
     const session = await auth();
     if (!session || !session.user || session.user.role !== "ADMIN") {
       return Response.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const oldProduct = await prisma.product.findUnique({
-      where: { slug: currentSlug },
-    });
+    const oldProduct = await prisma.product.findUnique({ where: { slug } });
 
     if (!oldProduct) {
       return Response.json({ error: "Product not found" }, { status: 404 });
@@ -63,14 +61,10 @@ export async function PUT(req: Request, { params }: { params: Promise<{ slug: st
       return Response.json({ errors: z.treeifyError(validatedFields.error) }, { status: 400 });
     }
 
-    const { name, price, stock, slug: newSlug, description, tags: validatedTags, categoryId } = validatedFields.data;
+    const { name, price, stock, description, tags: validatedTags, categoryId } = validatedFields.data;
 
-    const duplicateName = await prisma.product.findFirst({
-      where: { name, id: { not: oldProduct.id } },
-    });
-    if (duplicateName) {
-      return Response.json({ error: "Nama produk sudah digunakan." }, { status: 409 });
-    }
+    const duplicateName = await prisma.product.findFirst({ where: { name, id: { not: oldProduct.id } } });
+    if (duplicateName) return Response.json({ error: "Nama produk sudah digunakan." }, { status: 409 });
 
     let imageUrlUpdate: string | null = oldProduct.imageUrl;
 
@@ -90,9 +84,9 @@ export async function PUT(req: Request, { params }: { params: Promise<{ slug: st
       where: { id: oldProduct.id },
       data: {
         name,
-        price,
-        stock,
-        slug: newSlug,
+        price: Number(price),
+        stock: Number(stock),
+        slug,
         description,
         imageUrl: imageUrlUpdate,
         categoryId,

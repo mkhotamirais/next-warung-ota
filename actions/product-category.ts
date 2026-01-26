@@ -2,6 +2,7 @@
 
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
+import { generateSlug } from "@/lib/utils";
 import { ProductCategorySchema } from "@/lib/zod";
 import { revalidatePath } from "next/cache";
 import z from "zod";
@@ -29,7 +30,8 @@ export const createProductCategory = async (data: { name: string }) => {
     return { errors: z.treeifyError(validatedFields.error) };
   }
 
-  const { name, slug } = validatedFields.data;
+  const { name } = validatedFields.data;
+  const slug = generateSlug(name);
 
   if (await prisma.productCategory.findUnique({ where: { slug } })) {
     return { error: `Product category "${name}" already exists` };
@@ -106,7 +108,9 @@ export const updateProductCategory = async (id: string, data: { name: string }) 
     return { errors: z.treeifyError(validatedFields.error) };
   }
 
-  const { name, slug } = validatedFields.data;
+  const { name } = validatedFields.data;
+  const slug = generateSlug(name);
+
   try {
     const existingCategory = await prisma.productCategory.findUnique({
       where: { id },

@@ -1,23 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Drawer, { DrawerClose } from "../ui/Drawer";
-import { LuArrowUpDown, LuListFilter, LuX } from "react-icons/lu";
-import Button from "../ui/Button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ProductCategory } from "@/lib/generated/prisma";
 import { getProductCategories } from "@/actions/product-category";
 import { useFilterSearch } from "@/hooks/useFilterSearch";
 import { SortType } from "@/types/types";
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
+import { Button } from "@/components/ui/button";
+import { ArrowUpDown, ListFilter } from "lucide-react";
 
 const btnStyle = "border border-gray-300 py-1 px-2 rounded text-sm hover:ring-1 hover:ring-primary text-left";
 const h5 = "font-light text-sm text-gray-600 mb-2";
-
-const TriggerFilter = (
-  <Button size="sm" aria-label="filter" variant="ghost">
-    <LuListFilter />
-  </Button>
-);
 
 const SortBtn = ({
   handle,
@@ -127,20 +121,21 @@ export default function HeaderFilter() {
   };
 
   return (
-    <Drawer trigger={TriggerFilter} position="right" classWidth="w-4/5 sm:w-80">
-      <div className="h-full overflow-y-scroll">
-        <div className="px-4 pt-3 flex justify-between items-start mb-4 sticky top-0 bg-white">
-          <h3 className="font-bold text-lg">Filter and Order Products</h3>
-          <DrawerClose asChild>
-            <Button size="sm" variant="ghost" className="w-fit">
-              <LuX />
-            </Button>
-          </DrawerClose>
-        </div>
-        <div className="px-4 pt-3">
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button size="sm" aria-label="filter" variant="ghost">
+          <ListFilter />
+        </Button>
+      </SheetTrigger>
+      <SheetContent className="w-72">
+        <SheetHeader className="pb-0">
+          <SheetTitle className="font-bold text-lg">Filter and Order Products</SheetTitle>
+          <SheetDescription></SheetDescription>
+        </SheetHeader>
+        <div className="h-full overflow-y-scroll px-4">
           <div className="">
             <h4 className="font-semibold flex items-center gap-2 mb-3">
-              <LuListFilter />
+              <ListFilter />
               <span>Filter By</span>
             </h4>
             <div className="space-y-2">
@@ -207,7 +202,7 @@ export default function HeaderFilter() {
           </div>
           <div className="">
             <h4 className="font-semibold flex items-center gap-2 mb-3">
-              <LuArrowUpDown />
+              <ArrowUpDown />
               <span>Order By</span>
             </h4>
             <div>
@@ -231,7 +226,7 @@ export default function HeaderFilter() {
             </div>
           </div>
           <div className="sticky bottom-0 w-full bg-white py-2">
-            <DrawerClose asChild>
+            <SheetClose asChild>
               <Button
                 type="button"
                 onClick={handleFilter}
@@ -240,13 +235,13 @@ export default function HeaderFilter() {
               >
                 Apply Filter
               </Button>
-            </DrawerClose>
+            </SheetClose>
             <Button variant="ghost" onClick={resetAll}>
               Reset All
             </Button>
           </div>
         </div>
-      </div>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   );
 }

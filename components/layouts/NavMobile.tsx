@@ -1,58 +1,43 @@
-import React from "react";
-import Drawer, { DrawerClose } from "../ui/Drawer";
-import Button from "../ui/Button";
-import { LuMenu, LuX } from "react-icons/lu";
+"use client";
+
 import Logo from "../Logo";
 import Footer from "./Footer";
 import Link from "next/link";
 import { menu as m } from "@/lib/content";
-import { useSession } from "next-auth/react";
+import { Button } from "../ui/button";
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
+import { Menu } from "lucide-react";
 
 export default function NavMobile() {
-  const { data: session } = useSession();
-
-  const trigger = (
-    <Button variant="ghost" size="sm">
-      <LuMenu />
-    </Button>
-  );
   return (
-    <Drawer trigger={trigger} className="block lg:hidden" position="right">
-      <div className="h-full relative px-4 pt-3">
-        <div className="flex items-center justify-between">
-          <Logo className="flex!" />
-          <DrawerClose asChild>
-            <Button variant="ghost" size="sm" className="w-fit">
-              <LuX />
-            </Button>
-          </DrawerClose>
-        </div>
-        <nav className="flex flex-col gap-1 mt-4">
-          {m.mainMenu.map((item, i) => (
-            <DrawerClose key={i} asChild>
-              <Link href={item.url}>
-                <Button variant="ghost" className="w-full justify-start">
-                  {item.label}
-                </Button>
-              </Link>
-            </DrawerClose>
-          ))}
-        </nav>
-        <hr className="py-2" />
-        <div>
-          <h2 className="mb-2">
-            Hi, <span className="font-semibold">{session?.user?.name}</span>
-          </h2>
-          <DrawerClose asChild>
-            <Link href={"/dashboard"}>
-              <Button variant="ghost" className="w-full justify-start">
-                Settings
-              </Button>
-            </Link>
-          </DrawerClose>
-        </div>
-        <Footer className="absolute bottom-0" />
-      </div>
-    </Drawer>
+    <div className="block lg:hidden">
+      <Sheet>
+        <SheetTrigger asChild className="">
+          <Button variant={"outline"} size={"icon"}>
+            <Menu />
+          </Button>
+        </SheetTrigger>
+        <SheetContent className="block lg:hidden w-72">
+          <SheetHeader>
+            <SheetTitle>
+              <Logo className="flex!" />
+            </SheetTitle>
+            <SheetDescription></SheetDescription>
+          </SheetHeader>
+          <div className="h-full relative px-4">
+            <nav className="flex flex-col gap-1">
+              {m.mainMenu.map((item, i) => (
+                <SheetClose key={i} asChild>
+                  <Button variant="ghost" className="block" asChild>
+                    <Link href={item.url}>{item.label}</Link>
+                  </Button>
+                </SheetClose>
+              ))}
+            </nav>
+            <Footer className="absolute bottom-0" />
+          </div>
+        </SheetContent>
+      </Sheet>
+    </div>
   );
 }

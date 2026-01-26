@@ -9,15 +9,11 @@ export const POST = async (req: Request) => {
   try {
     const { token, email, newPassword, confirmNewPassword } = await req.json();
 
-    if (!token || !email) {
-      return Response.json({ error: "Token, email harus ada." }, { status: 400 });
-    }
+    if (!token || !email) return Response.json({ error: "Token, email harus ada." }, { status: 400 });
 
     // 1. Cari token di database (mencocokkan token DAN email pengguna)
     const resetToken = await prisma.passwordResetToken.findFirst({ where: { token: token, User: { email: email } } });
-    if (!resetToken) {
-      return Response.json({ error: "Tautan reset tidak valid atau sudah digunakan." }, { status: 400 });
-    }
+    if (!resetToken) return Response.json({ error: "Tautan reset tidak valid atau sudah digunakan." }, { status: 400 });
 
     // 2. Cek masa kedaluwarsa
     if (resetToken.expires < new Date())
@@ -41,7 +37,7 @@ export const POST = async (req: Request) => {
 
     return Response.json(
       { message: "Password berhasil direset! Anda akan dialihkan ke halaman login." },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Reset password failed:", error);

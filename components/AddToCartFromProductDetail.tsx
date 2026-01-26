@@ -1,7 +1,6 @@
 "use client";
 
 import { upsertCartItem } from "@/actions/cart"; // Ganti nama fungsi Server Action
-import Button from "@/components/ui/Button";
 import { useCart } from "@/hooks/useCart";
 import { SingleProductProps } from "@/types/types";
 import { useSession } from "next-auth/react";
@@ -10,6 +9,8 @@ import { useEffect, useState, useTransition } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { LuShoppingCart } from "react-icons/lu";
 import { toast } from "sonner";
+import { Button } from "./ui/button";
+import { Spinner } from "./ui/spinner";
 
 export default function AddToCartFromProductDetail({ product }: { product: SingleProductProps }) {
   const [qty, setQty] = useState("1");
@@ -128,7 +129,8 @@ export default function AddToCartFromProductDetail({ product }: { product: Singl
           </button>
         </div>
       </div>
-      <Button type="submit" className="w-fit" disabled={pending || !productId || Number(qty) < 1} pending={pending}>
+      <Button type="submit" className="w-fit" disabled={pending || !productId || Number(qty) < 1}>
+        {pending && <Spinner />}
         <LuShoppingCart className="mr-2" /> Add To Cart
       </Button>
     </form>

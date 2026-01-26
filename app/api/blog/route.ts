@@ -1,5 +1,6 @@
 import { auth } from "@/auth";
 import prisma from "@/lib/prisma";
+import { generateSlug } from "@/lib/utils";
 import { BlogSchema } from "@/lib/zod";
 import { put } from "@vercel/blob";
 import { revalidatePath } from "next/cache";
@@ -64,7 +65,7 @@ export async function POST(req: Request) {
   if (!validatedFields.success) {
     return Response.json(
       { error: "Validation failed", errors: z.treeifyError(validatedFields.error) },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -79,8 +80,9 @@ export async function POST(req: Request) {
     }
   }
 
-  const { title, slug, content } = validatedFields.data;
+  const { title, content } = validatedFields.data;
   let categoryId = validatedFields.data.categoryId;
+  const slug = generateSlug(title);
 
   try {
     const existingCategory = await prisma.blogCategory.findUnique({ where: { id: categoryId } });

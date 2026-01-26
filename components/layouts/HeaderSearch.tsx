@@ -4,7 +4,10 @@ import { getProductNames, getTotalProductsCount } from "@/actions/product";
 import { useFilterSearch } from "@/hooks/useFilterSearch";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
-import { LuSearch } from "react-icons/lu";
+import { ButtonGroup } from "../ui/button-group";
+import { Button } from "../ui/button";
+import { SearchIcon } from "lucide-react";
+import { Input } from "../ui/input";
 
 export default function HeaderSearch() {
   const router = useRouter();
@@ -86,15 +89,9 @@ export default function HeaderSearch() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="sm:relative border border-gray-300 rounded-lg flex items-center w-full lg:w-60 justify-between"
-    >
-      <div className="w-full flex-1">
-        <label htmlFor="search" className="sr-only">
-          Search
-        </label>
-        <input
+    <form onSubmit={handleSubmit} className="sm:relative">
+      <ButtonGroup>
+        <Input
           ref={inputRef}
           id="search"
           type="search"
@@ -105,11 +102,12 @@ export default function HeaderSearch() {
           className="w-full py-2 px-3 text-sm text-gray-700 focus:outline-none focus:ring-0"
           onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
           onFocus={() => setShowSuggestions(true)}
+          // placeholder="Search..."
         />
-      </div>
-      <button type="submit" aria-label="search" className="p-2.5 text-gray-500 text-sm">
-        <LuSearch />
-      </button>
+        <Button type="submit" variant="outline" aria-label="Search">
+          <SearchIcon />
+        </Button>
+      </ButtonGroup>
       {showSuggestions && productNames.length > 0 ? (
         <div className="absolute top-full p-2 rounded bg-white left-0 w-full shadow-md border border-gray-200 z-10 flex flex-col justify-start">
           {productNames.map((name, i) => (

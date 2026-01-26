@@ -1,7 +1,8 @@
 "use client";
 
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import React, { useState, useTransition } from "react";
 import { toast } from "sonner";
 
@@ -34,14 +35,15 @@ export default function ResetPasswordRequestForm() {
 
       <Input
         id="email"
-        // type="email"
+        type="email"
         placeholder="Email Anda"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        // required
+        required
       />
 
-      <Button type="submit" pending={pending} disabled={pending} className="focus:border! focus:border-gray-500!">
+      <Button type="submit" disabled={pending} className="w-full">
+        {pending && <Spinner />}
         Kirim Tautan Reset
       </Button>
     </form>

@@ -1,11 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useFormAddress } from "./useFormAddress";
 
-export default function useFetchAddress() {
-  const { province, regency, district } = useFormAddress();
+interface IFetchAddress {
+  province: string;
+  regency: string;
+  district: string;
+}
 
+export default function useFetchAddress({ province, regency, district }: IFetchAddress) {
   const [provinces, setProvinces] = useState<{ value: string; label: string }[]>([]);
   const [regencies, setRegencies] = useState<{ value: string; label: string }[]>([]);
   const [districts, setDistricts] = useState<{ value: string; label: string }[]>([]);

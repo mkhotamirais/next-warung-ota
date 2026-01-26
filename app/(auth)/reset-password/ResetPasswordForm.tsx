@@ -1,81 +1,87 @@
 "use client";
 
-import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
 import { toast } from "sonner";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { ResetPasswordSchema } from "@/lib/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { InputPassword } from "@/components/ui/InputPassword";
+import { resetPassword } from "@/actions/account";
+
+type inferSchema = z.infer<typeof ResetPasswordSchema>;
 
 export default function ResetPasswordForm({ token, email }: { token: string; email: string }) {
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [pending, startTransition] = useTransition();
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [errors, setErrors] = useState<Record<string, { errors: string[] }> | undefined>({});
+  const form = useForm<inferSchema>({
+    resolver: zodResolver(ResetPasswordSchema),
+    defaultValues: { newPassword: "", confirmNewPassword: "" },
+  });
+  const disabled = form.formState.isSubmitting;
+
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = async (data: inferSchema) => {
+    const { newPassword, confirmNewPassword } = data;
 
-    startTransition(async () => {
-      const res = await fetch("/api/account/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, email, newPassword, confirmNewPassword }),
-      });
-      const data = await res.json();
+    // const res = await fetch("/api/account/reset-password", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify({ token, email, newPassword, confirmNewPassword }),
+    // });
+    // const result = await res.json();
+    const result = await resetPassword(token, email, newPassword, confirmNewPassword);
 
-      if (data.errors) {
-        setErrors(data.errors);
-        return;
-      }
+    if (result.error) {
+      toast.error(result.error);
+      return;
+    }
 
-      if (data.error) {
-        toast.error(data.error);
-        return;
-      }
-
-      toast.success(data.message);
-      setIsSuccess(true);
-      setTimeout(() => router.push("/signin"), 2000);
-    });
+    toast.success(result.message);
+    setTimeout(() => router.replace("/signin"), 1000);
   };
 
   return (
     <div className="space-y-4">
       <h1 className="h1 text-center mb-4">Reset Password</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-1">
-          <Input
-            id="new-password"
-            label="Password Baru"
-            type="password"
-            placeholder="********"
-            // minLength={8}
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            disabled={pending || isSuccess}
-            error={errors?.newPassword?.errors}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          {/* name */}
+          <FormField
+            control={form.control}
+            name="newPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>New Password</FormLabel>
+                <FormControl>
+                  <InputPassword placeholder="New password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-          <Input
-            id="confirm-new-password"
-            label="Konfirmasi Password Baru"
-            type="password"
-            placeholder="********"
-            // required
-            // minLength={8}
-            value={confirmNewPassword}
-            onChange={(e) => setConfirmNewPassword(e.target.value)}
-            disabled={pending || isSuccess}
-            error={errors?.confirmNewPassword?.errors}
+          <FormField
+            control={form.control}
+            name="confirmNewPassword"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm New Password</FormLabel>
+                <FormControl>
+                  <InputPassword placeholder="Confirm New password" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        </div>
-
-        <Button type="submit" pending={pending || isSuccess} disabled={pending || isSuccess}>
-          Ubah Password
-        </Button>
-      </form>
+          <Button type="submit" disabled={disabled} className="w-full">
+            {disabled && <Spinner />}
+            Ubah Password
+          </Button>
+        </form>
+      </Form>
     </div>
   );
 }

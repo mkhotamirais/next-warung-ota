@@ -1,127 +1,190 @@
-"use client";
+"use client"
 
-import React, { useState } from "react";
-import { twMerge } from "tailwind-merge";
-// Ikon LuChevronDown diganti dengan SVG inline untuk menghindari kesalahan resolusi dependensi.
+import * as React from "react"
+import * as SelectPrimitive from "@radix-ui/react-select"
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 
-// Definisi Tipe untuk Atribut HTML Select
-type SelectAttributes = Omit<React.SelectHTMLAttributes<HTMLSelectElement>, "id" | "ref" | "className">;
+import { cn } from "@/lib/utils"
 
-// Definisi Tipe untuk Opsi Select
-interface Option {
-  value: string | number;
-  label: string;
-  disabled?: boolean;
-}
-
-// Definisi Tipe Props untuk Komponen Select
-interface SelectProps extends SelectAttributes {
-  ref?: React.ForwardedRef<HTMLSelectElement>;
-  id: string;
-  label?: string | React.ReactNode;
-  options: Option[];
-  error?: string[] | undefined;
-  className?: string;
-  placeholder?: string; // Placeholder untuk opsi pertama yang non-selectable
-}
-
-export default function Select({
-  ref,
-  id,
-  label,
-  options,
-  error,
-  className,
-  placeholder = "Pilih salah satu...", // Default placeholder
+function Select({
   ...props
-}: SelectProps) {
-  // Kelas dasar untuk elemen select, disesuaikan agar terlihat modern
-  const baseSelectClass =
-    "appearance-none block h-10 w-full rounded-lg border border-gray-400 bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition duration-150 ease-in-out";
+}: React.ComponentProps<typeof SelectPrimitive.Root>) {
+  return <SelectPrimitive.Root data-slot="select" {...props} />
+}
 
-  // Tambahkan gaya error jika ada
-  const errorClass =
-    error && error.length > 0
-      ? "border-red-500 focus-visible:ring-red-500"
-      : "border-gray-400 focus-visible:ring-primary";
+function SelectGroup({
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Group>) {
+  return <SelectPrimitive.Group data-slot="select-group" {...props} />
+}
 
-  // State lokal untuk melacak nilai, berguna untuk memastikan placeholder tersembunyi setelah pemilihan
-  // Menggunakan props.value sebagai nilai awal jika tersedia, jika tidak, gunakan string kosong.
-  const [selectedValue, setSelectedValue] = useState(props.value || "");
+function SelectValue({
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Value>) {
+  return <SelectPrimitive.Value data-slot="select-value" {...props} />
+}
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    // Memperbarui state lokal
-    setSelectedValue(event.target.value);
-    // Meneruskan event ke handler onChange yang mungkin disediakan oleh pengguna
-    if (props.onChange) {
-      props.onChange(event);
-    }
-  };
-
+function SelectTrigger({
+  className,
+  size = "default",
+  children,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
+  size?: "sm" | "default"
+}) {
   return (
-    <div className={twMerge(className, "mb-4")}>
-      {/* Label */}
-      {label && (
-        <label htmlFor={id} className="block mb-1 text-sm font-medium text-gray-700">
-          {label}
-        </label>
+    <SelectPrimitive.Trigger
+      data-slot="select-trigger"
+      data-size={size}
+      className={cn(
+        "border-input data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        className
       )}
+      {...props}
+    >
+      {children}
+      <SelectPrimitive.Icon asChild>
+        <ChevronDownIcon className="size-4 opacity-50" />
+      </SelectPrimitive.Icon>
+    </SelectPrimitive.Trigger>
+  )
+}
 
-      <div className="relative">
-        {/* Elemen Select */}
-        <select
-          ref={ref}
-          id={id}
-          name={id}
-          className={twMerge(baseSelectClass, errorClass)}
-          // Menggunakan selectedValue yang dikelola secara internal untuk mengontrol komponen
-          value={selectedValue}
-          onChange={handleChange}
-          {...props}
+function SelectContent({
+  className,
+  children,
+  position = "item-aligned",
+  align = "center",
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Content>) {
+  return (
+    <SelectPrimitive.Portal>
+      <SelectPrimitive.Content
+        data-slot="select-content"
+        className={cn(
+          "bg-popover text-popover-foreground data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 relative z-50 max-h-(--radix-select-content-available-height) min-w-[8rem] origin-(--radix-select-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-md border shadow-md",
+          position === "popper" &&
+            "data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1",
+          className
+        )}
+        position={position}
+        align={align}
+        {...props}
+      >
+        <SelectScrollUpButton />
+        <SelectPrimitive.Viewport
+          className={cn(
+            "p-1",
+            position === "popper" &&
+              "h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)] scroll-my-1"
+          )}
         >
-          {/* Opsi Placeholder (Disabled agar tidak dapat dipilih sebagai nilai akhir) */}
-          <option value="" disabled={true}>
-            {placeholder}
-          </option>
+          {children}
+        </SelectPrimitive.Viewport>
+        <SelectScrollDownButton />
+      </SelectPrimitive.Content>
+    </SelectPrimitive.Portal>
+  )
+}
 
-          {/* Mapping Opsi dari Props */}
-          {options.map((option, index) => (
-            <option key={index} value={option.value} disabled={option.disabled} className="text-gray-800">
-              {option.label}
-            </option>
-          ))}
-        </select>
+function SelectLabel({
+  className,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Label>) {
+  return (
+    <SelectPrimitive.Label
+      data-slot="select-label"
+      className={cn("text-muted-foreground px-2 py-1.5 text-xs", className)}
+      {...props}
+    />
+  )
+}
 
-        {/* Ikon Chevron Down Kustom (SVG Inline) untuk menggantikan panah default browser */}
-        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-gray-500">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-5 w-5"
-            aria-hidden="true"
-          >
-            <path d="m6 9 6 6 6-6" />
-          </svg>
-        </div>
-      </div>
-
-      {/* Menampilkan Pesan Error */}
-      {error && error.length > 0 && (
-        <div aria-live="polite" aria-atomic="true" className="mt-1">
-          {error.map((msg, index) => (
-            <p key={index} className="text-sm text-red-500">
-              {msg}
-            </p>
-          ))}
-        </div>
+function SelectItem({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Item>) {
+  return (
+    <SelectPrimitive.Item
+      data-slot="select-item"
+      className={cn(
+        "focus:bg-accent focus:text-accent-foreground [&_svg:not([class*='text-'])]:text-muted-foreground relative flex w-full cursor-default items-center gap-2 rounded-sm py-1.5 pr-8 pl-2 text-sm outline-hidden select-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 *:[span]:last:flex *:[span]:last:items-center *:[span]:last:gap-2",
+        className
       )}
-    </div>
-  );
+      {...props}
+    >
+      <span
+        data-slot="select-item-indicator"
+        className="absolute right-2 flex size-3.5 items-center justify-center"
+      >
+        <SelectPrimitive.ItemIndicator>
+          <CheckIcon className="size-4" />
+        </SelectPrimitive.ItemIndicator>
+      </span>
+      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+    </SelectPrimitive.Item>
+  )
+}
+
+function SelectSeparator({
+  className,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Separator>) {
+  return (
+    <SelectPrimitive.Separator
+      data-slot="select-separator"
+      className={cn("bg-border pointer-events-none -mx-1 my-1 h-px", className)}
+      {...props}
+    />
+  )
+}
+
+function SelectScrollUpButton({
+  className,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.ScrollUpButton>) {
+  return (
+    <SelectPrimitive.ScrollUpButton
+      data-slot="select-scroll-up-button"
+      className={cn(
+        "flex cursor-default items-center justify-center py-1",
+        className
+      )}
+      {...props}
+    >
+      <ChevronUpIcon className="size-4" />
+    </SelectPrimitive.ScrollUpButton>
+  )
+}
+
+function SelectScrollDownButton({
+  className,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.ScrollDownButton>) {
+  return (
+    <SelectPrimitive.ScrollDownButton
+      data-slot="select-scroll-down-button"
+      className={cn(
+        "flex cursor-default items-center justify-center py-1",
+        className
+      )}
+      {...props}
+    >
+      <ChevronDownIcon className="size-4" />
+    </SelectPrimitive.ScrollDownButton>
+  )
+}
+
+export {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectScrollDownButton,
+  SelectScrollUpButton,
+  SelectSeparator,
+  SelectTrigger,
+  SelectValue,
 }
