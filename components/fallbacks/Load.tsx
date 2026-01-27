@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { LuLoaderCircle } from "react-icons/lu";
 import clsx from "clsx";
