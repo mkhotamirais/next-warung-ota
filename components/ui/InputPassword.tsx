@@ -4,7 +4,7 @@ import { Eye, EyeClosed } from "lucide-react";
 
 import { Button } from "@/components/ui/button-tmp";
 import { ButtonGroup } from "@/components/ui/button-group";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input-tmp";
 import * as React from "react";
 
 export function InputPassword({ ...props }: React.ComponentProps<"input">) {

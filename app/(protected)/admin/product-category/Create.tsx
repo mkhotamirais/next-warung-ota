@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { createProductCategory } from "@/actions/product-category";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input-tmp";
 import { Button } from "@/components/ui/button-tmp";
 import { Spinner } from "@/components/ui/spinner";
 // import { useProductCategory } from "@/hooks/tanstack-hooks/useProductCategory";

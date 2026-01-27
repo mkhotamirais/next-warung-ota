@@ -2,7 +2,7 @@
 
 import { updateProductCategory } from "@/actions/product-category";
 import { Button } from "@/components/ui/button-tmp";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input-tmp";
 // import { useProductCategory } from "@/hooks/tanstack-hooks/useProductCategory";
 import { ProductCategory } from "@/lib/generated/prisma";
 import { useRouter } from "next/navigation";

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 // import { useBlogCategory } from "@/hooks/tanstack-hooks/useBlogCategory";
 import { createBlogCategory } from "@/actions/blog-category";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input-tmp";
 import { Button } from "@/components/ui/button-tmp";
 import { Spinner } from "@/components/ui/spinner";
 import z from "zod";

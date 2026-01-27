@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button-tmp";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input-tmp";
 import { SigninSchema } from "@/lib/zod";
 import { signIn } from "next-auth/react";
 import z from "zod";

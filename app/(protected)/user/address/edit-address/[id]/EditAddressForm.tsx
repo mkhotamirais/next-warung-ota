@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button-tmp";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input-tmp";
 import { updateAddress } from "@/actions/account";
 // import { useAddress } from "@/hooks/tanstack-hooks/useAddress";
 import useFetchAddress from "@/hooks/useFetchAddress";

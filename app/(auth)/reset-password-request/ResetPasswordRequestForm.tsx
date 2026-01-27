@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button-tmp";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input-tmp";
 import { Spinner } from "@/components/ui/spinner";
 import React, { useState, useTransition } from "react";
 import { toast } from "sonner";

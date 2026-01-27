@@ -3,7 +3,7 @@
 import { updateProfileData } from "@/actions/account";
 import FallbackUpdateData from "@/components/fallbacks/FallbackUpdateData";
 import { Button } from "@/components/ui/button-tmp";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input-tmp";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";

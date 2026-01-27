@@ -4,7 +4,7 @@ import useAddresses from "@/hooks/useFetchAddress";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { createAddress } from "@/actions/account";
-import { Input } from "@/components/ui/input";
+import { Input } from "@/components/ui/input-tmp";
 import { Button } from "@/components/ui/button-tmp";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import z from "zod";
