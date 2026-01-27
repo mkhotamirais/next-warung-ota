@@ -10,7 +10,7 @@ import { SingleProductProps } from "@/types/types";
 import { toast } from "sonner";
 // import { useProduct } from "@/hooks/tanstack-hooks/useProduct";
 import { updateProduct } from "@/actions/product";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select-tmp";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";

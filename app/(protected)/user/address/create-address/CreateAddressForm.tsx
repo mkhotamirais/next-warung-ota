@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { createAddress } from "@/actions/account";
 import { Input } from "@/components/ui/input-tmp";
 import { Button } from "@/components/ui/button-tmp";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select-tmp";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";
