@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Button } from "../ui/button-tmp";
+import { Button } from "../ui/button";
 
 export default function MenuDashboardFallback() {
   return (

@@ -3,7 +3,7 @@
 import { FaGithub } from "react-icons/fa";
 import { signIn } from "next-auth/react";
 import { useTransition } from "react";
-import { Button } from "@/components/ui/button-tmp";
+import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
 export function GithubSignin() {

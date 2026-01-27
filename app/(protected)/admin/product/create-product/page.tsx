@@ -1,7 +1,7 @@
 import CreateProductForm from "./CreateProductForm";
 import { redirect } from "next/navigation";
 import { getProductCategories } from "@/actions/product-category";
-import { Button } from "@/components/ui/button-tmp";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
 export default async function CreateProduct() {

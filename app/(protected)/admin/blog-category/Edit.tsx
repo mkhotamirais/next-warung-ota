@@ -1,6 +1,6 @@
 import { updateBlogCategory } from "@/actions/blog-category";
-import { Button } from "@/components/ui/button-tmp";
-import { Input } from "@/components/ui/input-tmp";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 // import { useBlogCategory } from "@/hooks/tanstack-hooks/useBlogCategory";
 import { BlogCategory } from "@/lib/generated/prisma";
 import { useRouter } from "next/navigation";

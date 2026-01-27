@@ -7,9 +7,9 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 import { SignupSchema } from "@/lib/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input-tmp";
+import { Input } from "@/components/ui/input";
 import { InputPassword } from "@/components/ui/InputPassword";
-import { Button } from "@/components/ui/button-tmp";
+import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
 type inferSchema = z.infer<typeof SignupSchema>;

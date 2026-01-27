@@ -1,7 +1,7 @@
 "use client";
 
 import { CartItemProps } from "@/types/types";
-import { Button } from "@/components/ui/button-tmp";
+import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Dialog,
@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { DeleteIcon, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { useState } from "react";
 
 interface DeleteCartItemProps {

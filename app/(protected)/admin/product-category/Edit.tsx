@@ -1,8 +1,8 @@
 "use client";
 
 import { updateProductCategory } from "@/actions/product-category";
-import { Button } from "@/components/ui/button-tmp";
-import { Input } from "@/components/ui/input-tmp";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 // import { useProductCategory } from "@/hooks/tanstack-hooks/useProductCategory";
 import { ProductCategory } from "@/lib/generated/prisma";
 import { useRouter } from "next/navigation";

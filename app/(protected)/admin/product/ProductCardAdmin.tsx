@@ -6,7 +6,7 @@ import Image from "next/image";
 import { ProductProps } from "@/types/types";
 import { formatRupiah, smartTrim } from "@/lib/utils";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button-tmp";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import Delete from "./Delete";
 

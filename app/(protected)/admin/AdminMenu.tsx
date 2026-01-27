@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button-tmp";
+import { Button } from "@/components/ui/button";
 import { adminMenu as m } from "@/lib/content";
 import { useSession } from "next-auth/react";
 import Link from "next/link";

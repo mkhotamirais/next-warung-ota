@@ -9,7 +9,7 @@ import { useEffect, useState, useTransition } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa6";
 import { LuShoppingCart } from "react-icons/lu";
 import { toast } from "sonner";
-import { Button } from "./ui/button-tmp";
+import { Button } from "./ui/button";
 import { Spinner } from "./ui/spinner";
 
 export default function AddToCartFromProductDetail({ product }: { product: SingleProductProps }) {

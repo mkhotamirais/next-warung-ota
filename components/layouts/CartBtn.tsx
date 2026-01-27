@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { LuShoppingCart } from "react-icons/lu";
 import { useSession } from "next-auth/react";
 import { getCarts } from "@/actions/cart";
-import { Button } from "../ui/button-tmp";
+import { Button } from "../ui/button";
 
 export default function CartBtn() {
   const { cartQty, setCartQty, pending, setPending } = useCart();

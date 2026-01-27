@@ -4,7 +4,7 @@ import Logo from "../Logo";
 import Footer from "./Footer";
 import Link from "next/link";
 import { menu as m } from "@/lib/content";
-import { Button } from "../ui/button-tmp";
+import { Button } from "../ui/button";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
 import { Menu } from "lucide-react";
 

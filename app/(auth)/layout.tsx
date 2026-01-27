@@ -1,5 +1,5 @@
 // import AuthProvider from "@/components/providers/AuthProvider";
-import { Button } from "@/components/ui/button-tmp";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
 import { LuHouse } from "react-icons/lu";

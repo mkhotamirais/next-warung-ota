@@ -7,7 +7,7 @@ import { getProductCategories } from "@/actions/product-category";
 import { useFilterSearch } from "@/hooks/useFilterSearch";
 import { SortType } from "@/types/types";
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "../ui/sheet";
-import { Button } from "@/components/ui/button-tmp";
+import { Button } from "@/components/ui/button";
 import { ArrowUpDown, ListFilter } from "lucide-react";
 
 const btnStyle = "border border-gray-300 py-1 px-2 rounded text-sm hover:ring-1 hover:ring-primary text-left";

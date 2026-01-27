@@ -8,7 +8,7 @@ import Link from "next/link";
 import { HiDotsVertical } from "react-icons/hi";
 import Delete from "./Delete";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button-tmp";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
 export default function BlogCardAdmin({ blog }: { blog: BlogProps }) {

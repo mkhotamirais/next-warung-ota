@@ -14,7 +14,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button-tmp";
+import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { FaTrash } from "react-icons/fa6";
 // import { useProductCategory } from "@/hooks/tanstack-hooks/useProductCategory";

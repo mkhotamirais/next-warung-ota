@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "./ui/button-tmp";
+import { Button } from "./ui/button";
 
 interface AuthTitleHeaderProps {
   title: string;

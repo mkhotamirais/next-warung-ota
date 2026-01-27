@@ -1,14 +1,14 @@
 "use client";
 
-import { Button } from "@/components/ui/button-tmp";
-import { Input } from "@/components/ui/input-tmp";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { updateAddress } from "@/actions/account";
 // import { useAddress } from "@/hooks/tanstack-hooks/useAddress";
 import useFetchAddress from "@/hooks/useFetchAddress";
 import { Address } from "@/lib/generated/prisma";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select-tmp";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";

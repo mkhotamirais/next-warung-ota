@@ -5,9 +5,9 @@ import { useFilterSearch } from "@/hooks/useFilterSearch";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { ButtonGroup } from "../ui/button-group";
-import { Button } from "../ui/button-tmp";
+import { Button } from "../ui/button";
 import { SearchIcon } from "lucide-react";
-import { Input } from "../ui/input-tmp";
+import { Input } from "../ui/input";
 
 export default function HeaderSearch() {
   const router = useRouter();

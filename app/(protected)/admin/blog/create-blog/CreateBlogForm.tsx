@@ -10,14 +10,14 @@ import { toast } from "sonner";
 import { createBlog } from "@/actions/blog";
 // import { useBlog } from "@/hooks/tanstack-hooks/useBlog";
 // import { useBlogCategory } from "@/hooks/tanstack-hooks/useBlogCategory";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select-tmp";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { BlogSchema } from "@/lib/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input-tmp";
-import { Button } from "@/components/ui/button-tmp";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 
 type inferSchema = z.infer<typeof BlogSchema>;
