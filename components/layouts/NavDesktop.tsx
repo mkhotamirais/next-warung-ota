@@ -2,7 +2,7 @@
 
 import { menu } from "@/lib/content";
 import Link from "next/link";
-import { Button } from "../ui/button";
+import { Button } from "../ui/button-tmp";
 
 export default function NavDesktop() {
   return (

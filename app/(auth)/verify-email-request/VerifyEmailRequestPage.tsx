@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { verifyEmailRequest } from "@/actions/account";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 import { Spinner } from "@/components/ui/spinner";
 export default function VerifyEmailRequestPage() {
   const { data: session, status } = useSession();

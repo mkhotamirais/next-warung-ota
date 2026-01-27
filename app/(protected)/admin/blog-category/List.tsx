@@ -5,7 +5,7 @@ import { FaPenToSquare } from "react-icons/fa6";
 import Edit from "./Edit";
 import Delete from "./Delete";
 import { BlogCategory } from "@/lib/generated/prisma";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 // import { useBlogCategory } from "@/hooks/tanstack-hooks/useBlogCategory";
 
 export default function List({ blogCategories }: { blogCategories: BlogCategory[] | undefined }) {

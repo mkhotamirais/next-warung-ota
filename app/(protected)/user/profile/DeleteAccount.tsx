@@ -5,7 +5,7 @@ import { signOut } from "next-auth/react";
 import { profileDeleteAccount } from "@/actions/account";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useWatch } from "react-hook-form";

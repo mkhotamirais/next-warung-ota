@@ -1,7 +1,7 @@
 "use client";
 
 import { CartItemProps } from "@/types/types";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Dialog,

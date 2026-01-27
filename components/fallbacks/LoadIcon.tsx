@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "../ui/button";
+import { Button } from "../ui/button-tmp";
 import { Spinner } from "../ui/spinner";
 
 export default function LoadIcon() {

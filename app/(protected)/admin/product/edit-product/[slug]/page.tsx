@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import EditProductForm from "./EditProductForm";
 import { getProductBySlug } from "@/actions/product";
 import { getProductCategories } from "@/actions/product-category";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 import Link from "next/link";
 // import EditProductWrapper from "./EditProductWrapper";
 

@@ -1,5 +1,5 @@
 import { getProductCategories } from "@/actions/product-category";
-import { Button } from "../ui/button";
+import { Button } from "../ui/button-tmp";
 
 export default async function HomeProductCategoryList() {
   const categories = await getProductCategories();

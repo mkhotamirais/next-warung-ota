@@ -17,7 +17,7 @@ import { useForm } from "react-hook-form";
 import { ProductSchema } from "@/lib/zod";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 import { Spinner } from "@/components/ui/spinner";
 import { ControllerRenderProps } from "react-hook-form";
 import MultiInput from "@/components/ui/custom/multi-input";

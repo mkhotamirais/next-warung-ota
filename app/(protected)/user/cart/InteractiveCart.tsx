@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { formatRupiah } from "@/lib/utils";
 import { toast } from "sonner";
 import { upsertCartItem, deleteCartItem } from "@/actions/cart";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 
 interface InteractiveCartProps {
   cartItems: CartItemProps[];

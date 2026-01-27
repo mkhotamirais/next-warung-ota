@@ -5,7 +5,7 @@ import { BlogCategory } from "@/lib/generated/prisma";
 import { toast } from "sonner";
 import { deleteBlogCategory } from "@/actions/blog-category";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 import { Spinner } from "@/components/ui/spinner";
 import {
   Dialog,

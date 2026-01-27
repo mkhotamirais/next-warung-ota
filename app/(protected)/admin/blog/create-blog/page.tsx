@@ -1,7 +1,7 @@
 import React from "react";
 import CreateBlogForm from "./CreateBlogForm";
 import { getBlogCategories } from "@/actions/blog-category";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 import Link from "next/link";
 
 export default async function CreateBlog() {

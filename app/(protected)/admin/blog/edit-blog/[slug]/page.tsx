@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import EditBlogForm from "./EditBlogForm";
 import { getBlogBySlug } from "@/actions/blog";
 import { getBlogCategories } from "@/actions/blog-category";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 import Link from "next/link";
 // import EditBlogWrapper from "./EditBlogWrapper";
 

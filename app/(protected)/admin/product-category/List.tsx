@@ -5,7 +5,7 @@ import { FaPenToSquare } from "react-icons/fa6";
 import Edit from "./Edit";
 import Delete from "./Delete";
 import { ProductCategory } from "@/lib/generated/prisma";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 // import { useProductCategory } from "@/hooks/tanstack-hooks/useProductCategory";
 
 export default function List({ productCategories }: { productCategories: ProductCategory[] | undefined }) {

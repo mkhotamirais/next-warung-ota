@@ -1,6 +1,6 @@
 import { LuHouse, LuUser } from "react-icons/lu";
 import Link from "next/link";
-import { Button } from "../ui/button";
+import { Button } from "../ui/button-tmp";
 
 export default function FooterMenuSticky() {
   return (

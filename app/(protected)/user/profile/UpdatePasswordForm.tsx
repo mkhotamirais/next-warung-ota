@@ -1,7 +1,7 @@
 "use client";
 
 import { profileChangePassword } from "@/actions/account";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 import { toast } from "sonner";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

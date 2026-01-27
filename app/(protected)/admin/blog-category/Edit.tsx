@@ -1,5 +1,5 @@
 import { updateBlogCategory } from "@/actions/blog-category";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 import { Input } from "@/components/ui/input";
 // import { useBlogCategory } from "@/hooks/tanstack-hooks/useBlogCategory";
 import { BlogCategory } from "@/lib/generated/prisma";

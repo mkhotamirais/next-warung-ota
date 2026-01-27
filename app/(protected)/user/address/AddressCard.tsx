@@ -6,7 +6,7 @@ import { HiDotsVertical } from "react-icons/hi";
 import Delete from "./Delete";
 import Link from "next/link";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 import { useState } from "react";
 
 interface AddressCardProps {

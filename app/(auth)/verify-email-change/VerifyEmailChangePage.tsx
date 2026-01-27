@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { verifyEmailChange } from "@/actions/account";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 export default function VerifyEmailChangePage() {
   const searchParams = useSearchParams();
 

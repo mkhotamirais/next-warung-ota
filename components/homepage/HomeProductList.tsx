@@ -1,7 +1,7 @@
 import { getProducts } from "@/actions/product";
 import React from "react";
 import ProductCard from "../ProductCard";
-import { Button } from "../ui/button";
+import { Button } from "../ui/button-tmp";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 

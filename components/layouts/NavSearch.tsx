@@ -1,5 +1,5 @@
 import SearchPopup from "../SearchPopup";
-import { Button } from "../ui/button";
+import { Button } from "../ui/button-tmp";
 import { SearchIcon } from "lucide-react";
 
 export default function NavSearch() {

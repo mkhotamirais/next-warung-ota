@@ -11,7 +11,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button-tmp";
 import { deleteProduct } from "@/actions/product";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
