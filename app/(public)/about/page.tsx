@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { content as c } from "@/lib/content";
+import Hero from "@/components/Hero";
 const { title, description } = c.about;
 
 export const metadata: Metadata = { title, description };
@@ -7,9 +8,7 @@ export const metadata: Metadata = { title, description };
 export default function About() {
   return (
     <main className="flex-1">
-      <div className="container">
-        <h1>About</h1>
-      </div>
+      <Hero title={title} description={description} />
     </main>
   );
 }

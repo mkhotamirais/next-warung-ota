@@ -36,7 +36,7 @@ export default function List({ initialBlogs, initialHasMore = false, initialNext
   }, []);
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col container">
       <div className="">
         {blogs.map((item) => (
           <BlogCard key={item.id} blog={item} />
