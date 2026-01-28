@@ -123,7 +123,7 @@ export default function HeaderFilter() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button size="sm" aria-label="filter" variant="ghost">
+        <Button size="icon" aria-label="filter" variant="outline">
           <ListFilter />
         </Button>
       </SheetTrigger>
@@ -225,7 +225,7 @@ export default function HeaderFilter() {
               </div>
             </div>
           </div>
-          <div className="sticky bottom-0 w-full bg-white py-2">
+          <div className="sticky bottom-0 w-full bg-white py-2 flex flex-col items-center gap-1">
             <SheetClose asChild>
               <Button
                 type="button"
@@ -236,7 +236,7 @@ export default function HeaderFilter() {
                 Apply Filter
               </Button>
             </SheetClose>
-            <Button variant="ghost" onClick={resetAll}>
+            <Button variant="ghost" onClick={resetAll} className="w-full">
               Reset All
             </Button>
           </div>

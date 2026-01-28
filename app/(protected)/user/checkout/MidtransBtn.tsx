@@ -2,8 +2,9 @@
 
 import Script from "next/script";
 import { toast } from "sonner";
-import { midtransPayment, midtransCancelOrder } from "@/actions/payments/midtrans-payment";
+import { midtransPayment } from "@/actions/payments/midtrans-payment";
 import { PaymentDataProps, PaymentProps } from "@/types/payment";
+import { Button } from "@/components/ui/button";
 
 declare global {
   interface Window {
@@ -15,7 +16,7 @@ declare global {
           onPending: (result: PaymentProps) => void;
           onError: (result: PaymentProps) => void;
           onClose: () => void;
-        }
+        },
       ) => void;
     };
   }
@@ -25,7 +26,7 @@ export default function MidtransBtn({ addressId }: PaymentDataProps) {
   const handlePay = async () => {
     const toastId = toast.loading("Menyiapkan transaksi...");
 
-    const { token, orderId, error } = await midtransPayment({ addressId });
+    const { token, error } = await midtransPayment({ addressId });
 
     if (error || !token) {
       toast.error(error || "Gagal memulai pembayaran", { id: toastId });
@@ -40,17 +41,16 @@ export default function MidtransBtn({ addressId }: PaymentDataProps) {
         window.location.href = `/orders/success?id=${result.order_id}`;
       },
       onPending: () => {
-        toast.info("Menunggu pembayaran Anda.");
+        toast.info("Pesanan disimpan. Segera selesaikan pembayaran.");
+        window.location.href = "/orders"; // Arahkan ke daftar pesanan
       },
-      onError: async () => {
-        if (orderId) await midtransCancelOrder(orderId);
-        toast.error("Pembayaran gagal, silakan coba lagi.");
+      onError: () => {
+        toast.error("Pembayaran gagal, silakan cek daftar pesanan.");
+        window.location.href = "/orders";
       },
-      onClose: async () => {
-        if (orderId) {
-          await midtransCancelOrder(orderId);
-          toast.info("Pembayaran dibatalkan.");
-        }
+      onClose: () => {
+        toast.info("Pembayaran ditunda.");
+        window.location.href = "/orders"; // Tetap simpan sebagai PENDING
       },
     });
   };
@@ -62,13 +62,9 @@ export default function MidtransBtn({ addressId }: PaymentDataProps) {
         data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
         strategy="lazyOnload"
       />
-      <button
-        type="button"
-        onClick={handlePay}
-        className="w-full py-3 bg-blue-700 hover:bg-blue-800 text-white font-semibold rounded-lg transition-all"
-      >
-        Bayar Sekarang
-      </button>
+      <Button type="button" onClick={handlePay}>
+        Bayar Pakai Midtrans
+      </Button>
     </>
   );
 }

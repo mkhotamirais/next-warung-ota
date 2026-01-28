@@ -69,33 +69,33 @@ export async function midtransPayment({ addressId }: PaymentDataProps) {
     // Cast aman: parameter divalidasi oleh interface kita, lalu di-cast ke tipe library
     const transaction = await snap.createTransaction(parameter as unknown as SnapTransactionParameters);
 
-    return { token: transaction.token as string, orderId: externalId, error: null };
+    await prisma.cartItem.deleteMany({
+      where: {
+        cartId: cart.id,
+        isChecked: true,
+      },
+    });
+
+    return { token: transaction.token, orderId: externalId, error: null };
+
+    // return { token: transaction.token as string, orderId: externalId, error: null };
   } catch (error) {
     console.error("Midtrans Error:", error);
     return { token: null, orderId: null, error: "Gagal memproses pembayaran" };
   }
 }
 
-/**
- * Menghapus order jika user membatalkan pembayaran (Close popup)
- */
-export async function midtransCancelOrder(externalId: string) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) return { success: false };
+export async function cancelOrderManual(orderId: string) {
+  const session = await auth();
+  if (!session) return { error: "Unauthorized" };
 
-    await prisma.order.delete({
-      where: {
-        externalId,
-        status: "PENDING", // Proteksi agar tidak menghapus order yang sudah dibayar
-        userId: session.user.id,
-      },
-    });
+  await prisma.order.update({
+    where: {
+      id: orderId, // Menggunakan ID internal Prisma
+      userId: session.user.id,
+    },
+    data: { status: "CANCELED" }, // Jangan dihapus, cukup ubah statusnya
+  });
 
-    return { success: true };
-  } catch (error) {
-    console.log("error deleting order:", error);
-    // Biasanya error terjadi jika order sudah tidak ada (race condition)
-    return { success: false };
-  }
+  return { success: true };
 }

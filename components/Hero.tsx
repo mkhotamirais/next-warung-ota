@@ -1,5 +1,3 @@
-import { Separator } from "./ui/separator";
-
 export default function Hero({ title, description }: { title: string; description?: string }) {
   return (
     <section className="container">
@@ -7,7 +5,6 @@ export default function Hero({ title, description }: { title: string; descriptio
         <h1 className="h1 mb-3">{title}</h1>
         <p>{description}</p>
       </div>
-      <Separator className="my-3" />
     </section>
   );
 }

@@ -1,8 +1,21 @@
+"use client";
+
 import { getProductCategories } from "@/actions/product-category";
 import { Button } from "../ui/button";
+import { useEffect, useState } from "react";
+import { ProductCategory } from "@/lib/generated/prisma";
 
-export default async function HomeProductCategoryList() {
-  const categories = await getProductCategories();
+export default function HomeProductCategoryList() {
+  const [categories, setCategories] = useState<ProductCategory[] | []>([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const productCategories = await getProductCategories();
+      setCategories(productCategories);
+    };
+    fetchCategories();
+  }, []);
+
   return (
     <section className="container py-4">
       <div className="flex gap-2 overflow-x-scroll [&::-webkit-scrollbar]:hidden">

@@ -11,7 +11,7 @@ export default async function Checkout() {
   }
   return (
     <main className="flex-1">
-      <div className="container py-4 max-w-xl">
+      <div className="py-4 max-w-xl">
         <h1 className="h1 mb-4">Checkout</h1>
         <CheckoutClient initialAddresses={data.addresses} items={data.checkoutItems} subtotal={data.subtotal} />
       </div>

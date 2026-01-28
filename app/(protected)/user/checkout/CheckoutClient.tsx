@@ -7,8 +7,18 @@ import Image from "next/image";
 import { Address } from "@/lib/generated/prisma";
 import { CartItemProps } from "@/types/types";
 import Link from "next/link";
-// import MidtransBtn from "./MidtransBtn";
-import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import MidtransBtn from "./MidtransBtn";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 
 interface CheckoutClientProps {
   initialAddresses: Address[];
@@ -31,7 +41,7 @@ export default function CheckoutClient({ initialAddresses, items, subtotal }: Ch
 
         {selectedAddress ? (
           <Sheet>
-            <SheetTrigger>
+            <SheetTrigger asChild>
               <div className="flex items-center justify-between cursor-pointer group">
                 <div className="space-y-1">
                   <p className="font-bold">
@@ -49,13 +59,14 @@ export default function CheckoutClient({ initialAddresses, items, subtotal }: Ch
               </div>
             </SheetTrigger>
             <SheetContent>
+              <SheetHeader>
+                <SheetTitle>Pilih Alamat</SheetTitle>
+                <SheetDescription></SheetDescription>
+              </SheetHeader>
               <div className="p-4 flex flex-col h-full max-w-xl mx-auto">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-bold text-lg">Pilih Alamat</h3>
-                  <Link href="/dashboard/user/address" className="text-primary hover:underline">
-                    Tambah Alamat
-                  </Link>
-                </div>
+                <Button asChild className="mb-4">
+                  <Link href="/user/address">Tambah Alamat</Link>
+                </Button>
                 <div className="flex-1 overflow-y-auto space-y-4">
                   {initialAddresses.map((addr) => (
                     <div
@@ -78,9 +89,12 @@ export default function CheckoutClient({ initialAddresses, items, subtotal }: Ch
                     </div>
                   ))}
                 </div>
-                <SheetClose asChild>
-                  <div className="mt-4 w-full py-3 bg-gray-900 text-white rounded-lg text-center">Selesai</div>
-                </SheetClose>
+
+                <SheetFooter className="p-0">
+                  <SheetClose asChild>
+                    <Button>Selesai</Button>
+                  </SheetClose>
+                </SheetFooter>
               </div>
             </SheetContent>
           </Sheet>
@@ -114,7 +128,9 @@ export default function CheckoutClient({ initialAddresses, items, subtotal }: Ch
           <span className="text-gray-600 italic">Subtotal Produk:</span>
           <span className="font-bold text-lg">Rp{formatRupiah(subtotal)}</span>
         </div>
-        <div>{/* <MidtransBtn addressId={selectedAddress.id} /> */}</div>
+        <div>
+          <MidtransBtn addressId={selectedAddress.id} />
+        </div>
       </div>
     </div>
   );

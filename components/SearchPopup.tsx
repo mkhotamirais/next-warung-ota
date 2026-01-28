@@ -1,23 +1,25 @@
 "use client";
 
-import React from "react";
-import { Command, CommandDialog, CommandEmpty, CommandInput, CommandItem, CommandList } from "./ui/command";
-// import { Button } from "../ui/button";
-// import { SearchIcon } from "lucide-react";
-import { getProductNames, getTotalProductsCount } from "@/actions/product";
-import { useFilterSearch } from "@/hooks/useFilterSearch";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "./ui/command";
+import { getProductNames, getTotalProductsCount } from "@/actions/product";
+
+interface ProductSuggestion {
+  name: string;
+  slug: string;
+}
 
 interface NavSearchProps {
   trigger: React.ReactNode;
 }
 
 export default function SearchPopup({ trigger }: NavSearchProps) {
-  const [open, setOpen] = React.useState(false);
-  const [productSuggestions, setProductSuggestions] = useState<{ name: string; slug: string }[] | undefined>([]);
-  const { keyword, setKeyword } = useFilterSearch();
-  const [totalProductsCount, setTotalProductsCount] = useState<number | null>(null);
+  const [open, setOpen] = useState(false);
+  const [keyword, setKeyword] = useState("");
+  const [allProducts, setAllProducts] = useState<ProductSuggestion[]>([]);
+  const [totalProductsCount, setTotalProductsCount] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
 
   const router = useRouter();
 
@@ -25,60 +27,72 @@ export default function SearchPopup({ trigger }: NavSearchProps) {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
-        setOpen((open) => !open);
+        setOpen((prev) => !prev);
       }
     };
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
-  }, [setOpen]);
-
-  useEffect(() => {
-    getTotalProductsCount().then(setTotalProductsCount);
   }, []);
 
   useEffect(() => {
-    const getData = async () => {
-      //   if (!keyword) {
-      //     setProductSuggestions([]);
-      //     return;
-      //   }
-      const products = await getProductNames(keyword);
-      setProductSuggestions(products || []);
-    };
+    getTotalProductsCount().then((count) => setTotalProductsCount(count ?? 0));
+  }, []);
 
-    getData();
-  }, [keyword]);
+  const fetchProducts = async () => {
+    setIsLoading(true);
+    try {
+      const data = await getProductNames("");
+      setAllProducts(data || []);
+    } catch (error) {
+      console.error("Gagal mengambil produk:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (open && allProducts.length === 0) {
+      fetchProducts();
+    }
+  }, [open, allProducts.length]);
+
+  const filteredProducts = useMemo(() => {
+    if (!keyword.trim()) return [];
+    const searchLow = keyword.toLowerCase();
+    return allProducts.filter((p) => p.name.toLowerCase().includes(searchLow)).slice(0, 8);
+  }, [keyword, allProducts]);
+
+  const handleSelect = (slug: string) => {
+    setOpen(false);
+    setKeyword("");
+    router.push(`/product-detail/${slug}`);
+  };
 
   return (
     <div>
-      <div onClick={() => setOpen((prev) => !prev)}>{trigger}</div>
-      {/* <Button onClick={() => setOpen((prev) => !prev)} variant={"secondary"} className="rounded-full">
-        <SearchIcon />
-      </Button> */}
+      <div onClick={() => setOpen(true)}>{trigger}</div>
+
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <Command shouldFilter={false}>
-          <CommandInput
-            value={keyword}
-            onValueChange={(e) => setKeyword(e)}
-            placeholder={`Cari dari ${totalProductsCount ?? 0} produk..`}
-          />
-          <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
-            <div className="space-y-1 mx-2 py-2">
-              {productSuggestions?.map(({ name, slug }) => (
-                <CommandItem
-                  key={slug}
-                  onSelect={() => {
-                    setOpen(false);
-                    router.push(`/product-detail/${slug}`);
-                  }}
-                >
-                  {name}
-                </CommandItem>
-              ))}
-            </div>
-          </CommandList>
-        </Command>
+        <CommandInput
+          value={keyword}
+          onValueChange={setKeyword}
+          placeholder={`Cari dari ${totalProductsCount} produk..`}
+        />
+        <CommandList>
+          {isLoading && <div className="p-4 text-sm text-center text-muted-foreground">Memuat data produk...</div>}
+
+          <CommandEmpty>
+            {keyword && !filteredProducts.length ? "Produk tidak ditemukan." : "Cari dari semua produk..."}
+          </CommandEmpty>
+
+          <CommandGroup heading="Hasil Pencarian">
+            {filteredProducts.map(({ name, slug }) => (
+              <CommandItem key={slug} value={name} onSelect={() => handleSelect(slug)}>
+                {name}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+        </CommandList>
       </CommandDialog>
     </div>
   );

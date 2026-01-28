@@ -50,6 +50,7 @@ export const mainMenu = [
 export const userMenu = [
   { label: "Profile", url: "/user/profile" },
   { label: "Address", url: "/user/address" },
+  { label: "My Orders", url: "/user/my-orders" },
 ];
 
 export const adminMenu = [
@@ -69,7 +70,7 @@ export const superAdminMenu = [
 
 export const publicRoutes = ["/", "/about"];
 export const authRoutes = ["/signin", "/signup"];
-export const transactionRoutes = ["/user/cart", "/user/checkout"];
+export const transactionRoutes = ["/user/cart", "/user/checkout", "/user/my-orders"];
 export const userRoute = "/user";
 export const userWhiteListRoutes = ["/user", "/user/profile"];
 export const adminRoute = "/admin";

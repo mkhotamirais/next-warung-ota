@@ -1,12 +1,24 @@
+"use client";
+
 import { getProducts } from "@/actions/product";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ProductCard from "../ProductCard";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { ProductProps } from "@/types/types";
 
-export default async function HomeProductList() {
-  const { products } = await getProducts({ limit: 12 });
+export default function HomeProductList() {
+  const [products, setProducts] = useState<ProductProps[] | []>([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { products } = await getProducts({ limit: 12 });
+      setProducts(products);
+    };
+    fetchProducts();
+  }, []);
+
   return (
     <section className="container py-6 bg-gray-50">
       <div className="flex justify-between items-center mb-6">
