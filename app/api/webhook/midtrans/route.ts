@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import crypto from "crypto";
 
+const myServerKey =
+  process.env.NODE_ENV === "production" ? process.env.MIDTRANS_SERVER_KEY_PROD! : process.env.MIDTRANS_SERVER_KEY!;
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -9,7 +12,7 @@ export async function POST(req: Request) {
     const { order_id, transaction_status, fraud_status, status_code, gross_amount, signature_key } = body;
 
     // 1. Verifikasi Signature (Keamanan)
-    const serverKey = process.env.MIDTRANS_SERVER_KEY!;
+    const serverKey = myServerKey;
     const hashed = crypto
       .createHash("sha512")
       .update(`${order_id}${status_code}${gross_amount}${serverKey}`)

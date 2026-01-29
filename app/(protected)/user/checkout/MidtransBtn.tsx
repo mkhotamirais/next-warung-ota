@@ -6,6 +6,16 @@ import { midtransPayment } from "@/actions/payments/midtrans-payment";
 import { PaymentDataProps, PaymentProps } from "@/types/payment";
 import { Button } from "@/components/ui/button";
 
+const scriptSrc =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_MIDTRANS_SNAP_URL_PROD
+    : process.env.NEXT_PUBLIC_MIDTRANS_SNAP_URL;
+
+const scriptDataClientKey =
+  process.env.NODE_ENV === "production"
+    ? process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY_PROD
+    : process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY;
+
 declare global {
   interface Window {
     snap: {
@@ -59,11 +69,7 @@ export default function MidtransBtn({ addressId }: PaymentDataProps) {
 
   return (
     <>
-      <Script
-        src={process.env.NEXT_PUBLIC_MIDTRANS_SNAP_URL}
-        data-client-key={process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY}
-        strategy="lazyOnload"
-      />
+      <Script src={scriptSrc} data-client-key={scriptDataClientKey} strategy="lazyOnload" />
       <Button type="button" onClick={handlePay}>
         Bayar Pakai Midtrans
       </Button>
