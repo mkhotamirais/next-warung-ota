@@ -3,8 +3,8 @@
 import prisma from "@/lib/prisma";
 import { snap } from "@/lib/midtrans";
 import { auth } from "@/auth";
-import { MidtransTransactionParameters, PaymentDataProps } from "@/types/payment";
-import { SnapTransactionParameters } from "midtrans-client";
+import { PaymentDataProps } from "@/types/payment";
+// import { SnapTransactionParameters } from "midtrans-client";
 // import { EXPIRY_DURATION, EXPIRY_UNIT } from "@/lib/content";
 
 /**
@@ -54,11 +54,13 @@ export async function midtransPayment({ addressId }: PaymentDataProps) {
       },
     });
 
-    const parameter: MidtransTransactionParameters = {
+    const parameter = {
       transaction_details: {
         order_id: externalId,
         gross_amount: totalAmount,
       },
+      enabled_payments: ["qris", "gopay"],
+      credit_card: { secure: true },
       // expiry: {
       //   unit: EXPIRY_UNIT,
       //   duration: EXPIRY_DURATION,
@@ -69,10 +71,11 @@ export async function midtransPayment({ addressId }: PaymentDataProps) {
         quantity: item.quantity,
         name: item.Product.name,
       })),
+      // customer_details: { first_name: reservation.User.name, email: reservation.User.email },
     };
 
     // Cast aman: parameter divalidasi oleh interface kita, lalu di-cast ke tipe library
-    const transaction = await snap.createTransaction(parameter as unknown as SnapTransactionParameters);
+    const transaction = await snap.createTransaction(parameter);
 
     await prisma.cartItem.deleteMany({
       where: {
