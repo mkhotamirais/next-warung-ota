@@ -70,7 +70,7 @@ export const superAdminMenu = [
 
 export const publicRoutes = ["/", "/about"];
 export const authRoutes = ["/signin", "/signup"];
-export const transactionRoutes = ["/user/cart", "/user/checkout", "/user/my-orders"];
+export const transactionRoutes = ["/user/cart", "/user/checkout", "/user/my-orders", "/user/payment"];
 export const userRoute = "/user";
 export const userWhiteListRoutes = ["/user", "/user/profile"];
 export const adminRoute = "/admin";
@@ -102,3 +102,6 @@ export const content = {
     description: "Product description",
   },
 };
+
+export const EXPIRY_DURATION = 2;
+export const EXPIRY_UNIT = "minutes";

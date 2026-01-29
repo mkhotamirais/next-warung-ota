@@ -9,11 +9,18 @@ export interface MidtransItemDetail {
   name: string;
 }
 
+type MidtransExpiry = {
+  start_time?: string; // Format: "YYYY-MM-DD HH:MM:SS Z" (Opsional)
+  unit: "minutes" | "hours" | "days";
+  duration: number;
+};
+
 export interface MidtransTransactionParameters {
   transaction_details: {
     order_id: string;
     gross_amount: number;
   };
+  expiry?: MidtransExpiry;
   item_details?: MidtransItemDetail[];
 }
 

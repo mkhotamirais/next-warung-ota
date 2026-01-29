@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
-export default function ProductDetailRedirect() {
+export default function Detail() {
   return redirect("/");
 }

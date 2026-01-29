@@ -7,7 +7,7 @@ import AddToCartFromProductList from "./AddToCartFromProductList";
 export default function ProductCard({ item }: { item: ProductProps }) {
   return (
     <div key={item.id} className="rounded-md overflow-hidden bg-white shadow-xs">
-      <Link href={`/product-detail/${item.slug}`} className="w-full h-36 block">
+      <Link href={`/product/detail/${item.slug}`} className="w-full h-36 block">
         <Image
           src={item.imageUrl || "/images/logo-warungota.png"}
           alt={item.name}

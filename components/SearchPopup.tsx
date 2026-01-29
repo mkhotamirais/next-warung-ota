@@ -56,10 +56,26 @@ export default function SearchPopup({ trigger }: NavSearchProps) {
     }
   }, [open, allProducts.length]);
 
+  // const filteredProducts = useMemo(() => {
+  //   if (!keyword.trim()) return [];
+  //   const searchLow = keyword.toLowerCase();
+  //   return allProducts.filter((p) => p.name.toLowerCase().includes(searchLow)).slice(0, 8);
+  // }, [keyword, allProducts]);
+
   const filteredProducts = useMemo(() => {
     if (!keyword.trim()) return [];
-    const searchLow = keyword.toLowerCase();
-    return allProducts.filter((p) => p.name.toLowerCase().includes(searchLow)).slice(0, 8);
+
+    // Fungsi untuk menghilangkan spasi dan simbol (strip, dll)
+    const normalize = (text: string) => text.toLowerCase().replace(/[^a-z0-9]/g, "");
+
+    const searchNormalized = normalize(keyword);
+
+    return allProducts
+      .filter((product) => {
+        const nameNormalized = normalize(product.name);
+        return nameNormalized.includes(searchNormalized);
+      })
+      .slice(0, 8);
   }, [keyword, allProducts]);
 
   const handleSelect = (slug: string) => {
@@ -67,6 +83,12 @@ export default function SearchPopup({ trigger }: NavSearchProps) {
     setKeyword("");
     router.push(`/product-detail/${slug}`);
   };
+
+  const commandEmpty = isLoading
+    ? "Loading..."
+    : keyword && !filteredProducts.length
+      ? "Produk tidak ditemukan."
+      : "Cari dari semua produk...";
 
   return (
     <div>
@@ -79,10 +101,8 @@ export default function SearchPopup({ trigger }: NavSearchProps) {
           placeholder={`Cari dari ${totalProductsCount} produk..`}
         />
         <CommandList>
-          {isLoading && <div className="p-4 text-sm text-center text-muted-foreground">Memuat data produk...</div>}
-
           <CommandEmpty>
-            {keyword && !filteredProducts.length ? "Produk tidak ditemukan." : "Cari dari semua produk..."}
+            <span>{commandEmpty}</span>
           </CommandEmpty>
 
           <CommandGroup heading="Hasil Pencarian">

@@ -38,19 +38,21 @@ export default function MidtransBtn({ addressId }: PaymentDataProps) {
     window.snap.pay(token, {
       onSuccess: (result) => {
         toast.success("Pembayaran Berhasil!");
-        window.location.href = `/orders/success?id=${result.order_id}`;
+        // Sesuaikan dengan route baru dan sertakan transaction_status
+        window.location.href = `/user/payment/success?order_id=${result.order_id}&transaction_status=${result.transaction_status}`;
       },
-      onPending: () => {
+      onPending: (result) => {
         toast.info("Pesanan disimpan. Segera selesaikan pembayaran.");
-        window.location.href = "/orders"; // Arahkan ke daftar pesanan
+        window.location.href = `/user/payment/pending?order_id=${result.order_id}`;
       },
-      onError: () => {
-        toast.error("Pembayaran gagal, silakan cek daftar pesanan.");
-        window.location.href = "/orders";
+      onError: (result) => {
+        toast.error("Pembayaran gagal.");
+        window.location.href = `/user/payment/failure?order_id=${result.order_id}`;
       },
       onClose: () => {
         toast.info("Pembayaran ditunda.");
-        window.location.href = "/orders"; // Tetap simpan sebagai PENDING
+        // Tetap ke my-orders tidak masalah jika user menutup popup tanpa aksi
+        window.location.href = "/user/my-orders";
       },
     });
   };

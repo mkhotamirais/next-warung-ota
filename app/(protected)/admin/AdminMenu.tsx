@@ -13,7 +13,7 @@ export default function AdminMenu() {
 
   return (
     <div className="bg-white border border-white sticky top-16 py-3 mb-2 flex overflow-x-scroll gap-1 [&::-webkit-scrollbar]:hidden">
-      <div className="mr-2">
+      <div className="mr-2 sticky left-0 bg-white">
         <RefreshData />
       </div>
 

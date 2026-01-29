@@ -5,6 +5,7 @@ import { snap } from "@/lib/midtrans";
 import { auth } from "@/auth";
 import { MidtransTransactionParameters, PaymentDataProps } from "@/types/payment";
 import { SnapTransactionParameters } from "midtrans-client";
+// import { EXPIRY_DURATION, EXPIRY_UNIT } from "@/lib/content";
 
 /**
  * Membuat transaksi baru di Midtrans dan menyimpan Order di DB
@@ -58,6 +59,10 @@ export async function midtransPayment({ addressId }: PaymentDataProps) {
         order_id: externalId,
         gross_amount: totalAmount,
       },
+      // expiry: {
+      //   unit: EXPIRY_UNIT,
+      //   duration: EXPIRY_DURATION,
+      // },
       item_details: cart.CartItem.map((item) => ({
         id: item.productId,
         price: item.Product.price,

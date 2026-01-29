@@ -13,11 +13,12 @@ enum Role {
 }
 
 enum OrderStatus {
-  PENDING
-  PROCESSING
-  SHIPPED
-  DELIVERED
-  CANCELED
+  PENDING // Menunggu pembayaran dari user
+  PAID // Pembayaran berhasil (diverifikasi Webhook)
+  PROCESSING // Penjual sedang mengemas barang
+  SHIPPED // Barang dalam perjalanan (kurir)
+  DELIVERED // Barang sudah sampai tujuan
+  CANCELED // Dibatalkan (oleh user atau sistem/expired)
 }
 
 model User {
@@ -104,6 +105,7 @@ model Address {
   updatedAt DateTime @updatedAt
 
   @@unique([userId, label])
+  @@index([userId])
 }
 
 model Product {
@@ -125,6 +127,10 @@ model Product {
 
   CartItem  CartItem[]
   OrderItem OrderItem[]
+
+  @@index([categoryId]) // Untuk filter per kategori
+  @@index([name]) // Untuk search bar yang kita buat tadi
+  @@index([createdAt]) // Untuk sorting "Produk Terbaru"
 }
 
 model ProductCategory {
@@ -155,13 +161,15 @@ model CartItem {
 
   cartId    String
   Cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  productId String  @default("")
+  productId String
   Product   Product @relation(fields: [productId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([cartId, productId])
+  @@index([cartId])
+  @@index([productId])
 }
 
 model Order {
@@ -169,6 +177,7 @@ model Order {
   totalAmount Int
   status      OrderStatus @default(PENDING)
   OrderItem   OrderItem[]
+  snapToken   String?
 
   // Identitas Gateway (Satu model untuk semua)
   gateway    String // "XENDIT", "MIDTRANS", dll
@@ -182,18 +191,26 @@ model Order {
   Address   Address? @relation(fields: [addressId], references: [id])
   userId    String
   User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+  @@index([externalId])
 }
 
 model OrderItem {
-  id      String @id @default(cuid())
-  orderId String
-  Order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  id          String  @id @default(cuid())
+  orderId     String
+  Order       Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productName String?
 
   productId String
   Product   Product @relation(fields: [productId], references: [id])
 
   quantity Int
   price    Int
+
+  @@index([orderId])
+  @@index([productId])
 }
 
 model BlogCategory {
