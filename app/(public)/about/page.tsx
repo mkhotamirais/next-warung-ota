@@ -9,10 +9,10 @@ export default function About() {
   return (
     <main className="flex-1">
       <Hero title={title} description={description} />
-      <section className="container py-6 flex gap-8">
+      <section className="container py-12 flex flex-col md:flex-row gap-8">
         <article className="prose flex-1 space-y-6">
           <div>
-            <h2 className="h2 mb-3">Sejarah</h2>
+            <h2 className="mt-0">Sejarah</h2>
             <p>
               Toko ATK yang dibangun pada tahun 2019 ini pada awalnya belum memiliki nama, hanya warung biasa saja yang
               menjual beragam kebutuhan sekolah dan sembako. Kemudian awal tahun 2022, titik lokasinya dibuat di google
@@ -26,14 +26,14 @@ export default function About() {
             </p>
           </div>
           <div>
-            <h2 className="h2 mb-3">Alamat</h2>
+            <h2 className="">Alamat</h2>
             <address>
               Kp. Bangong No. 12, RT 002 RW 001, Desa Pasirpogor, Kec. Sindangkerta, Kab. Bandung Barat, Jawa Barat,
               40563
             </address>
           </div>
         </article>
-        <div className="flex-1 border">
+        <div className="flex-1">
           <iframe
             title="ota-photocopy"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.2284570151933!2d107.39533097399826!3d-6.982345293018519!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68f13596411c37%3A0x9e0882f274327720!2sOTA%20Photocopy!5e0!3m2!1sen!2sid!4v1769844420166!5m2!1sen!2sid"

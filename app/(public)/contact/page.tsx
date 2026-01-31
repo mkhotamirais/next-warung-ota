@@ -10,14 +10,15 @@ export default function Contact() {
   return (
     <main className="flex-1">
       <Hero title={title} description={description} />
-      <section className="container py-6">
+      <section className="container py-12">
         <article className="prose mx-auto">
           <h2 className="">Cara menghubungi kami</h2>
-          <p>
-            Anda bisa hubung kami dengan datang langsung ke lokasi Warungota di Kp. Bangong No. 12, RT 002 RW 001, Desa
-            Pasirpogor, Kec. Sindangkerta, Kab. Bandung Barat, Jawa Barat, 40563. Bisa hubungi kami melalui email atau
-            nomor WhatsApp berikut.
-          </p>
+          <p>Anda bisa hubung kami dengan datang langsung ke lokasi Warungota di:</p>
+          <address>
+            Kp. Bangong No. 12, RT 002 RW 001, Desa Pasirpogor, Kec. Sindangkerta, Kab. Bandung Barat, Jawa Barat,
+            40563.
+          </address>
+          <p>Bisa hubungi kami melalui email atau nomor WhatsApp berikut.</p>
           <ul>
             <li>
               <span>Email:</span>
