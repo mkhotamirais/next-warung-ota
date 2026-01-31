@@ -11,10 +11,10 @@ export const routes = {
 export const menu = {
   mainMenu: [
     { label: "Home", url: "/" },
-    { label: "About", url: "/about" },
-    { label: "Contact", url: "/contact" },
+    { label: "Tentang", url: "/about" },
+    { label: "Kontak", url: "/contact" },
     { label: "Blog", url: "/blog" },
-    { label: "Product", url: "/product" },
+    { label: "Produk", url: "/product" },
   ],
   footerMenu: [
     { label: "Home", url: "/" },
@@ -86,20 +86,20 @@ export const content = {
     },
   },
   about: {
-    title: "About Us",
-    description: "About use description",
+    title: "Tentang Kami",
+    description: "Tentang Warungota, sejarah dan lokasi",
   },
   contact: {
-    title: "Contact Us",
-    description: "Contact us description",
+    title: "Kontak Kami",
+    description: "Hubungi Warungota melalui alamat atau kontak yang tersedia.",
   },
   blog: {
     title: "Blog",
-    description: "Blog description",
+    description: "Artikel terkait produk dan layanan WarungOta",
   },
   product: {
-    title: "Product",
-    description: "Product description",
+    title: "Produk",
+    description: "Produk dan layanan WarungOta",
   },
 };
 

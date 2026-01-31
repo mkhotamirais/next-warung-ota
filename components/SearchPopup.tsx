@@ -41,7 +41,7 @@ export default function SearchPopup({ trigger }: NavSearchProps) {
   const fetchProducts = async () => {
     setIsLoading(true);
     try {
-      const data = await getProductNames("");
+      const data = await getProductNames();
       setAllProducts(data || []);
     } catch (error) {
       console.error("Gagal mengambil produk:", error);

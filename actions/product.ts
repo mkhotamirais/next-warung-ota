@@ -30,7 +30,7 @@ export async function getProductNames(keywords?: string) {
       select: { name: true, slug: true },
       distinct: ["name"],
       orderBy: { name: "asc" },
-      take: 10,
+      // take: 10,
     });
 
     return products;
